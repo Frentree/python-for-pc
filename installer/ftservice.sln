@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ftservice", "ftservice\ftservice.vdproj", "{CCB65100-6A09-47ED-A280-796336655DD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CCB65100-6A09-47ED-A280-796336655DD4}.Debug|Default.ActiveCfg = Debug
+		{CCB65100-6A09-47ED-A280-796336655DD4}.Debug|Default.Build.0 = Debug
+		{CCB65100-6A09-47ED-A280-796336655DD4}.Release|Default.ActiveCfg = Release
+		{CCB65100-6A09-47ED-A280-796336655DD4}.Release|Default.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E3B9450-40EB-471F-A7D3-174822F2F830}
+	EndGlobalSection
+EndGlobal
