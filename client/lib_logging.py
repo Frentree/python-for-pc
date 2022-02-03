@@ -5,7 +5,7 @@ import subprocess
 
 #logging_filename = tempfile.gettempdir()+"\\ftservice.log"
 logging_filename = "c:"+"\\ftservice.log"
-logging_filename = "C:\\Users\\danny\\AppData\\Local\\Temp\\ftservice.log"
+#logging_filename = "C:\\Users\\danny\\AppData\\Local\\Temp\\ftservice.log"
 #logging_filename = tempfile.gettempdir()+"\\ftservice.log"
 
 logging.basicConfig(

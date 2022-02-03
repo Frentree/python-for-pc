@@ -35,7 +35,7 @@ def DO_load_existing_config():
         with open("configuration.json", "r", encoding="utf-8-sig") as json_conf_file:
             file_content = json_conf_file.read()
             configuration = json.loads(file_content)
-            print(configuration)
+            #print(configuration)
 
 def DO_update_config(content):
     try:
@@ -48,8 +48,8 @@ def DO_update_config(content):
 DO_load_existing_config()
 configuration['hostname'] = platform.node()
 DO_update_config(configuration)
-print(configuration)
-print("###")
+#print(configuration)
+#print("###")
 #sys.exit(0)
 
 if 2 == len(sys.argv) and "DEBUG" == sys.argv[1]:
@@ -270,6 +270,9 @@ def proc_install():
             sys.exit(0)
 
 if __name__ == '__main__':
+    print("MAIN")
+    sys.exit(0)
+
     import subprocess
     #subprocess.call(['C:\\windows\\system32\\Notepad.exe', 'C:\\test.txt'])
     #subprocess.call(['C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\ConsoleApplication2.exe', 'C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\dscsdll.exe'])
