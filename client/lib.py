@@ -37,3 +37,27 @@ def lib_net_io_counters():
 def lib_disk_usage():
     #return psutil.disk_usage('/')
     return str(psutil.disk_usage('/')[3])
+
+def lib_get_pid_by_name_reg(regex):
+    import re
+    for process in psutil.process_iter():
+        p = re.compile(regex, re.IGNORECASE)
+        m = p.match(process.name())
+        if m:
+            return process.pid
+        else:
+            pass
+
+    return None
+
+def lib_find_procs_by_name(name):
+    "Return a list of processes matching 'name'."
+    ls = []
+    for p in psutil.process_iter(['name']):
+        if p.info['name'] == name:
+            ls.append(p)
+    return ls
+
+def lib_print_service_list():
+    for svc in psutil.win_service_iter():
+        print(svc)

@@ -61,5 +61,5 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
     def main(self):
         pass
 
-if __name__ == '__main__':
-    BaseWinservice.parse_command_line()
+#if __name__ == '__main__':
+#    BaseWinservice.parse_command_line()

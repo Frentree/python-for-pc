@@ -1,92 +1,138 @@
-import servicemanager
-import sys
 import time
-import random
+import win32serviceutil  # ServiceFramework and commandline helper
+import win32service  # Events
+import servicemanager  # Simple setup and logging
+import os
+import sys
 import requests
 import json
-import platform
-import logging
 import ntpath
-import re
+import pathlib
+from sys import modules, executable
 
-import lib_logging
-
-from pathlib import Path
-
-from lib_logging import log
-from lib import *
-from lib_BaseWinservice import BaseWinservice
+from lib_runas import runas
+from lib_logging import *
 from lib_dscsdll import Dscs_dll
+#from lib_winservice import *
+from lib import *
+from win32serviceutil import StartService, QueryServiceStatus
 
-configuration = {
-    "debug":True,
-    "sleep_seconds": 2,
-    "dll_name": "CryptDll.dll",
-    "server_address":"183.107.9.230:11119",
-    "hostname": "175.203.71.27",
-    "bAppendDecryptedPostfix": False,
-}
+config_logging()
 
-def DO_load_existing_config():
-    global configuration
-    if False == os.path.isfile("configuration.json"):
-        print("file not found")
+class MyService:
+    """ application stub"""
+
+    configuration = {
+        "debug":True,
+        "sleep_seconds": 10,
+        "dll_name": "CryptDll.dll",
+        "server_address":"183.107.9.230:11119",
+        "hostname": "175.203.71.27",
+        "bAppendDecryptedPostfix": False,
+
+        "min_sleep_seconds": 1,
+    }
+    self_path = ""
+
+    def __init__(self):
+        self.load_config()
+
+    def stop(self):
+        """Stop the service"""
+        log.debug("Service stop")
+        self.running = False
+
+    def load_config(self):
+        if 'python.exe' == os.path.basename(sys.executable):
+            conf_path = "." + "\\configuration.json"
+        else:
+            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+        #log.info("LOAD_CONFIG: " + conf_path)
+        if False == os.path.isfile(conf_path):
+            log.error("file not found")
+            return
+        else:
+            with open(conf_path, "r", encoding="utf-8-sig") as json_conf_file:
+                file_content = json_conf_file.read()
+                configuration = json.loads(file_content)
+        configuration['hostname'] = self.get_hostname()
+        configuration['min_sleep_seconds'] = 1
+        #log.info(configuration)
+
+        self.configuration = configuration
+        MyService.configuration = configuration
+
+    def save_config(self):
+        if 'python.exe' == os.path.basename(sys.executable):
+            conf_path = "." + "\\configuration.json"
+        else:
+            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+        log.debug("SAVE_CONFIG: " + conf_path)
+
+        if False == os.path.isfile(conf_path):
+            log.error("file not found")
+            return
+        else:
+            try:
+                with open(conf_path, 'w', encoding="utf-8-sig") as json_out_file:
+                    json.dump(self.configuration, json_out_file, indent=4, ensure_ascii=False)
+                    log.debug("SAVE_CONFIG: " + json.dumps(self.configuration, ensure_ascii=False))
+            except FileNotFoundError as e:
+                log.error(str(e))
+
+    def get_hostname(self):
+        return os.getenv("COMPUTERNAME", "")
+
+    def run(self):
+        """Main service loop. This is where work is done!"""
+        log.debug("Service start")
+        self.running = True
+        while self.running:
+            log.debug(self.configuration['server_address'])
+            #runas("C:\\WINDOWS\\system32\\timeout.exe", "10")
+            runas(sys.executable, "do_job")
+
+            sleep_seconds = max(self.configuration["min_sleep_seconds"], self.configuration["sleep_seconds"])
+            log.info("sleep " + str(sleep_seconds) + " seconds")
+            time.sleep(sleep_seconds) # Important work
+            self.load_config()
+            ensure_svc_running(self.configuration['service_name'])
+            continue
+            servicemanager.LogInfoMsg("Service running...")
+
+class MyServiceFramework(win32serviceutil.ServiceFramework):
+
+    _svc_name_ = 'MyService'
+    _svc_display_name_ = 'My Service display name'
+
+    def SvcStop(self):
+        """Stop the service"""
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        self.service_impl.stop()
+        self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+
+    def SvcDoRun(self):
+        """Start the service; does not return until stopped"""
+        self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+        self.service_impl = MyService()
+        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+        # Run the service
+        self.service_impl.run()
+
+def init():
+    if len(sys.argv) == 1:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(MyServiceFramework)
+        servicemanager.StartServiceCtrlDispatcher()
+        pass
     else:
-        with open("configuration.json", "r", encoding="utf-8-sig") as json_conf_file:
-            file_content = json_conf_file.read()
-            configuration = json.loads(file_content)
-            #print(configuration)
+        win32serviceutil.HandleCommandLine(MyServiceFramework)
 
-def DO_update_config(content):
-    try:
-        with open('configuration.json', 'w') as json_out_file:
-            json.dump(content, json_out_file, indent=4, ensure_ascii=False)
-            #json.dump(content, json_out_file)
-    except FileNotFoundError as e:
-        logging.error(str(e))
-
-DO_load_existing_config()
-configuration['hostname'] = platform.node()
-DO_update_config(configuration)
-#print(configuration)
-#print("###")
-#sys.exit(0)
-
-if 2 == len(sys.argv) and "DEBUG" == sys.argv[1]:
-    class BaseWinservice:
-        @classmethod
-        def parse_command_line(cls):
-            '''
-            ClassMethod to parse the command line
-            '''
-            a = cls()
-            a.SvcRun()
-
-        def SvcStop(self):
-            pass
-
-        def SvcRun(self):
-            logging.debug("SvcRun")
-            self.start()
-            self.main()
-
-        def SvcDoRun(self):
-            pass
-
-        def start(self):
-            pass
-
-        def stop(self):
-            pass
-
-        def main(self):
-            pass
-
-def DO_proc_job(dscs_dll, cmd):
+def DO_proc_job(dscs_dll, cmd, service):
     job_type = cmd['type']
     job_path = cmd['path']
     job_index = cmd['index']
-    logging.info("COMMAND: type({:10s}) path({})".format(str(job_type), str(job_path)))
+    log.info("COMMAND: type({:10s}) path({})".format(str(job_type), str(job_path)))
 
     job_result = {
         "index" : job_index,
@@ -100,7 +146,7 @@ def DO_proc_job(dscs_dll, cmd):
         if False == os.path.isfile(job_path):
             job_result['message'] = "File "+job_path+" not found"
             job_result['success'] = False
-            logging.error(job_result['message'])
+            log.error(job_result['message'])
             break
 
         if 'decrypt' == job_type:
@@ -108,7 +154,7 @@ def DO_proc_job(dscs_dll, cmd):
             bname = ntpath.basename(job_path)
             pure_file_stem = pathlib.PurePath(bname).stem
             pure_file_ext  = pathlib.PurePath(bname).suffix
-            filepath2 = ntpath.dirname(job_path) + "\\" + pure_file_stem + ("_decrypted" if configuration['bAppendDecryptedPostfix'] else "") + pure_file_ext
+            filepath2 = ntpath.dirname(job_path) + "\\" + pure_file_stem + ("_decrypted" if service.configuration['bAppendDecryptedPostfix'] else "") + pure_file_ext
             ret = dscs_dll.call_DSCSDecryptFile(job_path, filepath2)
 
             job_result['message'] = " return " + str(Dscs_dll.retvalue2str(funcname, ret))
@@ -124,7 +170,7 @@ def DO_proc_job(dscs_dll, cmd):
             ret = dscs_dll.call_DSCSDacEncryptFileV2(job_path)
             '''
             funcname = "DSCSMacEncryptFile"
-            ret = dscs_dll.call_DSCSMacEncryptFile(job_path, "0000061")
+            ret = dscs_dll.call_DSCSMacEncryptFile(job_path, "0000001")
             #1:허용, 0:차단 (편집, 캡쳐, 인쇄, 마킹)
 
             job_result['message'] = " return " + str(Dscs_dll.retvalue2str(funcname, ret))
@@ -161,154 +207,118 @@ def DO_proc_job(dscs_dll, cmd):
 
     return job_result
 
-class FTService(BaseWinservice):
-    _svc_name_ = "ftservice"
-    _svc_display_name_ = "FT Service"
-    _svc_description_ = "FT Service Description"
+def ensure_svc_running(svc_name):
+    service = psutil.win_service_get(svc_name)
+    if 'stopped' == service.status():
+        StartService(svc_name)
 
-    def start(self):
-        logging.debug("FTService start")
-        self.isrunning = True
+def proc_main():
+    # process name pattern : 53cardrecon193247928347982
+    cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
+    log.info(cardrecon_pid)
+    p = psutil.Process(cardrecon_pid)
+    print("CPU")
+    print(lib_cpu_usage())
+    print("###")
+    print(p.io_counters())
+    print(p.memory_info())
+    return
 
-    def stop(self):
-        logging.debug("FTService stop")
-        self.isrunning = False
+    #os.system("c:\\windows\\system32\\cmd.exe")
+    try:
+        dscs_dll = Dscs_dll()
+    except FileNotFoundError as e:
+        log.error(e)
+        #sys.exit(0)
+        return
 
-    def main(self):
-        #rc = None
-        #while rc != win32event.WAIT_OBJECT_0:
-        #    try:
-        #        dscs_dll = Dscs_dll()
-        #    except FileNotFoundError as e:
-        #        logging.error(e)
-        #        return
-        #    mysvc = MyService(dscs_dll)
-        #    mysvc.svc()
-        #    rc = win32event.WaitForSingleObject(self.hWaitStop, 10) # milliseconds
+    service = MyService()
+    log.debug(service.configuration)
 
-        #self.dscs_dll = dscs_dll
-        logging.debug("FTService main")
-        while self.isrunning:
-            #logging.info(os.environ['USERPROFILE']) #C:\Users\username
-            #logging.info(os.getlogin())
-            #logging.info(os.getenv('username'))
-            #import subprocess
-            #subprocess.call(['C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\ConsoleApplication2.exe', 'C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\dscsdll.exe'])
-            #sys.exit(0)
-            print("SERVER " + configuration['server_address'])
+    # GET JOB
+    try:
+        url = 'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"]
+        log.info(url)
+        r = requests.get(url)
+        ret = r.json()
+        log.debug(ret)
+    except requests.exceptions.ConnectionError as e:
+        log.error(str(e))
+        return
+    except json.decoder.JSONDecodeError as e:
+        log.error(str(e))
+        return
+
+    service.configuration['sleep_seconds'] = max(int(ret['config'][0]['sleep_seconds']), service.configuration["min_sleep_seconds"])
+
+    job_result_list = []
+    for cmd in ret['job']:
+        job_result = DO_proc_job(dscs_dll, cmd, service)
+        job_result_list.append(job_result)
+        #logging.info(json.dumps(job_result, indent=4, ensure_ascii=False))
+    # POST JOB RESULT
+    post_data = {
+        'job_results' : job_result_list,
+        'resource_usages' : {
+            'virtual_memory': lib_virtual_memory(),
+            'cpu_usage': lib_cpu_usage(),
+            'net_io_counters': lib_net_io_counters(),
+            'disk_usage': lib_disk_usage(),
+        }
+    }
+    try:
+        log.debug(json.dumps(post_data, ensure_ascii=False))
+        r = requests.post('http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"], json=post_data)
+        result_ret = str(r.json())
+        log.debug(json.dumps(result_ret, indent=4, ensure_ascii=False))
+    except requests.exceptions.ChunkedEncodingError as e:
+        log.error(str(e))
+        return
+    except json.decoder.JSONDecodeError as e:
+        log.error(str(e))
+        return
+    #log("setting sleep seconds : " + str(ret['config'][0]['sleep_seconds']))
+
+    service.save_config()
+
+    time.sleep(service.configuration['sleep_seconds'])
+
+def proc_preproc():
+    if len(sys.argv) == 2:
+        service = MyService()
+        if "debug" == sys.argv[1]:
+            service.run()
+            sys.exit(0)
+        elif "do_job" == sys.argv[1]:
+            proc_main()
             sys.exit(0)
 
-            try:
-                dscs_dll = Dscs_dll()
-            except FileNotFoundError as e:
-                logging.error(e)
-                sys.exit(0)
-
-            # GET JOB
-            try:
-                url = 'http://'+configuration['server_address']+'/c2s_job' + "/" + configuration["hostname"]
-                logging.info(url)
-                r = requests.get(url)
-                ret = r.json()
-                logging.debug(ret)
-            except requests.exceptions.ConnectionError as e:
-                logging.error(str(e))
-                return
-            except json.decoder.JSONDecodeError as e:
-                logging.error(str(e))
-                return
-
-            configuration['sleep_seconds'] = int(ret['config'][0]['sleep_seconds'])
-
-            job_result_list = []
-            for cmd in ret['job']:
-                job_result = DO_proc_job(dscs_dll, cmd)
-                job_result_list.append(job_result)
-                #logging.info(json.dumps(job_result, indent=4, ensure_ascii=False))
-
-            # POST JOB RESULT
-            post_data = {
-                'job_results' : job_result_list,
-                'resource_usages' : {
-                    'virtual_memory': lib_virtual_memory(),
-                    'cpu_usage': lib_cpu_usage(),
-                    'net_io_counters': lib_net_io_counters(),
-                    'disk_usage': lib_disk_usage(),
-                }
-            }
-            try:
-                logging.debug(json.dumps(post_data, indent=4, ensure_ascii=False))
-                r = requests.post('http://'+configuration['server_address']+'/c2s_job' + "/" + configuration["hostname"], json=post_data)
-                result_ret = str(r.json())
-                logging.debug(json.dumps(result_ret, indent=4, ensure_ascii=False))
-            except requests.exceptions.ChunkedEncodingError as e:
-                logging.error(str(e))
-                return
-            except json.decoder.JSONDecodeError as e:
-                logging.error(str(e))
-                return
-
-            #log("setting sleep seconds : " + str(ret['config'][0]['sleep_seconds']))
-            time.sleep(configuration['sleep_seconds'])
-
-
 def proc_install():
+    # TODO path
+    SC_PATH = "c:\\windows\\system32\\sc"
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             os.system("\"" + sys.argv[0] + "\" --startup delayed install")
-            os.system("sc failure \"" + FTService._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
+            os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
             os.system("\"" + sys.argv[0] + "\" start")
-            #time.sleep(20)
+            time.sleep(1)
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
+            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
+            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
             os.system("\"" + sys.argv[0] + "\" remove")
-            #time.sleep(20)
+            time.sleep(1)
             sys.exit(0)
 
 if __name__ == '__main__':
-    print("MAIN")
-    sys.exit(0)
-
-    import subprocess
-    #subprocess.call(['C:\\windows\\system32\\Notepad.exe', 'C:\\test.txt'])
-    #subprocess.call(['C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\ConsoleApplication2.exe', 'C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\dscsdll.exe'])
-    #os.system('"C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\ConsoleApplication2.exe"')#' "C:\\Users\\danny\\Desktop\\ft\\ftclient\\dist\\dscsdll.exe"')
-    #logging.info(os.environ['USERPROFILE'])
-    #try:
-    #    dscs_dll = Dscs_dll()
-    #except FileNotFoundError as e:
-    #    logging.error(e)
-    #    sys.exit(0)
-    #logging.info(os.getlogin())
-    #logging.info(os.getenv('username'))
-    #sys.exit(0)
-    for proc in psutil.process_iter():
-        # process name pattern : 53cardrecon193247928347982
-        p = re.compile(r'\d\dcardrecon\d*', re.IGNORECASE)
-        m = p.match(proc.name())
-        if m:
-            #print(proc.name())
-            print('Match found: ', m.group())
-            pass
-        else:
-            pass
-            #print('No match')
-    #sys.exit(0)
-
-    proc_install()
-
-    # TODO copy two dll files
-
-    if len(sys.argv) == 1:
-        servicemanager.Initialize()
-        servicemanager.PrepareToHostSingle(FTService)
-        servicemanager.StartServiceCtrlDispatcher()
-    else:
-        # install/update/remove/start/stop/restart or debug the service
-        # One of those command line options must be specified
-        #win32serviceutil.HandleCommandLine(FTService)
-        FTService.parse_command_line()
+    try:
+        MyService.self_path = executable#sys.argv[0]
+        proc_preproc()
+        proc_install()
+        init()
+    except Exception as e:
+        log.error(e)

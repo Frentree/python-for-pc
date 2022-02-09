@@ -20,7 +20,7 @@ class Dscs_dll():
 			raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), self.dll_abspath)
 
 		self.dll_handle = Dscs_dll.LoadLibrary(self.dll_abspath)
-		logging.debug("Dscs_dll::constructor() DLL path: " + self.dll_abspath)
+		log.debug("Dscs_dll::constructor() DLL path: " + self.dll_abspath)
 
 		self.call_DSCSAddDac()
 
@@ -53,7 +53,7 @@ class Dscs_dll():
 
 		nGuide = 3
 		ret = self.dll_handle.DSCSAddDac(nGuide, lpszAcl)
-		logging.debug("Dscs_dll::call_DSCSAddDac() " + lpszAcl_ascii)
+		log.debug("Dscs_dll::call_DSCSAddDac() " + lpszAcl_ascii)
 
 		return ret
 
@@ -64,7 +64,7 @@ class Dscs_dll():
 		pfunc.argtypes = []
 		pfunc.restype = ctypes.c_uint16
 		ret = self.dll_handle.DSCheckDSAgent()
-		logging.debug("Dscs_dll::call_DSCheckDSAgent() : " + Dscs_dll.retvalue2str("DSCheckDSAgent", ret))	
+		log.debug("Dscs_dll::call_DSCheckDSAgent() : " + Dscs_dll.retvalue2str("DSCheckDSAgent", ret))	
 
 		return ret
 
@@ -94,7 +94,7 @@ class Dscs_dll():
 		try:
 			ret = self.dll_handle.DSCSMacEncryptFile(p1, p2)
 		except Exception as e:
-			logging.error(traceback.format_exc())
+			log.error(traceback.format_exc())
 
 		return ret
 
@@ -108,7 +108,7 @@ class Dscs_dll():
 		try:
 			ret = self.dll_handle.DSCSDacEncryptFileV2(p1)
 		except Exception as e:
-			logging.error(traceback.format_exc())
+			log.error(traceback.format_exc())
 
 		return ret
 

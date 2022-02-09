@@ -1,59 +1,31 @@
 import logging
-import tempfile
-import time
-import subprocess
+import ctypes
 
-#logging_filename = tempfile.gettempdir()+"\\ftservice.log"
-logging_filename = "c:"+"\\ftservice.log"
-#logging_filename = "C:\\Users\\danny\\AppData\\Local\\Temp\\ftservice.log"
-#logging_filename = tempfile.gettempdir()+"\\ftservice.log"
+# output "logging" messages to DbgView via OutputDebugString (Windows only!)
+OutputDebugString = ctypes.windll.kernel32.OutputDebugStringW
 
-logging.basicConfig(
-	filename = logging_filename,
-	level = logging.DEBUG,
-	format = '%(asctime)s %(levelname)-7.7s %(message)s',
-)
+class DbgViewHandler(logging.Handler):
+    def emit(self, record):
+        PREFIX_FOR_FILTERING = "[TT]"
+        OutputDebugString(PREFIX_FOR_FILTERING+self.format(record))
 
-#[[ log message to console
-console = logging.StreamHandler()
+log = logging.getLogger("output.debug.string.example")
+def config_logging():
+ 
+    # format
+    fmt = logging.Formatter(fmt='%(asctime)s.%(msecs)03d [%(thread)5s] %(levelname)-8s %(funcName)-20s %(lineno)d %(message)s', datefmt='%Y:%m:%d %H:%M:%S')
 
-console.setLevel(logging.DEBUG)
-#console.setLevel(logging.INFO)
+    log.setLevel(logging.DEBUG)
+    #log.setLevel(logging.INFO)
 
-# set a format which is simpler for console use
-formatter = logging.Formatter('%(asctime)s %(levelname)-7.7s %(message)s')
-# tell the handler to use this format
-console.setFormatter(formatter)
-# add the handler to the root logger
-logging.getLogger().addHandler(console)
-#]] log message to console
+    # "OutputDebugString\DebugView"
+    ods = DbgViewHandler()
+    ods.setLevel(logging.DEBUG)
+    ods.setFormatter(fmt)
+    log.addHandler(ods)
 
-def logging_open_logfile():
-	print(logging_filename)
-	programName = "notepad.exe"
-	subprocess.Popen([programName, logging_filename])
-
-def logging_truncate_logfile():
-	# Open the file
-	file_handle = open(logging_filename, "r+")
-
-	# Now truncate the file
-	file_handle.truncate()
-
-def log(msg):
-	logging.info(msg)
-
-#logging_filename = tempfile.gettempdir()+"\\ftservice.log"
-#logging_filename = "c:"+"\\ftservice.log"
-#def log(msg):
-#    try:
-#        with open(logging_filename, 'a') as f:
-#            f.write(str(msg) + "\n")
-#    except Exception as e:
-#        print(e)
-#    print(msg)
-
-
-
-
-
+    # "Console"
+    con = logging.StreamHandler()
+    con.setLevel(logging.DEBUG)
+    con.setFormatter(fmt)
+    log.addHandler(con)
