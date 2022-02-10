@@ -15,25 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0F9EFD2D29484697A4B5D9A7A05CAE13"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_30D28A1EAB86467AB0D351CDE9BB1269"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7C1290F3D3994E4DBF216A860CF4AA16"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B5BA7AA5BC944F41A8E23F88DAFF2924"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -55,6 +37,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -71,12 +69,42 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
     }
     "Deployable"
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_6DEF5D56AC11467FBEFCCC889EDD73E7"
+            {
+            "Name" = "8:ftclient.exe"
+            "Condition" = "8:"
+            "Object" = "8:_30D28A1EAB86467AB0D351CDE9BB1269"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:setup"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_97DA2897_3D7C_46F8_8A65_D457B5F6281F"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -92,70 +120,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0F9EFD2D29484697A4B5D9A7A05CAE13"
-            {
-            "SourcePath" = "8:pywintypes36.dll"
-            "TargetName" = "8:pywintypes36.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30D28A1EAB86467AB0D351CDE9BB1269"
             {
             "SourcePath" = "8:ftclient.exe"
             "TargetName" = "8:ftclient.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7C1290F3D3994E4DBF216A860CF4AA16"
-            {
-            "SourcePath" = "8:python36.dll"
-            "TargetName" = "8:python36.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5BA7AA5BC944F41A8E23F88DAFF2924"
-            {
-            "SourcePath" = "8:configuration.json"
-            "TargetName" = "8:configuration.json"
             "Tag" = "8:"
             "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
             "Condition" = "8:"
@@ -362,7 +330,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_7BE4F661898642648297C4902C21B7D7"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:마침"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
@@ -393,7 +361,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_D5965072A7EE4A9BA40F3C4B319E57B2"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:진행률"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
@@ -449,7 +417,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5D68682189BA459E8B111D80D070012A"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:진행률"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
@@ -493,7 +461,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_167EFA9FC66B47DFA3CA7C274AE5F740"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:설치 확인"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -515,7 +483,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_B8CEA6EFCF0A41F0B57E50EFFA90C00C"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:환영"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
@@ -563,7 +531,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_E3C700690A374714BDACCD1F2F0B673D"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:설치 폴더"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -607,7 +575,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_E328E1CCA2C140BA92215362FF94A28D"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:마침"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
@@ -651,7 +619,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4F152B168E9941DA9C74B3BB98C406DE"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:설치 확인"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
@@ -673,7 +641,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_77E42833FA3A470A89DF61C106BB5AA8"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:환영"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
@@ -721,7 +689,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_D23C3BDE41DF4623A25F0D74D7D402A5"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:설치 폴더"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"

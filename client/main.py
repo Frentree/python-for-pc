@@ -29,6 +29,7 @@ class MyService:
         "server_address":"183.107.9.230:11119",
         "hostname": "175.203.71.27",
         "bAppendDecryptedPostfix": False,
+        "service_name": "Enterprise Recon 2 Agent",
 
         "min_sleep_seconds": 1,
     }
@@ -59,6 +60,7 @@ class MyService:
         configuration['min_sleep_seconds'] = 1
         #log.info(configuration)
 
+
         self.configuration = configuration
         MyService.configuration = configuration
 
@@ -88,15 +90,19 @@ class MyService:
         log.debug("Service start")
         self.running = True
         while self.running:
-            log.debug(self.configuration['server_address'])
-            #runas("C:\\WINDOWS\\system32\\timeout.exe", "10")
-            runas(sys.executable, "do_job")
+            try:
+                log.debug(self.configuration['server_address'])
+                log.debug("run as " + sys.executable)
+                runas("\""+sys.executable+"\"", "do_job")
 
-            sleep_seconds = max(self.configuration["min_sleep_seconds"], self.configuration["sleep_seconds"])
-            log.info("sleep " + str(sleep_seconds) + " seconds")
-            time.sleep(sleep_seconds) # Important work
-            self.load_config()
-            ensure_svc_running(self.configuration['service_name'])
+                #self.load_config()
+                ensure_svc_running(self.configuration['service_name'])
+            except Exception as e:
+                log.error(e)
+            finally:
+                sleep_seconds = max(self.configuration["min_sleep_seconds"], self.configuration["sleep_seconds"])
+                log.info("sleep " + str(sleep_seconds) + " seconds")
+                time.sleep(sleep_seconds) # Important work
             continue
             servicemanager.LogInfoMsg("Service running...")
 
@@ -116,6 +122,7 @@ class MyServiceFramework(win32serviceutil.ServiceFramework):
         self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
         self.service_impl = MyService()
         self.ReportServiceStatus(win32service.SERVICE_RUNNING)
+
         # Run the service
         self.service_impl.run()
 
@@ -208,23 +215,12 @@ def DO_proc_job(dscs_dll, cmd, service):
     return job_result
 
 def ensure_svc_running(svc_name):
+    log.info("ensure service running: " + svc_name)
     service = psutil.win_service_get(svc_name)
     if 'stopped' == service.status():
         StartService(svc_name)
 
 def proc_main():
-    # process name pattern : 53cardrecon193247928347982
-    cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
-    log.info(cardrecon_pid)
-    p = psutil.Process(cardrecon_pid)
-    print("CPU")
-    print(lib_cpu_usage())
-    print("###")
-    print(p.io_counters())
-    print(p.memory_info())
-    return
-
-    #os.system("c:\\windows\\system32\\cmd.exe")
     try:
         dscs_dll = Dscs_dll()
     except FileNotFoundError as e:
@@ -256,6 +252,19 @@ def proc_main():
         job_result = DO_proc_job(dscs_dll, cmd, service)
         job_result_list.append(job_result)
         #logging.info(json.dumps(job_result, indent=4, ensure_ascii=False))
+
+    #[[ cardrecon process
+    # process name pattern : 53cardrecon193247928347982
+    cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
+    log.info(cardrecon_pid)
+    p = psutil.Process(cardrecon_pid)
+    print("CPU")
+    print(lib_cpu_usage())
+    print("###")
+    print(p.io_counters())
+    print(p.memory_info())
+    #]] cardrecon process
+
     # POST JOB RESULT
     post_data = {
         'job_results' : job_result_list,
@@ -281,8 +290,6 @@ def proc_main():
 
     service.save_config()
 
-    time.sleep(service.configuration['sleep_seconds'])
-
 def proc_preproc():
     if len(sys.argv) == 2:
         service = MyService()
@@ -290,6 +297,7 @@ def proc_preproc():
             service.run()
             sys.exit(0)
         elif "do_job" == sys.argv[1]:
+            log.debug("DO_JOB")
             proc_main()
             sys.exit(0)
 
@@ -316,6 +324,7 @@ def proc_install():
 
 if __name__ == '__main__':
     try:
+        log.debug(str(sys.argv))
         MyService.self_path = executable#sys.argv[0]
         proc_preproc()
         proc_install()
