@@ -1,8 +1,11 @@
 {
     "debug": true,
-    "sleep_seconds": 2,
+    "sleep_seconds": 5,
     "dll_name": "CryptDll.dll",
     "server_address": "183.107.9.230:11119",
     "hostname": "DESKTOP-LACFM6D",
-    "bAppendDecryptedPostfix": false
+    "bAppendDecryptedPostfix": false,
+    "service_name": "Enterprise Recon 2 Agent",
+
+    "min_sleep_seconds": 1
 }
