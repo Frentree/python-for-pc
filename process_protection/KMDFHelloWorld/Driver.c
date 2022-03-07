@@ -1,12 +1,16 @@
 #include <ntddk.h>
 #include <wdf.h>
 
+#define USE_DEVICE_ADD
+
 DRIVER_INITIALIZE DriverEntry;
 
 PVOID g_hRegistration = NULL;
 
+#ifdef USE_DEVICE_ADD
 // NOTE : creating driver is unnecessary for developping.
-//EVT_WDF_DRIVER_DEVICE_ADD KmdfHelloWorldEvtDeviceAdd;
+EVT_WDF_DRIVER_DEVICE_ADD KmdfHelloWorldEvtDeviceAdd;
+#endif
 
 OB_PREOP_CALLBACK_STATUS ObjectPreCallback(
 	_In_ PVOID RegistrationContext,
@@ -14,6 +18,8 @@ OB_PREOP_CALLBACK_STATUS ObjectPreCallback(
 {
 	UNREFERENCED_PARAMETER(RegistrationContext);
 	UNREFERENCED_PARAMETER(OperationInformation);
+
+	DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F] ObjectPreCallback called");
 	/*
 	PREGCONTEXT RegContext = (PREGCONTEXT)RegistrationContext;
 
@@ -35,6 +41,8 @@ VOID ObjectPostCallback(
 {
 	UNREFERENCED_PARAMETER(RegistrationContext);
 	UNREFERENCED_PARAMETER(OperationInformation);
+
+	DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F] ObjectPostCallback called");
 	/*
 	PERPROCESS pEprocess;
 	PLIST_ENTRY pListEntry;
@@ -76,7 +84,7 @@ NTSTATUS ObReg()
 	obRegistration.RegistrationContext = NULL;//(PVOID)&g_RegContext;
 	obRegistration.OperationRegistration = &opRegistration;
 
-	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F]: ObReg\n"));
+	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F] ObReg\n"));
 
 	return ObRegisterCallbacks(&obRegistration, &g_hRegistration);
 }
@@ -84,32 +92,34 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING Regi
 {
 	NTSTATUS status = STATUS_SUCCESS;
 
-	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F]: DriverEntry\n"));
+	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F] DriverEntry\n"));
 
 	// Create the driver object
 	UNREFERENCED_PARAMETER(DriverObject);
 	UNREFERENCED_PARAMETER(RegistryPath);
+#ifdef USE_DEVICE_ADD
 	// NOTE : creating driver is unnecessary for developping.
-	//WDF_DRIVER_CONFIG config;
-	//memset(&config, 0, sizeof(config));
-	//WDF_DRIVER_CONFIG_INIT(&config, KmdfHelloWorldEvtDeviceAdd);
-	//status = WdfDriverCreate(DriverObject, RegistryPath, WDF_NO_OBJECT_ATTRIBUTES, &config, WDF_NO_HANDLE);
+	WDF_DRIVER_CONFIG config;
+	memset(&config, 0, sizeof(config));
+	WDF_DRIVER_CONFIG_INIT(&config, KmdfHelloWorldEvtDeviceAdd);
+	status = WdfDriverCreate(DriverObject, RegistryPath, WDF_NO_OBJECT_ATTRIBUTES, &config, WDF_NO_HANDLE);
+#endif
 
 	return status;
 }
 
+#ifdef USE_DEVICE_ADD
 // NOTE : creating driver is unnecessary for developping.
-#if 0
 NTSTATUS KmdfHelloWorldEvtDeviceAdd(_In_ WDFDRIVER Driver, _Inout_ PWDFDEVICE_INIT DeviceInit)
 {
 	UNREFERENCED_PARAMETER(Driver);
 
-	foo();
+	ObReg();
 
 	NTSTATUS status;
 	WDFDEVICE hDevice;
 
-	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "KmdfHelloWorld: KmdfHelloWorldEvtDeviceAdd\n"));
+	KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL, "[F] KmdfHelloWorldEvtDeviceAdd\n"));
 
 	status = WdfDeviceCreate(&DeviceInit, WDF_NO_OBJECT_ATTRIBUTES, &hDevice);
 
