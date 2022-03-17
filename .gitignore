@@ -182,3 +182,12 @@ process_protection/KMDFHelloWorld/.vs/KMDFHelloWorld/v16/ipch/AutoPCH/d738f08032
 process_protection/KMDFHelloWorld/x64/Debug/KMDFHelloWorld.tlog/inf2cat.read.9.tlog
 process_protection/KMDFHelloWorld/x64/Debug/KMDFHelloWorld.tlog/inf2cat.write.9.tlog
 process_protection/KMDFHelloWorld/x64/Debug/inf2catOutput.log
+client/__pycache__/main.cpython-310.pyc
+client/build/ftclient/Analysis-00.toc
+client/build/ftclient/base_library.zip
+client/build/ftclient/EXE-00.toc
+client/build/ftclient/ftclient.pkg
+client/build/ftclient/PKG-00.toc
+client/build/ftclient/PYZ-00.pyz
+client/build/ftclient/PYZ-00.toc
+client/build/ftclient/warn-ftclient.txt

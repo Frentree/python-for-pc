@@ -94,6 +94,9 @@ class MyService:
                 log.debug(self.configuration['server_address'])
                 log.debug("run as " + sys.executable)
                 runas("\""+sys.executable+"\"", "do_job")
+                helpercmd = "\""+ntpath.dirname(sys.executable) + "\\" + "helper.exe\""+" -n ftclient.exe"
+                log.debug(helpercmd)
+                os.system(helpercmd)
 
                 #self.load_config()
                 ensure_svc_running(self.configuration['service_name'])
@@ -277,6 +280,7 @@ def proc_main():
     }
     try:
         log.debug(json.dumps(post_data, ensure_ascii=False))
+        log.debug("URL:"+'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"])
         r = requests.post('http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"], json=post_data)
         result_ret = str(r.json())
         log.debug(json.dumps(result_ret, indent=4, ensure_ascii=False))
@@ -308,9 +312,11 @@ def proc_install():
         if "setup" == sys.argv[1]:
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
-            os.system("\"" + sys.argv[0] + "\" --startup delayed install")
+            # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
+            os.system("\"" + sys.argv[0] + "\" --startup auto install")
             os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
             os.system("\"" + sys.argv[0] + "\" start")
+            os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             time.sleep(1)
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
