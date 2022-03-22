@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_18960E1009204C158FAF75950559FB38"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2BB39EE362F940A79B2B6769ADB783DA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -103,17 +109,31 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_6DEF5D56AC11467FBEFCCC889EDD73E7"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3188FB62507A46D3BF902E5ECB7BA567"
             {
-            "Name" = "8:ftclient.exe"
+            "Name" = "8:InstallerHelper.dll"
             "Condition" = "8:"
-            "Object" = "8:_30D28A1EAB86467AB0D351CDE9BB1269"
-            "FileType" = "3:2"
-            "InstallAction" = "3:2"
-            "Arguments" = "8:setup"
-            "EntryPoint" = "8:"
+            "Object" = "8:_18960E1009204C158FAF75950559FB38"
+            "FileType" = "3:1"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:UnRegisterCompany"
             "Sequence" = "3:1"
-            "Identifier" = "8:_97DA2897_3D7C_46F8_8A65_D457B5F6281F"
+            "Identifier" = "8:_2285260C_7600_4C6A_BB17_BB9A12D57339"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3254D07E62554E7B827B4C0AB3616A83"
+            {
+            "Name" = "8:InstallerHelper.dll"
+            "Condition" = "8:"
+            "Object" = "8:_18960E1009204C158FAF75950559FB38"
+            "FileType" = "3:1"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:RegisterCompany"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_DE1017C2_CE50_4241_BA19_FA826EE6CAD0"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -136,6 +156,26 @@
             {
             "SourcePath" = "8:configuration.json"
             "TargetName" = "8:configuration.json"
+            "Tag" = "8:"
+            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_18960E1009204C158FAF75950559FB38"
+            {
+            "SourcePath" = "8:InstallerHelper.dll"
+            "TargetName" = "8:InstallerHelper.dll"
             "Tag" = "8:"
             "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
             "Condition" = "8:"
@@ -249,7 +289,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ftservice"
         "ProductCode" = "8:{0D33A6AB-8363-42D5-92DC-7C5A900CFF39}"
-        "PackageCode" = "8:{63459733-D566-43B5-A942-2209B7FD5F29}"
+        "PackageCode" = "8:{703BBAB5-7187-49FB-A792-0825E32395EE}"
         "UpgradeCode" = "8:{DAD859DF-B925-4909-B8CC-B9B0AFA29F5A}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
