@@ -3,7 +3,7 @@ import os
 import os.path
 import sys
 import time
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from argparse import ArgumentParser
 from textwrap import dedent
 from watchdog.utils import WatchdogShutdown, load_class
 from watchdog.version import VERSION_STRING
@@ -19,7 +19,6 @@ from libsqlite3 import *
 class MyLoggerTrick(LoggerTrick):
 
     def do_log(self, event):
-        print("DO_LOG")
         MINIMUM_FILESIZE = 5
 
         if event.is_directory:
@@ -31,10 +30,13 @@ class MyLoggerTrick(LoggerTrick):
             return
         except PermissionError as e:
             return
+        print('[DEBUG]' +event.src_path + " (size: " + str(filesize) + ")")
+        print(event)
 
         if filesize < MINIMUM_FILESIZE:
             return
 
+        '''
         included_patterns = [
             "*.txt",
         ]
@@ -54,6 +56,7 @@ class MyLoggerTrick(LoggerTrick):
         if any(path.match(p) for p in excluded_patterns) or \
             not any(path.match(p) for p in included_patterns):
             return
+        '''
 
         from datetime import datetime
         #print(datetime.now().strftime("%Y%m%d_%H%M%S"))
@@ -75,14 +78,7 @@ class MyLoggerTrick(LoggerTrick):
     def on_moved(self, event):
         self.do_log(event)
 
-epilog = """Copyright 2011 Yesudeep Mangalapilly <yesudeep@gmail.com>.
-Copyright 2012 Google, Inc & contributors.
-
-Licensed under the terms of the Apache license, version 2.0. Please see
-LICENSE in the source code for more information."""
-
-cli = ArgumentParser(epilog=epilog)#, formatter_class=HelpFormatter)
-cli.add_argument('--version', action='version', version=VERSION_STRING)
+cli = ArgumentParser()
 subparsers = cli.add_subparsers(dest='command')
 
 def argument(*name_or_flags, **kwargs):
@@ -123,7 +119,6 @@ def path_split(pathname_spec, separator=os.pathsep):
     """
     return list(pathname_spec.split(separator))
 
-
 def add_to_sys_path(pathnames, index=0):
     """
     Adds specified paths at specified index into the sys.path list.
@@ -136,21 +131,6 @@ def add_to_sys_path(pathnames, index=0):
     """
     for pathname in pathnames[::-1]:
         sys.path.insert(index, pathname)
-
-
-def load_config(tricks_file_pathname):
-    """
-    Loads the YAML configuration from the specified file.
-
-    :param tricks_file_path:
-        The path to the tricks configuration file.
-    :returns:
-        A dictionary of configuration information.
-    """
-    import yaml
-
-    with open(tricks_file_pathname, 'rb') as f:
-        return yaml.safe_load(f.read())
 
 def parse_patterns(patterns_spec, ignore_patterns_spec, separator=';'):
     """
@@ -208,7 +188,8 @@ def schedule_tricks(observer, tricks, pathname, recursive):
             trick_pathname = getattr(handler, 'source_directory', None) or pathname
             observer.schedule(handler, trick_pathname, recursive)
 
-@command([argument('directories',
+@command([
+          argument('directories',
                    nargs='*',
                    default='.',
                    help='Directories to watch. (default: \'.\').'),
@@ -242,24 +223,7 @@ def schedule_tricks(observer, tricks, pathname, recursive):
                    default=1.0,
                    type=float,
                    help='Use this as the polling interval/blocking timeout.'),
-          argument('--trace',
-                   default=False,
-                   help='Dumps complete dispatching trace.'),
-          argument('--debug-force-polling',
-                   default=False,
-                   help='[debug] Forces polling.'),
-          argument('--debug-force-kqueue',
-                   default=False,
-                   help='[debug] Forces BSD kqueue(2).'),
-          argument('--debug-force-winapi',
-                   default=False,
-                   help='[debug] Forces Windows API.'),
-          argument('--debug-force-fsevents',
-                   default=False,
-                   help='[debug] Forces macOS FSEvents.'),
-          argument('--debug-force-inotify',
-                   default=False,
-                   help='[debug] Forces Linux inotify(7).')])
+          ])
 def log(args):
     """
     Command to log file system events to the console.
@@ -294,7 +258,7 @@ if __name__ == '__main__':
     myargs = [
         'log',
         '--patterns=*.txt',
-        '--ignore-patterns=*.tmp;*.log',
+        '--ignore-patterns=*.tmp;*.log;*Program files*',
         '--recursive',
         '--ignore-directories',
         '/'
