@@ -303,3 +303,16 @@ installer/x64/Debug/InstallerHelper.dll
 installer/x64/Debug/InstallerHelper.exp
 installer/x64/Debug/InstallerHelper.lib
 installer/x64/Debug/InstallerHelper.pdb
+installer/.vs/ftservice/v17/Solution.VC.db-wal
+installer/.vs/ftservice/v17/Solution.VC.db-shm
+installer/.vs/ftservice/v17/Solution.VC.db
+installer/.vs/ftservice/v17/Browse.VC.opendb
+installer/.vs/ftservice/v17/Browse.VC.db-wal
+installer/.vs/ftservice/v17/Browse.VC.db-shm
+installer/.vs/ftservice/v17/Browse.VC.db
+client/__pycache__/main.cpython-39.pyc
+client/watchdog/__pycache__/__init__.cpython-39.pyc
+client/watchdog/__pycache__/events.cpython-39.pyc
+client/watchdog/__pycache__/version.cpython-39.pyc
+client/watchdog/__pycache__/watchmedo.cpython-39.pyc
+*.pyc

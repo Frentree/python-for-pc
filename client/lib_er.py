@@ -2,22 +2,75 @@ import urllib3
 import requests
 import json
 import sys
+from datetime import datetime
 
-URL = "https://192.168.0.18:8339/beta"
+#URL = "https://192.168.0.18:8339/beta"
+#URL = "https://192.168.56.102:8339/beta"
+
+class logclass():
+    def __init__(self):
+        pass
+    def debug(self, msg):
+        print(msg)
 
 class er_agent():
-    URL = "https://192.168.0.18:8339/beta"
+    #URL = "https://192.168.0.18:8339/beta"
+    URL = "https://192.168.56.102:8339/beta"
     userid = "admin"
     userpw = "fren1212"
+    my_profile_label = "label1"
     formatted = True
+    LOCATION_ROOT = "" # or "C:"
 
-    def __init__(self):
-        print('er agent init')
-        print(self.URL)
+    def __init__(self, er_host_addr):
+        self.DEBUG_ON = True
+
+        self.URL = "https://"+er_host_addr+":8339/beta"
+
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        self.log = logclass()
+        (self.my_group_id, self.my_target_id) = self.get_my_group_target_id()
+        self.debug("my group id:"+str(self.my_group_id))
+        self.debug("my target id:"+str(self.my_target_id))
+        self.my_current_matches = self.my_summary_target_matches()
+        self.my_datatype_profile_id = self.get_my_datatype_profile_id()
+        self.debug("my profile id:"+str(self.my_datatype_profile_id))
+        self.debug('matches:'+self.my_current_matches)
+        #self.get_my_matchobjects()
+
+    def get_my_matchobjects(self):
+        result = self.request('get', '/targets/'+self.my_target_id+'/matchobjects')
+        print(json.dumps(result, indent=4))
+
+    def get_my_group_target_id(self):
+        my_target_id = None
+        my_group_id = None
+
+        import platform
+        self.my_hostname = platform.node()
+        self.my_hostname = 'DESKTOP-J6FK55A'      # NOTE: dev
+        # target name: DESKTOP-J6FK55A ==> vbox vm win, id: 14952095194870184286
+        self.debug('hostname:'+self.my_hostname)
+
+        result = self.list_groups()
+        for group in result:
+            for target in group['targets']:
+                if target['name'] == self.my_hostname:
+                    my_group_id = group['id']
+                    my_target_id = target['id']
+        return (my_group_id, my_target_id)
+
+    def debug(self, msg):
+        if False == self.DEBUG_ON:
+            return
+        self.log.debug('[DEBUG] ' + msg)
+
+    def prt(self, title, data):
+        print(title.upper())
+        print(json.dumps(data, indent=4))
 
     def request(self, method, url, payload=None):
-        req_url = URL + url
+        req_url = self.URL + url
 
         print("URL:"+req_url)
         if 'post' == method:
@@ -26,22 +79,33 @@ class er_agent():
         elif 'get' == method:
             res = requests.get(req_url, auth=(self.userid, self.userpw), verify=False)
         elif 'delete' == method:
-            headers = {'Content-Type': 'application/json; charset=utf-8'}
+            headers = {'Content-Type': 'application/json'}
             res = requests.delete(req_url, headers=headers, auth=(self.userid, self.userpw), verify=False)
 
         ret = res.json()
-        if True == self.formatted:
-           print(json.dumps(ret, indent=4))
-        else:
-           print(ret)
+        #if True == self.formatted:
+        #   print(json.dumps(ret, indent=4))
+        #else:
+        #   print(ret)
+        return ret
 
-    def list_groups(self):
-        self.request('get', '/groups')
+    #region GROUPS
+    def list_groups(self, list_all = True):
+        url = '/groups'
+        if list_all:
+            # groups all has additional info.
+            url += '/all'
+        return self.request('get', url)
+    #endregion GROUPS
 
+    #region TARGETS
     def list_targets(self, target_id = ""):
         if "" != target_id:
             target_id = '/'+target_id
-        self.request('get', '/targets'+target_id)
+        return self.request('get', '/targets'+target_id)
+    
+    def my_list_targets(self):
+        return self.list_targets(self.my_target_id)
 
     def delete_target(self, target_id):
         self.request('delete', '/targets/'+str(target_id))
@@ -60,128 +124,221 @@ class er_agent():
             'platform': 'Windows 10 64bit',
         }
         self.request('post', '/targets', json.dumps(data))
+    #endregion TARGETS
 
-    def get_agent(self):
-        self.request('get', '/agents')
+    #region AGENTS
+    def list_agent(self, agent_id=None):
+        url = '/agents'
+        if None != agent_id:
+            url += '/' + agent_id
+        self.request('get', url)
 
-    def list_locations(self, target_id):
-        self.request('get', '/targets/'+str(target_id)+'/locations')
+    def verify_agent(self, agent_id):
+        self.request('post', '/agents/'+str(agent_id)+'/verify')
+    #endregion AGENTS
 
+    #region LOCATIONS
     def add_local_location(self, target_id, data_path):
         data = {
             "path":data_path,
             "protocol":"file",
         }
-        self.request('post', '/targets/'+str(target_id)+'/locations', payload=json.dumps(data))
+        ret = self.request('post', '/targets/'+str(target_id)+'/locations', payload=json.dumps(data))
+        if 'id' in ret:
+            # success example
+            # {'id': '6642630235794173719'}
+            return ret['id']
+        else:
+            # fail example
+            # {'message': 'A parent file path exists.'}
+            return None
 
+    def delete_location(self, target_id, location_id):
+        self.request('delete', '/targets/'+str(target_id)+'/locations/'+str(location_id))
+
+    def list_locations(self, target_id):
+        ret = self.request('get', '/targets/'+str(target_id)+'/locations')
+        return ret
+
+    def my_list_locations(self):
+        return self.list_locations(self.my_target_id)
+
+    def get_location_id_by_path(self, target_id, location_path):
+        ret = self.list_locations(target_id)
+        for location in ret:
+            if 'file' != location['protocol']:
+                continue
+            self.prt("location", location)
+            if location['path'] == location_path:
+               return location['id']
+        return None
+    #endregion LOCATIONS
+
+    #region DATATYPES_PROFILES
     def get_datatype_profiles(self):
-        self.request('get', '/datatypes/profiles')
+        return self.request('get', '/datatypes/profiles')
 
-    def list_schedules(self):
-        self.request('get', '/schedules')
+    def get_my_datatype_profile_id(self):
+        my_datatype_profile_id = None
 
-    def add_schedule(self, label, target_id):
+        result = self.get_datatype_profiles()
+        for profile in result:
+            if profile['label'] == self.my_profile_label:
+                my_datatype_profile_id = profile['id']
+        return my_datatype_profile_id
+    #endregion DATATYPES_PROFILES
+
+    #region SCHEDULES
+    def list_schedules(self, schedule_id=None):
+        url = '/schedules'
+        if None != schedule_id:
+            url += '/' + str(schedule_id)
+        return self.request('get', url)
+
+    # data structure of location list
+    #   [
+    #       {
+    #           'id':'...'
+    #           'subpath':'...'
+    #       },
+    #   ]
+    def add_schedule(self, target_id, label, location_list):
         data = {
             'label':label,
             'targets': {
                 'id':target_id,
-            }
+                'locations': location_list,
+            },
+            "profiles": [
+                self.my_datatype_profile_id,         # frentree      TODO
+            ],
         }
-        self.request('post', '/schedules', payload=json.dumps(data))
+        ret = self.request('post', '/schedules', payload=json.dumps(data))
+        return ret
 
-def do_er(url, formatted=True):
-    print("do er " + url)
-    url = URL + url
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    # Desc.: add schedule and returns SCHEDULE_ID
+    # return:
+    #   success - SCHEDULE ID (str)
+    #   fail - None
+    def my_add_schedule(self, subpath_list):
+        location_id = self.get_location_id_by_path(self.my_target_id, \
+            self.LOCATION_ROOT) # TODO
+        self.debug('location_id:'+str(location_id))
+        new_label = self.my_hostname+"_"+datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.debug('new label:' + new_label)
 
-    res = requests.get(url,
-                        auth=("admin", "fren1212"),
-                        verify=False)#"C:\\Users\\danny\\Documents\\python-for-pc\\client\cert.cer")
-                        #verify="D:\DEV\drive_watcher\erpy\prj\cert.cer")
-    #curl -u admin:fren1212 -X GET 'https://192.168.0.18:8339/beta/groups/all' -H 'Accept:application/json' -k
-    ret = res.json()
-    #print(json.dumps(ret[0]['targets'][0], indent=4))
-    # print(json.dumps(ret, indent=4))
-    if True == formatted:
-        print(json.dumps(ret, indent=4))
-    else:
-        print(ret)
-    
+        location_list = []
+
+        for subpath in subpath_list:
+            location_list.append({
+                'id':location_id,
+                'subpath':subpath,
+            })
+        result = self.add_schedule(self.my_target_id, new_label, location_list)
+        # NOTE: schedule id will be just one whether the param subpath is multiple or not
+        # success example : {'id': '44'}
+        if 'id' in result:
+            return result['id']
+        else:
+            return None
+
+    # action
+    #   'deactivate'
+    def update_schedule(self, schedule_id, action):
+        return self.request('post', '/schedules/'+str(schedule_id)+'/'+action)
+    #endregion SCHEDULES
+
+    #region SUMMARY
+    def summary_targets(self):
+        return self.request('get', '/summary/targets')
+    def my_summary_target_matches(self):
+        result = self.summary_targets()
+        for target in result:
+            if target['name'] == self.my_hostname:
+                return target['matches']
+        return None
+    #endregion
+
 if __name__ == '__main__':
-    print("main")
+    er = er_agent("192.168.56.102")
 
-    er = er_agent()
-
-    #er.list_groups()
-    # NOTE
+    # NOTE - assumptions
     # created a group - "14161356768415448827"
 
-    # windows client1 target id : "12138559403110519359"
+    result = er.my_list_targets()
+    result = er.my_list_locations()
 
-    er.list_targets(target_id="12138559403110519359")
-    er.list_locations(target_id="12138559403110519359")
+    # TODO - get the filelist from sqlite DB ==> put the list to the er schedule
+    schedule_id = er.my_add_schedule(subpath_list=[
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        # 'Users\\danny\\Desktop\\ssn.txt',
+        # 'Users\\danny\\Desktop\\s2.txt',
+        # 'Users\\danny\\Desktop\\s3.txt',
+    ])
+    result = er.list_schedules()
+    er.prt("list schedule", result)
+
+    result = er.list_schedules(21)
+    er.prt("list schedule", result)
+    er.debug("schedule " + str(schedule_id) + " added")
+    sys.exit(0)
+
+    #result = er.update_schedule(schedule_id=37, action='deactivate')
+    sys.exit(0)
+    # windows client1 target id : "12138559403110519359"
 
     #er.add_local_location(target_id='12138559403110519359', data_path='C:\\Users\\danny\\Desktop\\ssn.txt')
     # ==> l0cation added: "12893076805411359213"
-
-    #er.get_datatype_profiles()
-    er.list_schedules()
-    er.add_schedule(label='my new schedule', target_id="12138559403110519359")
-    # schedule added: id : 3
-    sys.exit(0)
 
     # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step1 - create target group
     # er.create_target_group()
 
     # er.list_targets()
-    #er.delete_target('8062799675773646641')"",
 
     # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step2 - add server target
     #er.create_server_target()
 
     # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step3 - install and get node agent id
-    # er.get_agent()
     # ==> agent id : '5005293123342876564'
 
-    # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step4 - verify node agent
-    # TODO
 
-    er.list_locations(target_id='14952095194870184286')
+    '''
+    location_id='6642630235794173719'
+    location_path = 'C:'
+    location_id = er.add_local_location(target_id=target_id, data_path=location_path)
+    if None != location_id:
+        er.debug('location '+location_id+' added')
+    else:
+        er.debug('cannot add location for '+location_path)
+    er.debug("location_id for path '"+location_path+" is "+str(location_id))
 
-    er.add_local_location(target_id='14952095194870184286', data_path='C:\\Users\\danny\\Desktop\\ssn.txt')
+    subpath = '\\Users\\danny\\Desktop\\ssn.txt'
+    er.add_schedule(label='label'+datetime.now().strftime("%Y%m%d_%H%M%S"),
+        target_id="14952095194870184286",
+        location_id=location_id,
+        subpath = subpath,
+    )
+    #location_id = er.add_local_location(target_id=target_id, data_path=location_path)
+    '''
     sys.exit(0)
 
-    # groups/all이 groups보다 더 많은 정보를 포함함
-    do_er("/groups/all")
-    # do_er("/groups")
+    #location_path = 'C:\\Users\\danny\\Desktop\\s3.txt'
 
-    # do_er("/summary/history")
-    # do_er("/summary/totalmatches")
-    # do_er("/summary/groups")
-
-    # target name: DESKTOP-J6FK55A ==> vbox vm win, id: 14952095194870184286
-    do_er("/summary/targets")
-
-    # do_er("/summary/groups")
-    # do_er("/summary/targettypes")
-    #do_er("/summary/fileformats")
-
-    # do_er("/targets/14952095194870184286/matchobjects")
-    # do_er("/targets/14952095194870184285/matchobjects")
-    # do_er("/summary/targettypes")
-    # do_er("/summary/targettypes")
-    # do_er("/summary/targettypes")
-    # do_er("/summary/targettypes")
-
-    # do_er("/groups/all", formatted=True)
-    # do_er("/groups/8543377516941597111", formatted=True)
-
-    #do_er("/schedules/1", formatted=True)
-
+    location_path = 'C:\\Users\\danny\\Desktop\\ssn.txt'
+    if None == location_id:
+        # TODO
+        location_id = er.add_local_location(target_id=target_id, data_path=location_path)
+    er.add_schedule(label='label'+datetime.now().strftime("%Y%m%d_%H%M%S"),
+        target_id="14952095194870184286",
+        location_id=location_id
+    )
+    
     # Agents
     # do_er("/agents", formatted=True)
     # do_er("/nodeagents", formatted=True)
-
     #do_er("/users", formatted=True)
-
     # do_er("/licenses", formatted=True)
