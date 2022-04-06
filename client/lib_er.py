@@ -19,7 +19,7 @@ class er_agent():
     userid = "admin"
     userpw = "fren1212"
     my_profile_label = "label1"
-    LOCATION_ROOT = "C:" # or "C:"
+    LOCATION_ROOT = ""
 
     def __init__(self, er_host_addr):
         self.DEBUG_ON = True
@@ -169,8 +169,9 @@ class er_agent():
         return self.list_locations(self.my_target_id)
 
     def get_location_id_by_path(self, target_id, location_path):
-        ret = self.list_locations(target_id)
-        for location in ret:
+        result = self.list_locations(target_id)
+        self.prt("LOCATION", result)
+        for location in result:
             if 'file' != location['protocol']:
                 continue
             if location['path'] == location_path:
@@ -217,6 +218,7 @@ class er_agent():
                 self.my_datatype_profile_id,         # frentree      TODO
             ],
         }
+        self.prt("ADD SCHEDULE DATA", data)
         ret = self.request('post', '/schedules', payload=json.dumps(data))
         return ret
 
@@ -270,7 +272,6 @@ def main():
     #result = er.create_server_target("DESKTOP-J6FK55A", 10155220174825011556)
     #result = er.delete_location(12138559403110519359, 12893076805411359213)
     #print(json.dumps(result, indent=4))
-    sys.exit(0)
     # NOTE - assumptions
     # created a group
     #result = er.create_target_group('windows_group0')
@@ -291,16 +292,18 @@ def main():
         file_size = fileinfo[2]
         file_state = fileinfo[3]
         schedule_id = er.my_add_schedule(subpath_list=[
-        #    #file_path,
-            '\\users\\danny\\desktop\\s2.txt',
+            #file_path,
+            '\\users\\danny\\desktop\\s3.txt',
         ])
-        print("add schedule")
+        print("schedule added " + str(schedule_id))
 
-    #     sqlite3.fileinfo_update_state(file_path, "scheduled")
-
-    er.update_schedule(80, 'deactivate')
     result = er.list_schedules()
     er.prt("list schedule", result)
+    #for schedule_id in range(86, 100):
+    #    er.update_schedule(schedule_id, 'deactivate')
+    sys.exit(0)
+    #     sqlite3.fileinfo_update_state(file_path, "scheduled")
+
     sys.exit(0)
 
     for fileinfo in file_list:
