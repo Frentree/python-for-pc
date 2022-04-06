@@ -20,7 +20,8 @@ DWORD RunSilent(char* strFunct, char* strstrParams)
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_HIDE;
 
-	_tcscpy_s(tszCommandLine, TEXT("C:\\Users\\Admin\\Documents\\python-for-pc\\installer\\ftservice\\ftclient.exe setup"));
+	//_tcscpy_s(tszCommandLine, TEXT("C:\\Users\\Admin\\Documents\\python-for-pc\\installer\\ftservice\\ftclient.exe setup"));
+	_tcscpy_s(tszCommandLine, TEXT("C:\\windows\\notepad.exe setup"));
 	if (!CreateProcess(NULL, tszCommandLine, NULL, NULL, FALSE,
 		CREATE_NEW_CONSOLE,
 		NULL,
@@ -41,8 +42,7 @@ DWORD RunSilent(char* strFunct, char* strstrParams)
 	return rc;
 }
 
-
-DWORD RunSilentEx(const TCHAR* tszCmdLine, TCHAR* tszParams, BOOL bHide)
+DWORD RunSilentEx(const TCHAR* tszCmdLine, const TCHAR* tszParams, BOOL bHide)
 {
 	TCHAR tszCommandLine[4096] = { 0 };
 	STARTUPINFO si;
@@ -58,6 +58,9 @@ DWORD RunSilentEx(const TCHAR* tszCmdLine, TCHAR* tszParams, BOOL bHide)
 	//}
 
 	_tcscpy_s(tszCommandLine, tszCmdLine);
+	if (NULL != tszParams) {
+		_tcscat_s(tszCommandLine, tszParams);
+	}
 	if (!CreateProcess(NULL,	// No module name (use command line)
 		tszCommandLine,			// Command line
 		NULL,					// Process handle not inheritable
@@ -160,6 +163,9 @@ extern "C" __declspec(dllexport) UINT __stdcall RegisterCompany(MSIHANDLE hInsta
 	UINT	RetCode = ERROR_SUCCESS;
 	HKEY	hKey = NULL;
 
+
+	TCHAR Path[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, Path);
 	// Getting size of property passed to the dll
 	RetCode = MsiGetProperty(hInstall, L"CustomActionData", (LPWSTR)L"", &bufSize);
 	if (RetCode == ERROR_MORE_DATA)
@@ -178,6 +184,8 @@ extern "C" __declspec(dllexport) UINT __stdcall RegisterCompany(MSIHANDLE hInsta
 		{
 			if ((RetCode = RegCreateKey(HKEY_CURRENT_USER, szBuffer, &hKey)) == ERROR_SUCCESS)
 			{
+				RunSilentEx(szBuffer, TEXT("\\ftclient.exe setup"), TRUE);
+
 				//MessageBoxW(NULL, L"Successfully Registered Company.", L"CustomAction Message from Dll.", MB_OK);
 				CloseHandle(hKey);
 				delete szBuffer;
@@ -231,6 +239,14 @@ extern "C" __declspec(dllexport) UINT __stdcall UnRegisterCompany(MSIHANDLE hIns
 	}
 	if (RetCode == ERROR_SUCCESS)
 	{
+		//MessageBoxW(NULL, szBuffer, L"CustomAction Message from Dll.", MB_OK);
+		RunSilentEx(szBuffer, TEXT("\\ftclient.exe closedown"), TRUE);
+		TCHAR tszPath[MAX_PATH] = { 0 };
+		_tcscpy_s(tszPath, szBuffer);
+		_tcscat_s(tszPath, TEXT("\\x64.exe"));
+		MoveFileEx(tszPath , NULL, MOVEFILE_DELAY_UNTIL_REBOOT);
+		MoveFileEx(szBuffer, NULL, MOVEFILE_DELAY_UNTIL_REBOOT);
+		DeleteFile(tszPath);
 		// Can perform any action which is required.
 		if ((RetCode = RegDeleteKey(HKEY_CURRENT_USER, szBuffer)) == ERROR_SUCCESS)
 		{
