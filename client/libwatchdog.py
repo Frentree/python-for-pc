@@ -14,7 +14,6 @@ CONFIG_KEY_TRICKS = 'tricks'
 CONFIG_KEY_PYTHON_PATH = 'python-path'
 
 from watchdog.tricks import LoggerTrick
-from libsqlite3 import *
 
 class MyLoggerTrick(LoggerTrick):
 
@@ -65,6 +64,8 @@ class MyLoggerTrick(LoggerTrick):
         params = {
             "project_name": "prj1",
         }
+        from libsqlite3 import csqlite3
+
         sqlite3 = csqlite3(workdir_path + '/' + params["project_name"] + ".db")
         sqlite3.fileinfo_insert(event.src_path, filesize)
 

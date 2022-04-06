@@ -24,7 +24,7 @@ class csqlite3:
         sql_cmd = "INSERT INTO fileinfo (filepath, filesize, state) VALUES ('" + \
             filepath + "', " + \
             str(filesize) + ", " + \
-            "'')"
+            "'queued')"
         #print(sql_cmd)
         try:
             self.cur.execute(sql_cmd)
@@ -32,3 +32,21 @@ class csqlite3:
         except sqlite3.IntegrityError as e:
             #print(e)
             return
+
+    def fileinfo_select(self, num=5):
+        condition = "" # " WHERE "
+        sql_cmd = "SELECT * FROM fileinfo" + condition
+
+        self.cur.execute(sql_cmd)
+
+        rows = self.cur.fetchall()
+        for row in rows:
+            print(row)
+        return rows
+
+    def fileinfo_update(self):
+        msg = ""
+        sql_text = "UPDATE summary SET processed_count=processed_count+1"
+        self.cur.execute(sql_text)
+        self.con.commit()
+

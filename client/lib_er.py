@@ -19,8 +19,7 @@ class er_agent():
     userid = "admin"
     userpw = "fren1212"
     my_profile_label = "label1"
-    formatted = True
-    LOCATION_ROOT = "" # or "C:"
+    LOCATION_ROOT = "C:" # or "C:"
 
     def __init__(self, er_host_addr):
         self.DEBUG_ON = True
@@ -83,10 +82,6 @@ class er_agent():
             res = requests.delete(req_url, headers=headers, auth=(self.userid, self.userpw), verify=False)
 
         ret = res.json()
-        #if True == self.formatted:
-        #   print(json.dumps(ret, indent=4))
-        #else:
-        #   print(ret)
         return ret
 
     #region GROUPS
@@ -168,7 +163,6 @@ class er_agent():
         for location in ret:
             if 'file' != location['protocol']:
                 continue
-            self.prt("location", location)
             if location['path'] == location_path:
                return location['id']
         return None
@@ -259,14 +253,45 @@ class er_agent():
         return None
     #endregion
 
-if __name__ == '__main__':
+def main():
     er = er_agent("192.168.56.102")
 
     # NOTE - assumptions
-    # created a group - "14161356768415448827"
+    # created a group
 
     result = er.my_list_targets()
     result = er.my_list_locations()
+
+    from libsqlite3 import csqlite3
+    workdir_path = "."
+    params = {
+        "project_name": "prj1",
+    }
+    sqlite3 = csqlite3(workdir_path + '/' + params["project_name"] + ".db")
+    file_list = sqlite3.fileinfo_select()
+
+    schedule_id = er.my_add_schedule(subpath_list=[
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        '\\users\\danny\\desktop\\ssn.txt',
+        # 'Users\\danny\\Desktop\\ssn.txt',
+        # 'Users\\danny\\Desktop\\s2.txt',
+        # 'Users\\danny\\Desktop\\s3.txt',
+    ])
+    result = er.list_schedules()
+    er.prt("list schedule", result)
+    sys.exit(0)
+
+    for fileinfo in file_list:
+        print(json.dumps(fileinfo[1], indent=4))
+        schedule_id = er.my_add_schedule(subpath_list=[
+            '\\users\\danny\\desktop\\ssn.txt',
+            #fileinfo[1],
+        ])
+        result = er.list_schedules()
+
 
     # TODO - get the filelist from sqlite DB ==> put the list to the er schedule
     schedule_id = er.my_add_schedule(subpath_list=[
@@ -288,57 +313,11 @@ if __name__ == '__main__':
     sys.exit(0)
 
     #result = er.update_schedule(schedule_id=37, action='deactivate')
-    sys.exit(0)
-    # windows client1 target id : "12138559403110519359"
 
-    #er.add_local_location(target_id='12138559403110519359', data_path='C:\\Users\\danny\\Desktop\\ssn.txt')
-    # ==> l0cation added: "12893076805411359213"
-
-    # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step1 - create target group
-    # er.create_target_group()
-
-    # er.list_targets()
-
-    # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step2 - add server target
-    #er.create_server_target()
-
-    # ADD AND SCAN LOCAL FILES ON A SERVER TARGET : Step3 - install and get node agent id
-    # ==> agent id : '5005293123342876564'
-
-
-    '''
-    location_id='6642630235794173719'
-    location_path = 'C:'
-    location_id = er.add_local_location(target_id=target_id, data_path=location_path)
-    if None != location_id:
-        er.debug('location '+location_id+' added')
-    else:
-        er.debug('cannot add location for '+location_path)
-    er.debug("location_id for path '"+location_path+" is "+str(location_id))
-
-    subpath = '\\Users\\danny\\Desktop\\ssn.txt'
-    er.add_schedule(label='label'+datetime.now().strftime("%Y%m%d_%H%M%S"),
-        target_id="14952095194870184286",
-        location_id=location_id,
-        subpath = subpath,
-    )
-    #location_id = er.add_local_location(target_id=target_id, data_path=location_path)
-    '''
-    sys.exit(0)
-
-    #location_path = 'C:\\Users\\danny\\Desktop\\s3.txt'
-
-    location_path = 'C:\\Users\\danny\\Desktop\\ssn.txt'
-    if None == location_id:
-        # TODO
-        location_id = er.add_local_location(target_id=target_id, data_path=location_path)
-    er.add_schedule(label='label'+datetime.now().strftime("%Y%m%d_%H%M%S"),
-        target_id="14952095194870184286",
-        location_id=location_id
-    )
-    
     # Agents
-    # do_er("/agents", formatted=True)
     # do_er("/nodeagents", formatted=True)
     #do_er("/users", formatted=True)
     # do_er("/licenses", formatted=True)
+
+if __name__ == '__main__':
+    main()
