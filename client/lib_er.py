@@ -53,6 +53,7 @@ class er_agent():
 
         result = self.list_groups()
         for group in result:
+            if 'targets' not in group: continue
             for target in group['targets']:
                 if target['name'] == self.my_hostname:
                     my_group_id = group['id']
@@ -81,16 +82,25 @@ class er_agent():
             headers = {'Content-Type': 'application/json'}
             res = requests.delete(req_url, headers=headers, auth=(self.userid, self.userpw), verify=False)
 
-        ret = res.json()
+        try:
+            ret = res.json()
+        except json.JSONDecodeError as e:
+            return ""
         return ret
 
     #region GROUPS
+    def my_list_groups(self):
+        return self.request('get', '/groups/'+self.my_group_id)
+
     def list_groups(self, list_all = True):
         url = '/groups'
         if list_all:
             # groups all has additional info.
             url += '/all'
         return self.request('get', url)
+
+    def groups_delete(self, group_id):
+        return self.request('delete', '/groups/'+str(group_id))
     #endregion GROUPS
 
     #region TARGETS
@@ -102,23 +112,23 @@ class er_agent():
     def my_list_targets(self):
         return self.list_targets(self.my_target_id)
 
-    def delete_target(self, target_id):
-        self.request('delete', '/targets/'+str(target_id))
+    def targets_delete(self, target_id):
+        return self.request('delete', '/targets/'+str(target_id))
 
-    def create_target_group(self):
+    def create_target_group(self, group_name):
         data = {
-            'name':'windows-client',
+            'name': group_name,
             'comments':'windows client'
         }
-        self.request('post', '/groups', json.dumps(data))
+        return self.request('post', '/groups', json.dumps(data))
 
-    def create_server_target(self):
+    def create_server_target(self, target_host_name, group_id, platform = 'Windows 10 64bit'):
         data = {
-            'name':'my windows client1',
-            'group_id':'14161356768415448827',
-            'platform': 'Windows 10 64bit',
+            'name': target_host_name,
+            'group_id': group_id,
+            'platform': platform,
         }
-        self.request('post', '/targets', json.dumps(data))
+        return self.request('post', '/targets', json.dumps(data))
     #endregion TARGETS
 
     #region AGENTS
@@ -133,7 +143,7 @@ class er_agent():
     #endregion AGENTS
 
     #region LOCATIONS
-    def add_local_location(self, target_id, data_path):
+    def location_add_local(self, target_id, data_path = ""):
         data = {
             "path":data_path,
             "protocol":"file",
@@ -149,7 +159,7 @@ class er_agent():
             return None
 
     def delete_location(self, target_id, location_id):
-        self.request('delete', '/targets/'+str(target_id)+'/locations/'+str(location_id))
+        return self.request('delete', '/targets/'+str(target_id)+'/locations/'+str(location_id))
 
     def list_locations(self, target_id):
         ret = self.request('get', '/targets/'+str(target_id)+'/locations')
@@ -239,7 +249,8 @@ class er_agent():
     # action
     #   'deactivate'
     def update_schedule(self, schedule_id, action):
-        return self.request('post', '/schedules/'+str(schedule_id)+'/'+action)
+        result = self.request('post', '/schedules/'+str(schedule_id)+'/'+action)
+        return result
     #endregion SCHEDULES
 
     #region SUMMARY
@@ -256,30 +267,38 @@ class er_agent():
 def main():
     er = er_agent("192.168.56.102")
 
+    #result = er.create_server_target("DESKTOP-J6FK55A", 10155220174825011556)
+    #result = er.delete_location(12138559403110519359, 12893076805411359213)
+    #print(json.dumps(result, indent=4))
+    sys.exit(0)
     # NOTE - assumptions
     # created a group
+    #result = er.create_target_group('windows_group0')
+    #print(json.dumps(result, indent=4))
 
-    result = er.my_list_targets()
+    result = er.my_list_groups()
     result = er.my_list_locations()
 
     from libsqlite3 import csqlite3
     workdir_path = "."
-    params = {
-        "project_name": "prj1",
-    }
-    sqlite3 = csqlite3(workdir_path + '/' + params["project_name"] + ".db")
+    SQLITEDB_FILENAME = "prj1"#"state"
+    sqlite3 = csqlite3(workdir_path + '/' + SQLITEDB_FILENAME + ".db")
     file_list = sqlite3.fileinfo_select()
 
-    schedule_id = er.my_add_schedule(subpath_list=[
-        '\\users\\danny\\desktop\\ssn.txt',
-        '\\users\\danny\\desktop\\ssn.txt',
-        '\\users\\danny\\desktop\\ssn.txt',
-        '\\users\\danny\\desktop\\ssn.txt',
-        '\\users\\danny\\desktop\\ssn.txt',
-        # 'Users\\danny\\Desktop\\ssn.txt',
-        # 'Users\\danny\\Desktop\\s2.txt',
-        # 'Users\\danny\\Desktop\\s3.txt',
-    ])
+    for fileinfo in file_list:
+        file_id = fileinfo[0]
+        file_path = fileinfo[1]
+        file_size = fileinfo[2]
+        file_state = fileinfo[3]
+        schedule_id = er.my_add_schedule(subpath_list=[
+        #    #file_path,
+            '\\users\\danny\\desktop\\s2.txt',
+        ])
+        print("add schedule")
+
+    #     sqlite3.fileinfo_update_state(file_path, "scheduled")
+
+    er.update_schedule(80, 'deactivate')
     result = er.list_schedules()
     er.prt("list schedule", result)
     sys.exit(0)
@@ -291,7 +310,6 @@ def main():
             #fileinfo[1],
         ])
         result = er.list_schedules()
-
 
     # TODO - get the filelist from sqlite DB ==> put the list to the er schedule
     schedule_id = er.my_add_schedule(subpath_list=[

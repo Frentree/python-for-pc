@@ -34,7 +34,7 @@ class csqlite3:
             return
 
     def fileinfo_select(self, num=5):
-        condition = "" # " WHERE "
+        condition = " WHERE state='queued'"
         sql_cmd = "SELECT * FROM fileinfo" + condition
 
         self.cur.execute(sql_cmd)
@@ -44,9 +44,9 @@ class csqlite3:
             print(row)
         return rows
 
-    def fileinfo_update(self):
-        msg = ""
-        sql_text = "UPDATE summary SET processed_count=processed_count+1"
-        self.cur.execute(sql_text)
+    def fileinfo_update_state(self, filepath, state):
+        condition = "WHERE filepath='"+ filepath +"'"
+        sql_cmd = "UPDATE fileinfo SET state='"+state+"' " + condition
+        self.cur.execute(sql_cmd)
         self.con.commit()
 
