@@ -121,7 +121,7 @@
             "Sequence" = "3:1"
             "Identifier" = "8:_2285260C_7600_4C6A_BB17_BB9A12D57339"
             "InstallerClass" = "11:FALSE"
-            "CustomActionData" = "8:"
+            "CustomActionData" = "8:[TARGETDIR]"
             }
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3254D07E62554E7B827B4C0AB3616A83"
             {
@@ -135,7 +135,7 @@
             "Sequence" = "3:1"
             "Identifier" = "8:_DE1017C2_CE50_4241_BA19_FA826EE6CAD0"
             "InstallerClass" = "11:FALSE"
-            "CustomActionData" = "8:"
+            "CustomActionData" = "8:[TARGETDIR]"
             }
         }
         "DefaultFeature"
@@ -289,7 +289,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:ftservice"
         "ProductCode" = "8:{0D33A6AB-8363-42D5-92DC-7C5A900CFF39}"
-        "PackageCode" = "8:{703BBAB5-7187-49FB-A792-0825E32395EE}"
+        "PackageCode" = "8:{0AAC31E8-7B8A-4057-A98C-6D856A1887D9}"
         "UpgradeCode" = "8:{DAD859DF-B925-4909-B8CC-B9B0AFA29F5A}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
