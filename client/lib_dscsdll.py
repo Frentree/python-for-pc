@@ -150,8 +150,8 @@ class Dscs_dll():
 
 	@staticmethod
 	def LoadLibrary(dll_abspath):
-	    dll_handle = windll.LoadLibrary(dll_abspath)
-	    return dll_handle
+		dll_handle = windll.LoadLibrary(dll_abspath)
+		return dll_handle
 
 	@staticmethod
 	def retvalue2str(funcname, retvalue):
