@@ -12,7 +12,8 @@ class csqlite3:
         id integer primary key,
         filepath text UNIQUE,
         filesize int,
-        state text
+        state text,
+        schedule_id int
     )
             ''')
             self.con.commit()
@@ -20,11 +21,19 @@ class csqlite3:
             self.con = sqlite3.connect(self.file_path)
             self.cur = self.con.cursor()
 
+    def __del__(self):
+        self.con.close()
+
     def fileinfo_insert(self, filepath, filesize):
+        # sql_cmd = "INSERT INTO fileinfo (filepath, filesize, state) VALUES ('" + \
+        #     filepath + "', " + \
+        #     str(filesize) + ", " + \
+        #     "'queued')"
         sql_cmd = "INSERT INTO fileinfo (filepath, filesize, state) VALUES ('" + \
             filepath + "', " + \
             str(filesize) + ", " + \
-            "'queued')"
+            "'queued') " + \
+            " ON CONFLICT(filepath) DO UPDATE SET state='queued';"
         #print(sql_cmd)
         try:
             self.cur.execute(sql_cmd)
@@ -33,20 +42,44 @@ class csqlite3:
             #print(e)
             return
 
-    def fileinfo_select(self, num=5):
-        condition = " WHERE state='queued'"
+    def fileinfo_select(self, state='queued'):
+        condition = " WHERE state='"+state+"'"
         sql_cmd = "SELECT * FROM fileinfo" + condition
 
         self.cur.execute(sql_cmd)
 
         rows = self.cur.fetchall()
-        for row in rows:
-            print(row)
+        #for row in rows:
+        #    print(row)
+        return rows
+
+    def fileinfo_select_scheduled(self):
+        state = 'decrypted'
+        condition = " WHERE state='"+state+"' and schedule_id IS NOT NULL"
+        sql_cmd = "SELECT * FROM fileinfo" + condition
+
+        self.cur.execute(sql_cmd)
+
+        rows = self.cur.fetchall()
+        #for row in rows:
+        #    print(row)
         return rows
 
     def fileinfo_update_state(self, filepath, state):
         condition = "WHERE filepath='"+ filepath +"'"
         sql_cmd = "UPDATE fileinfo SET state='"+state+"' " + condition
+        self.cur.execute(sql_cmd)
+        self.con.commit()
+
+    def fileinfo_delete(self, filepath):
+        condition = "WHERE filepath='"+ filepath +"'"
+        sql_cmd = "DELETE from fileinfo " + condition
+        self.cur.execute(sql_cmd)
+        self.con.commit()
+
+    def fileinfo_update_schedule_id(self, filepath, schedule_id):
+        condition = "WHERE filepath='"+ filepath +"'"
+        sql_cmd = "UPDATE fileinfo SET schedule_id='"+schedule_id+"' " + condition
         self.cur.execute(sql_cmd)
         self.con.commit()
 
