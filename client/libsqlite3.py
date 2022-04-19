@@ -2,7 +2,8 @@ import os
 import sqlite3
 
 class csqlite3:
-    def __init__(self, name):
+    def __init__(self, name, log):
+        self.log = log
         self.file_path = name
         if False == (os.path.isfile(self.file_path)):
             self.con = sqlite3.connect(self.file_path)
@@ -34,12 +35,12 @@ class csqlite3:
             str(filesize) + ", " + \
             "'queued') " + \
             " ON CONFLICT(filepath) DO UPDATE SET state='queued';"
-        #print(sql_cmd)
+        self.log.info(sql_cmd)
         try:
             self.cur.execute(sql_cmd)
             self.con.commit()
         except sqlite3.IntegrityError as e:
-            #print(e)
+            self.log.error(str(e))
             return
 
     def fileinfo_select(self, state='queued'):
