@@ -247,7 +247,6 @@ class er_agent():
             ],
         }
         self.log.info(data)
-        self.prt("ADD SCHEDULE DATA", data)
         ret = self.request('post', '/schedules', payload=json.dumps(data))
         return ret
 
@@ -258,12 +257,9 @@ class er_agent():
     def my_add_schedule(self, subpath_list):
         location_id = self.get_location_id_by_path(self.my_target_id, \
             self.LOCATION_ROOT) # TODO
-        self.log.info('location_id:'+str(location_id))
         new_label = self.my_hostname+"_"+datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.log.info('new label:' + new_label)
 
         location_list = []
-
         for subpath in subpath_list:
             location_list.append({
                 'id':location_id,

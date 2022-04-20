@@ -1,5 +1,6 @@
 import win32security
 import win32api
+import win32con
 import ctypes
 import ctypes
 import logging
@@ -48,6 +49,10 @@ class cwinsecurity:
             flag = 'Enabled'
 
         print(name, flag)
+
+  @staticmethod
+  def set_file_attribute_hidden(filepath):
+    win32api.SetFileAttributes(filepath, win32con.FILE_ATTRIBUTE_HIDDEN)
 
   @staticmethod
   def get_os_version_number():
