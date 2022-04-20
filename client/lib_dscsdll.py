@@ -6,6 +6,7 @@ import errno
 import os
 import os.path
 import ctypes
+import traceback
 
 class Dscs_dll():
 	def __init__(self, dll_abspath = None):
@@ -112,6 +113,25 @@ class Dscs_dll():
 
 		return ret
 
+	# region DSCSDecryptFile
+	@staticmethod
+	def get_decrypted_filepath(file_abspath, bAppendPrefix, prefix='_decrypted'):
+		import ntpath
+		import pathlib
+		bname = ntpath.basename(file_abspath)
+		pure_file_stem = pathlib.PurePath(bname).stem
+		pure_file_ext  = pathlib.PurePath(bname).suffix
+		filepath2 = ntpath.dirname(file_abspath) + "\\" + pure_file_stem + \
+				(prefix if bAppendPrefix else "") + pure_file_ext
+		return filepath2
+
+	def decryptFile(self, file_abspath, bAppendPrefix, prefix='_decrypted'):
+		filepath2 = Dscs_dll.get_decrypted_filepath(file_abspath, bAppendPrefix, prefix)
+		ret = self.call_DSCSDecryptFile(file_abspath, filepath2)
+		if 1 != ret:
+			return None
+		return filepath2
+
 	def call_DSCSDecryptFile(self, file_abspath, filedec_abspath):
 		pfunc = self.dll_handle.DSCSDecryptFile
 
@@ -123,6 +143,7 @@ class Dscs_dll():
 		ret = self.dll_handle.DSCSDecryptFile(p1, p2)
 
 		return ret
+	# endregion DSCSDecryptFile
 
 	def call_DSCSForceDecryptFile(self, file_abspath, filedec_abspath):
 		pfunc = self.dll_handle.DSCSForceDecryptFile
