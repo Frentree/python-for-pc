@@ -49,6 +49,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^\\Users\\.*\\AppData\\Local\\Programs\\Python\\.*$",
         r"^\\Users\\.*\\AppData\\Local\\ConnectedDevicesPlatform\\.*$",
         r"^\\Users\\.*\\AppData\\Local\\NVIDIA Corporation\\.*$",
+        r"^\\Users\\.*\\AppData\\Local\\Kakao\\KakaoTalk\\.*$",
         r"^\\Users\\.*\\AppData\\LocalLow\\Microsoft\\.*$",
         r"^\\Users\\.*\\Documents\\Virtual Machines\\.*$",       # TODO
         r"^\\Users\\.*\\Desktop\\repos\\GitHub\\Python\\.*$",       # TODO
@@ -119,10 +120,10 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         self.log.error('PermissionError ' + str(e))
         return
     if filesize < self.MINIMUM_FILESIZE:
-        self.log.info("filesize: " + str(filesize))
+        self.log.debug("filesize: " + str(filesize))
         return
 
-    # self.log.info(event.event_type + " " + target_path + " (size: " + str(filesize) + ")")
+    self.log.debug(event.event_type + " " + target_path + " (size: " + str(filesize) + ")")
 
     try:
         ret = self.dscs_dll.call_DSCSIsEncryptedFile(target_path)
@@ -205,7 +206,7 @@ class MyService:
 
     configuration = {
         "debug": True,
-        "sleep_seconds": 10,
+        "sleep_seconds": 5,
         "dll_name": "CryptDll.dll",
         "server_address":"183.107.9.230:11119",
         "hostname": "175.203.71.27",
@@ -407,9 +408,9 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
     return job_result
 
 def ensure_svc_running(svc_name):
-    log.debug("ensure service running: " + svc_name)
     service = psutil.win_service_get(svc_name)
     if 'stopped' == service.status():
+        log.info("ensure service running: " + svc_name)
         StartService(svc_name)
 
 def proc_main():        # the console process loop
@@ -430,13 +431,22 @@ def proc_main():        # the console process loop
     while True:
         # GET JOB
         try:
+            from lib_apiinterface import cApiInterface
+
+            apiInterface = cApiInterface(service.configuration['server_address'], log)
+
+            v_drm_schedule = apiInterface.v_drm_scheduleGet()
+            log.info("target_id:"+str(v_drm_schedule['TARGET_ID']))
+
+            '''
             url = 'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"]
             log.debug(url)
             r = requests.get(url)
             ret = r.json()
             log.debug(ret)
 
-            service.configuration['sleep_seconds'] = max(int(ret['config'][0]['sleep_seconds']), service.configuration["min_sleep_seconds"])
+            if 'config' in ret and len(ret['config']) > 0:
+                service.configuration['sleep_seconds'] = max(int(ret['config'][0]['sleep_seconds']), service.configuration["min_sleep_seconds"])
 
             job_result_list = []
             for cmd in ret['job']:
@@ -449,11 +459,9 @@ def proc_main():        # the console process loop
             cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
             log.debug("cardrecon pid : " + str(cardrecon_pid))
             p = psutil.Process(cardrecon_pid)
-            print("CPU")
-            print(lib_cpu_usage())
-            print("###")
-            print(p.io_counters())
-            print(p.memory_info())
+            log.debug("CPU : " + str(lib_cpu_usage()))
+            log.debug("IO: " + str(p.io_counters()))
+            log.debug("MEMORY: " + str(p.memory_info()))
             #]] cardrecon process
 
             # POST JOB RESULT
@@ -480,6 +488,7 @@ def proc_main():        # the console process loop
                 return
 
             # [[[[[[[[[[[[[ ER node interface
+            '''
 
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
@@ -507,6 +516,7 @@ def proc_main():        # the console process loop
                     ])
                     sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
+                    apiInterface.schedulePost()
 
             # proc decrypted & has schedule_id
             file_list = sqlite3.fileinfo_select_scheduled()
@@ -535,7 +545,7 @@ def proc_main():        # the console process loop
             log.error(str(e))
             return
         except Exception as e:
-            log.error(traceback.print_stack())
+            log.error(traceback.format_exc().replace("\n", ""))
             log.error(str(e))
             return
 
