@@ -35,7 +35,7 @@ class csqlite3:
             str(filesize) + ", " + \
             "'queued') " + \
             " ON CONFLICT(filepath) DO UPDATE SET state='queued';"
-        self.log.info(sql_cmd)
+        self.log.debug(sql_cmd)
         try:
             self.cur.execute(sql_cmd)
             self.con.commit()

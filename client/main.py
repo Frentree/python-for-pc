@@ -46,12 +46,40 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^\\Users\\.*\\AppData\\Roaming\\Code\\.*$",
         r"^\\Users\\.*\\AppData\\Roaming\\GitHub Desktop\\.*$",
         r"^\\Users\\.*\\AppData\\Roaming\\Microsoft\\Windows\\.*$",
+        r"^\\Users\\.*\\AppData\\Local\\Programs\\Python\\.*$",
+        r"^\\Users\\.*\\AppData\\Local\\ConnectedDevicesPlatform\\.*$",
+        r"^\\Users\\.*\\AppData\\Local\\NVIDIA Corporation\\.*$",
+        r"^\\Users\\.*\\AppData\\LocalLow\\Microsoft\\.*$",
+        r"^\\Users\\.*\\Documents\\Virtual Machines\\.*$",       # TODO
+        r"^\\Users\\.*\\Desktop\\repos\\GitHub\\Python\\.*$",       # TODO
+        r"^\\Users\\.*\\VirtualBox VMs\\.*$",       # TODO
+        r"^\\Windows\\OffWrite.log.*$",
+        r"^\\Windows\\Softcamp\\.*$",
+        r"^\\Windows\\Logs\\.*$",
         r"^\\Windows\\Prefetch\\.*$",
         r"^\\Windows\\System32\\.*$",
+        r"^\\Windows\\ServiceState\\EventLog\\.*$",
         r"^\\Windows\\ServiceProfiles\\NetworkService\\.*$",
+        r"^\\Windows\\ServiceProfiles\\LocalService\\.*$",
+        r"^\\Windows\\Temp\\.*$",
+        r"^\\Windows\\SoftwareDistributions\\DataStore\\.*$",
         r"^\\Program Files\\AhnLab\\.*$",
+        r"^\\Program Files \(x86\)\\Ground Labs\\.*$",
+        r"^\\Program Files \(x86\)\\Ground Labs\\Enterprise Recon 2\\.*$",
+        r"^\\ProgramData\\Microsoft\\EdgeUpdate\\.*$",
+        r"^\\ProgramData\\Microsoft\\Diagnosis\\.*$",
         r"^\\ProgramData\\Microsoft\\Windows\\.*$",
+        r"^\\ProgramData\\Microsoft\\Search\\Data\\.*$",
         r"^\\ProgramData\\NVIDIA Corporation\\.*$",
+        r"^\\ProgramData\\Packages\\.*$",
+        r"^\\ProgramData\\SoftCamp\\Logs\\.*$",
+        r"^\\ProgramData\\USOPrivate\\Logs\\.*$",
+        r"^\\ProgramData\\USOPrivate\\UpdateStore\\.*$",
+        r"^\\ProgramData\\USOShared\\Logs\\.*$",
+        r"^\\ProgramData\\VMware\\.*$",
+        r"^\\\$Recycle\.Bin\\.*$",
+        r"^\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git\\.*$",     # TODO working dir
+        r"^\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",     # TODO working dir
     ]
     for reg in reg_list:
         import re
@@ -62,22 +90,20 @@ class MyLoggerTrick(PatternMatchingEventHandler):
 
     from libsqlite3 import csqlite3
     workdir_path = ntpath.dirname(sys.executable)
-    sqlite3 = csqlite3(workdir_path + '/state.db')
+    sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=self.log)
 
     target_path = ''
 
     # sleep a second
-    time.sleep(1)
+    #time.sleep(1)
 
     if 'modified' == event.event_type:
         target_path = event.src_path
     elif 'moved' == event.event_type:
         sqlite3.fileinfo_delete(event.src_path)
-        self.log.info("FILE MOVED " + event.src_path)
         target_path = event.dest_path
     elif 'deleted' == event.event_type:
         #sqlite3.fileinfo_delete(event.src_path)
-        #self.log.info("FILE DELETED " + event.src_path)
         return
     else:
         return
@@ -87,24 +113,31 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     try:
         filesize = os.path.getsize(target_path)
     except FileNotFoundError as e:
-        self.log.error('[DEBUG] ' + e)
+        self.log.error('FileNotFoundError  ' + str(e))
         return
     except PermissionError as e:
+        self.log.error('PermissionError ' + str(e))
         return
     if filesize < self.MINIMUM_FILESIZE:
+        self.log.info("filesize: " + str(filesize))
         return
 
-    self.log.debug(event.event_type + target_path + " (size: " + str(filesize) + ")")
+    # self.log.info(event.event_type + " " + target_path + " (size: " + str(filesize) + ")")
 
-    funcname = "DSCSIsEncryptedFile"
+    try:
+        ret = self.dscs_dll.call_DSCSIsEncryptedFile(target_path)
+    except Exception as e:
+        self.log.error(str(e))
 
-    ret = self.dscs_dll.call_DSCSIsEncryptedFile(target_path)
     if -1 == ret:
         retstr = str(ret) + '(C/S 연동 모듈 로드 실패)'
+        self.log.info("file call_DSCSIsEncryptedFile : " + target_path + ", " + retstr)
     elif 0 == ret:
         retstr = str(ret) + '(일반 문서)'
+        self.log.info("file call_DSCSIsEncryptedFile : " + target_path + ", " + retstr)
     elif 1 == ret:
         retstr = str(ret) + '(암호화된 문서)'
+        self.log.info("file call_DSCSIsEncryptedFile : " + target_path + ", " + retstr)
         sqlite3.fileinfo_insert(target_path, filesize)
         self.log.info("file enqueued : " + target_path + ", " + retstr)
 
@@ -112,7 +145,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     try:
         self.do_log(event)
     except Exception as e:
-        self.log.error(traceback.print_stack())
+        #self.log.error(traceback.print_stack().replace("\n", ""))
         self.log.error(str(e))
 
 def observe_with(observer, event_handler, pathnames, recursive, myservice):
@@ -121,11 +154,8 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
     observer.start()
     try:
         myservice.running = True
-        try:
-            from lib_winsec import cwinsecurity
-            log.info("integrity level: " + cwinsecurity.get_integrity_level(log))
-        except Exception as e:
-            log.error(e)
+        from lib_winsec import cwinsecurity
+        log.info("service process's integrity level: " + cwinsecurity.get_integrity_level(log))
 
         while myservice.running:
             try:
@@ -133,7 +163,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
 
                 import sys
                 import psutil
-                pid_list = lig_get_pid_list_by_name_reg(r'ftclient.exe')
+                pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
                 non_system_process_exists = False
                 for pid in pid_list:
                     (user_sid, user0, user1) = lib_get_pid_owner(pid)
@@ -199,7 +229,7 @@ class MyService:
             conf_path = "." + "\\configuration.json"
         else:
             conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
-        #log.info("LOAD_CONFIG: " + conf_path)
+        log.info("LOAD_CONFIG: " + conf_path)
         if False == os.path.isfile(conf_path):
             log.error("file not found")
             return
@@ -238,7 +268,7 @@ class MyService:
 
     def run(self):      # the service process loop
         """Main service loop. This is where work is done!"""
-        log.debug("Service start")
+        log.info("Service start")
 
         myarg = {
             "patterns": "*",#"*.txt",#;*.tmp",
@@ -262,8 +292,6 @@ class MyService:
             observer = Observer(timeout=myarg['timeout'])
             observe_with(observer, handler, myarg['pathnames'], myarg['recursive'], self)
         except Exception as e:
-            #traceback.print_stack()
-            #traceback.print_exc(file=sys.stdout)
             log.error(traceback.print_stack())
             log.error(str(e))
 
@@ -299,7 +327,7 @@ def init():
 def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
     from libsqlite3 import csqlite3
     workdir_path = ntpath.dirname(sys.executable)
-    sqlite3 = csqlite3(workdir_path + '/state.db')
+    sqlite3 = csqlite3(name=workdir_path + '/state.db', log=log)
 
     job_type = cmd['type']
     job_path = cmd['path']
@@ -323,19 +351,10 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
 
         if 'decrypt' == job_type:
             log.info("DECRYPT ##################################")
-            funcname = "DSCSDecryptFile"
-            bname = ntpath.basename(job_path)
-            pure_file_stem = pathlib.PurePath(bname).stem
-            pure_file_ext  = pathlib.PurePath(bname).suffix
-            bAppend = service.configuration['bAppendDecryptedPostfix']
-            bAppend = False
-            filepath2 = ntpath.dirname(job_path) + "\\" + pure_file_stem + \
-                ("_decrypted" if bAppend else "") + pure_file_ext
-            log.info(filepath2)
-            ret = dscs_dll.call_DSCSDecryptFile(job_path, filepath2)
+            ret = dscs_dll.decryptFile(job_path, service.configuration['bAppendDecryptedPostfix'])
 
             if 1 == ret:    # decryption success
-                csqlite3.fileinfo_update_state(filepath=job_path, state="decrypted")
+                sqlite3.fileinfo_update_state(filepath=job_path, state="decrypted")
 
             job_result['message'] = " return " + str(Dscs_dll.retvalue2str(funcname, ret))
             post_data = {
@@ -398,7 +417,6 @@ def proc_main():        # the console process loop
         dscs_dll = Dscs_dll()
     except FileNotFoundError as e:
         log.error(e)
-        #sys.exit(0)
         return
 
     er = er_agent("192.168.12.7", log)
@@ -407,7 +425,7 @@ def proc_main():        # the console process loop
     log.debug(service.configuration)
 
     from lib_winsec import cwinsecurity
-    log.info("integrity level: " + cwinsecurity.get_integrity_level(log))
+    log.info("restAPI client's integrity level: " + cwinsecurity.get_integrity_level(log))
 
     while True:
         # GET JOB
@@ -465,7 +483,7 @@ def proc_main():        # the console process loop
 
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
-            sqlite3 = csqlite3(workdir_path + '/state.db')
+            sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
 
             # proc queued
             file_list = sqlite3.fileinfo_select(state='queued')
@@ -474,27 +492,20 @@ def proc_main():        # the console process loop
                 file_path = fileinfo[1]
                 file_size = fileinfo[2]
                 file_state = fileinfo[3]
-                funcname = "DSCSDecryptFile"
-                bname = ntpath.basename(file_path)
-                pure_file_stem = pathlib.PurePath(bname).stem
-                pure_file_ext  = pathlib.PurePath(bname).suffix
-                bAppend = service.configuration['bAppendDecryptedPostfix']
-                bAppend = False
-                filepath2 = ntpath.dirname(file_path) + "\\" + pure_file_stem + \
-                    ("_decrypted" if bAppend else "") + pure_file_ext
 
-                ret = dscs_dll.call_DSCSDecryptFile(file_path, filepath2)
+                filepath2 = dscs_dll.decryptFile(file_path, service.configuration['bAppendDecryptedPostfix'])
 
-                log.info("file decrypted : " + file_path + ", ret: " + str(ret))
-                if 1 == ret:    # decryption success
-                    sqlite3.fileinfo_update_state(filepath=filepath2, state="decrypted")
+                if None != filepath2:    # decryption success
+                    cwinsecurity.set_file_attribute_hidden(filepath2)
+                    log.info("file decrypted : " + filepath2)
+                    sqlite3.fileinfo_update_state(filepath=file_path, state="decrypted")
 
                     # TODO add schedule
                     schedule_id = er.my_add_schedule(subpath_list=[
                         filepath2,
                         #'\\users\\danny\\desktop\\s3.txt',
                     ])
-                    sqlite3.fileinfo_update_schedule_id(filepath2, schedule_id)
+                    sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
 
             # proc decrypted & has schedule_id
@@ -503,10 +514,12 @@ def proc_main():        # the console process loop
                 file_path = fileinfo[1]
                 file_schedule_id = fileinfo[4]
 
-                #sqlite3.fileinfo_delete(file_path)
-                sqlite3.fileinfo_update_state(filepath=file_path, state="completed")
-
-                log.info(er.is_schedule_completed(file_schedule_id))
+                if er.is_schedule_completed(file_schedule_id):
+                    #sqlite3.fileinfo_delete(file_path)
+                    sqlite3.fileinfo_update_state(filepath=file_path, state="completed")
+                    log.info(file_path + " completed (schedule_id:"+str(file_schedule_id)+")")
+                    decrypted_filepath = Dscs_dll.get_decrypted_filepath(file_path, service.configuration['bAppendDecryptedPostfix'])
+                    os.remove(decrypted_filepath)
 
             # ]]]]]]]]]]]]]
 
@@ -526,10 +539,32 @@ def proc_main():        # the console process loop
             log.error(str(e))
             return
 
-def proc_preproc():
+def proc_install():
+    from lib_winsec import cwinsecurity
+    mount_points = cwinsecurity._get_mount_points()
+    SC_PATH = mount_points[0]+"windows\\system32\\sc"
     if len(sys.argv) == 2:
-        service = MyService()
-        if "debug" == sys.argv[1]:
+        if "setup" == sys.argv[1]:
+            for i in range(len(sys.argv)):
+                print(sys.argv[i])
+            # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
+            os.system("\"" + sys.argv[0] + "\" --startup auto install")
+            os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
+            os.system("\"" + sys.argv[0] + "\" start")
+            #os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            time.sleep(1)
+            sys.exit(0)
+        elif "closedown" == sys.argv[1]:
+            for i in range(len(sys.argv)):
+                print(sys.argv[i])
+            #os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
+            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
+            os.system("\"" + sys.argv[0] + "\" remove")
+            time.sleep(1)
+            sys.exit(0)
+        elif "debug" == sys.argv[1]:
+            service = MyService()
 
             # import psutil
             # pid_list = lig_get_pid_list_by_name_reg(r'ftclient.exe')
@@ -551,36 +586,17 @@ def proc_preproc():
             log.debug("DO_JOB")
             proc_main()
             sys.exit(0)
-
-def proc_install():
-    # TODO path
-    SC_PATH = "c:\\windows\\system32\\sc"
-    if len(sys.argv) == 2:
-        if "setup" == sys.argv[1]:
-            for i in range(len(sys.argv)):
-                print(sys.argv[i])
-            # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
-            os.system("\"" + sys.argv[0] + "\" --startup auto install")
-            os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
-            os.system("\"" + sys.argv[0] + "\" start")
-            os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
-            time.sleep(1)
-            sys.exit(0)
-        elif "closedown" == sys.argv[1]:
-            for i in range(len(sys.argv)):
-                print(sys.argv[i])
-            os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
-            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
-            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
-            os.system("\"" + sys.argv[0] + "\" remove")
-            time.sleep(1)
+        elif "test_dscs" == sys.argv[1]:
+            dscs_dll = Dscs_dll()
+            bAppendPrefix = False
+            job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
+            dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
 
 if __name__ == '__main__':
     try:
         log.debug(str(sys.argv))
         MyService.self_path = executable#sys.argv[0]
-        proc_preproc()
         proc_install()
         init()
     except Exception as e:

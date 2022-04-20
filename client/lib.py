@@ -44,7 +44,7 @@ def lib_disk_usage():
     #return psutil.disk_usage('/')
     return str(psutil.disk_usage('/')[3])
 
-def lig_get_pid_list_by_name_reg(regex):
+def lib_get_pid_list_by_name_reg(regex):
     process_list = []
     import re
     for process in psutil.process_iter():
