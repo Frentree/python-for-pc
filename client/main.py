@@ -62,6 +62,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^\\Windows\\ServiceState\\EventLog\\.*$",
         r"^\\Windows\\ServiceProfiles\\NetworkService\\.*$",
         r"^\\Windows\\ServiceProfiles\\LocalService\\.*$",
+        r"^\\Windows\\SysWOW64\\.*$",
         r"^\\Windows\\Temp\\.*$",
         r"^\\Windows\\SoftwareDistributions\\DataStore\\.*$",
         r"^\\Program Files\\AhnLab\\.*$",
@@ -420,7 +421,7 @@ def proc_main():        # the console process loop
         log.error(e)
         return
 
-    er = er_agent("192.168.12.7", log)
+    er = er_agent(log)
 
     service = MyService()
     log.debug(service.configuration)
@@ -435,8 +436,12 @@ def proc_main():        # the console process loop
 
             apiInterface = cApiInterface(service.configuration['server_address'], log)
 
+            drm_config = apiInterface.drm_configGet()
+            log.debug(drm_config)
+
             v_drm_schedule = apiInterface.v_drm_scheduleGet()
-            log.info("target_id:"+str(v_drm_schedule['TARGET_ID']))
+            er.load_v_drm_schedule(v_drm_schedule)
+            log.debug(v_drm_schedule)
 
             '''
             url = 'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"]
@@ -490,6 +495,7 @@ def proc_main():        # the console process loop
             # [[[[[[[[[[[[[ ER node interface
             '''
 
+            log.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
             sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
@@ -502,7 +508,9 @@ def proc_main():        # the console process loop
                 file_size = fileinfo[2]
                 file_state = fileinfo[3]
 
+                print(service.configuration)
                 filepath2 = dscs_dll.decryptFile(file_path, service.configuration['bAppendDecryptedPostfix'])
+                log.info("FILE : " + filepath2)
 
                 if None != filepath2:    # decryption success
                     cwinsecurity.set_file_attribute_hidden(filepath2)
@@ -516,7 +524,7 @@ def proc_main():        # the console process loop
                     ])
                     sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
-                    apiInterface.schedulePost()
+                    apiInterface.pi_schedulesPost()
 
             # proc decrypted & has schedule_id
             file_list = sqlite3.fileinfo_select_scheduled()
@@ -595,6 +603,18 @@ def proc_install():
         elif "do_job" == sys.argv[1]:
             log.debug("DO_JOB")
             proc_main()
+            sys.exit(0)
+        elif "insert_into_db" == sys.argv[1]:
+            from libsqlite3 import csqlite3
+            workdir_path = ntpath.dirname(sys.executable)
+            sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
+            job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
+            sqlite3.fileinfo_insert(job_path)
+            print("db path: " + workdir_path + '\\state.db')
+            #os.system('"C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe" ' + \
+            #    workdir_path + '\\state.db')
+            #subprocess.run(["C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe", \
+            #    workdir_path + '\\state.db'], stdout=subprocess.PIPE)
             sys.exit(0)
         elif "test_dscs" == sys.argv[1]:
             dscs_dll = Dscs_dll()

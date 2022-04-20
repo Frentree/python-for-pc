@@ -22,21 +22,30 @@ class er_agent():
     my_profile_label = "label1"# "frentree"
     LOCATION_ROOT = "C:"
 
-    def __init__(self, er_host_addr, log = None):
+    def __init__(self, log = None, er_host_addr = None):
         self.DEBUG_ON = True
 
-        self.URL = "https://"+er_host_addr+":8339/beta"
+        import platform
+        self.my_hostname = platform.node()
+        #self.my_hostname = 'DESKTOP-J6FK55A'      # NOTE: dev
+        # target name: DESKTOP-J6FK55A ==> vbox vm win, id: 14952095194870184286
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self.log = logclass()
         if None != log:
             self.log = log
+
+        if None == er_host_addr:
+            return
+
+        self.URL = "https://"+er_host_addr+":8339/beta"
         (self.my_group_id, self.my_target_id) = self.get_my_group_target_id()
         self.log.info("my group id:"+str(self.my_group_id))
         self.log.info("my target id:"+str(self.my_target_id))
         self.my_current_matches = self.my_summary_target_matches()
         self.my_datatype_profile_id = self.get_my_datatype_profile_id()
         self.log.info("my profile id:"+str(self.my_datatype_profile_id))
+        #self.log.info(str(self.my_list_locations()))
         self.log.info('matches:'+str(self.my_current_matches))
         #self.get_my_matchobjects()
         if None == self.my_group_id:
@@ -49,6 +58,29 @@ class er_agent():
         if 0 == len(locations):
             self.location_add_local(self.my_target_id, "C:")
 
+    def setMyUserId(self, userid):
+        self.userid = userid
+
+    def setMyERIP(self, erip):
+        self.URL = "https://"+erip+":8339/beta"
+
+    def load_v_drm_schedule(self, v_drm_schedule_json):
+        if None == v_drm_schedule_json:
+            return
+        print(v_drm_schedule_json)
+        print("LOAD ###################################")
+        self.setMyLocationId(v_drm_schedule_json['LOCATION_ID'])
+        self.setMyProfileId(v_drm_schedule_json['PROFILES'])
+        print("PROFILE : " + str(self.my_datatype_profile_id))
+        self.setMyTargetId(v_drm_schedule_json['TARGET_ID'])
+        self.setMyERIP(v_drm_schedule_json['IP'])
+        self.setMyUserId(v_drm_schedule_json['ID'])
+        self.setMyUserPW(v_drm_schedule_json['PD'])
+        #print(json.dumps(self.get_datatype_profiles(), indent=4))
+
+    def setMyUserPW(self, userpw):
+        self.userpw_encoded = base64.b64encode(userpw.encode('ascii'))
+
     def get_my_matchobjects(self):
         result = self.request('get', '/targets/'+self.my_target_id+'/matchobjects')
 
@@ -56,10 +88,6 @@ class er_agent():
         my_target_id = None
         my_group_id = None
 
-        import platform
-        self.my_hostname = platform.node()
-        #self.my_hostname = 'DESKTOP-J6FK55A'      # NOTE: dev
-        # target name: DESKTOP-J6FK55A ==> vbox vm win, id: 14952095194870184286
         self.debug('hostname:'+self.my_hostname)
 
         result = self.list_groups()
@@ -204,7 +232,9 @@ class er_agent():
         return self.request('get', '/datatypes/profiles')
 
     def setMyProfileId(self, profile_id):
-        self.my_profile_id = profile_id
+        # 15844480846665880616: frentree
+        # 17029408091763885645: label1
+        self.my_datatype_profile_id = profile_id
 
     def get_my_datatype_profile_id(self):
         my_datatype_profile_id = None
@@ -252,7 +282,7 @@ class er_agent():
                 'locations': location_list,
             },
             "profiles": [
-                self.my_datatype_profile_id,         # frentree      TODO
+                self.my_datatype_profile_id,
             ],
         }
         self.log.info(data)
@@ -264,9 +294,10 @@ class er_agent():
     #   success - SCHEDULE ID (str)
     #   fail - None
     def my_add_schedule(self, subpath_list):
-        location_id = self.get_location_id_by_path(self.my_target_id, \
-            self.LOCATION_ROOT) # TODO
+        #location_id = self.get_location_id_by_path(self.my_target_id, \
+        #    self.LOCATION_ROOT) # TODO
         new_label = self.my_hostname+"_"+datetime.now().strftime("%Y%m%d_%H%M%S")
+        location_id = self.my_location_id
 
         location_list = []
         for subpath in subpath_list:
@@ -275,7 +306,7 @@ class er_agent():
                 'subpath':subpath,
             })
         result = self.add_schedule(self.my_target_id, new_label, location_list)
-        self.log.debug(json.dumps(result, indent=4))
+        self.log.info(json.dumps(result, indent=4))
         # NOTE: schedule id will be just one whether the param subpath is multiple or not
         # success example : {'id': '44'}
         if 'id' in result:

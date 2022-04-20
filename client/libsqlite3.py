@@ -25,7 +25,10 @@ class csqlite3:
     def __del__(self):
         self.con.close()
 
-    def fileinfo_insert(self, filepath, filesize):
+    def fileinfo_insert(self, filepath, filesize = None):
+        if None == filesize:
+            filesize = os.path.getsize(filepath)
+
         # sql_cmd = "INSERT INTO fileinfo (filepath, filesize, state) VALUES ('" + \
         #     filepath + "', " + \
         #     str(filesize) + ", " + \

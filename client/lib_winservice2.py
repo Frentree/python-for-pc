@@ -19,7 +19,7 @@ class MyService:
         "dll_name": "CryptDll.dll",
         "server_address":"183.107.9.230:11119",
         "hostname": "175.203.71.27",
-        "bAppendDecryptedPostfix": False,
+        "bAppendDecryptedPostfix": True,
         "service_name": "Enterprise Recon 2 Agent",
 
         "min_sleep_seconds": 1,
