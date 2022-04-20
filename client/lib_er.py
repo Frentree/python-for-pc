@@ -123,6 +123,9 @@ class er_agent():
             target_id = '/'+target_id
         return self.request('get', '/targets'+target_id)
     
+    def setMyTargetId(self, target_id):
+        self.my_target_id = target_id
+
     def my_list_targets(self):
         return self.list_targets(self.my_target_id)
 
@@ -179,6 +182,9 @@ class er_agent():
         ret = self.request('get', '/targets/'+str(target_id)+'/locations')
         return ret
 
+    def setMyLocationId(self, location_id):
+        self.my_location_id = location_id
+
     def my_list_locations(self):
         return self.list_locations(self.my_target_id)
 
@@ -196,6 +202,9 @@ class er_agent():
     #region DATATYPES_PROFILES
     def get_datatype_profiles(self):
         return self.request('get', '/datatypes/profiles')
+
+    def setMyProfileId(self, profile_id):
+        self.my_profile_id = profile_id
 
     def get_my_datatype_profile_id(self):
         my_datatype_profile_id = None
@@ -266,7 +275,7 @@ class er_agent():
                 'subpath':subpath,
             })
         result = self.add_schedule(self.my_target_id, new_label, location_list)
-        print(json.dumps(result, indent=4))
+        self.log.debug(json.dumps(result, indent=4))
         # NOTE: schedule id will be just one whether the param subpath is multiple or not
         # success example : {'id': '44'}
         if 'id' in result:
