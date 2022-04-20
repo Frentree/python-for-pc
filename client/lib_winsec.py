@@ -51,6 +51,10 @@ class cwinsecurity:
         print(name, flag)
 
   @staticmethod
+  def get_hostname():
+    return os.getenv("COMPUTERNAME", "")
+
+  @staticmethod
   def set_file_attribute_hidden(filepath):
     win32api.SetFileAttributes(filepath, win32con.FILE_ATTRIBUTE_HIDDEN)
 
