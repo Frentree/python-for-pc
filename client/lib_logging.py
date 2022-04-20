@@ -7,7 +7,9 @@ OutputDebugString = ctypes.windll.kernel32.OutputDebugStringW
 class DbgViewHandler(logging.Handler):
     def emit(self, record):
         PREFIX_FOR_FILTERING = "[TT]"
-        OutputDebugString(PREFIX_FOR_FILTERING+self.format(record))
+        record = self.format(record)
+        record = record.replace("\n", "")
+        OutputDebugString(PREFIX_FOR_FILTERING+record)
 
 log = logging.getLogger("output.debug.string.example")
 def config_logging():
