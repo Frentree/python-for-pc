@@ -27,6 +27,13 @@ class Dscs_dll():
 
 		self.call_DSCheckDSAgent()
 
+	def isAvailable(self):
+		ret = self.call_DSCheckDSAgent()
+		if 2 == ret:
+			return True
+
+		return False
+
 	def call_DSCSAddDac(self):
 		pfunc = self.dll_handle.DSCSAddDac
 
@@ -129,6 +136,7 @@ class Dscs_dll():
 		filepath2 = Dscs_dll.get_decrypted_filepath(file_abspath, bAppendPrefix, prefix)
 		ret = self.call_DSCSDecryptFile(file_abspath, filepath2)
 		if 1 != ret:
+			log.error("Dscs_dll::call_DSCSDecryptFile() : " + file_abspath + " " + str(ret))
 			return None
 		return filepath2
 
