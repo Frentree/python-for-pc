@@ -58,6 +58,29 @@ class er_agent():
         if 0 == len(locations):
             self.location_add_local(self.my_target_id, "C:")
 
+    def isAvailable(self):
+        my_list = [
+            self.my_hostname,
+            self.my_location_id,
+            self.my_datatype_profile_id,
+            self.my_target_id,
+            self.URL,
+            self.userid,
+            self.userpw_encoded,
+        ]
+
+        for item in my_list:
+            if None == item or '' == item or 0 == item:
+                return False
+
+        try:
+            self.my_list_targets()
+        except requests.exceptions.ConnectTimeout as e:
+            self.log.error("connection failed")
+            self.log.error(str(e))
+            return False
+        return True
+
     def setMyUserId(self, userid):
         self.userid = userid
 
@@ -67,16 +90,17 @@ class er_agent():
     def load_v_drm_schedule(self, v_drm_schedule_json):
         if None == v_drm_schedule_json:
             return
-        print(v_drm_schedule_json)
-        print("LOAD ###################################")
+        #self.log.info("LOADING DRM SCHEDULE ###################################")
+        #self.log.info(v_drm_schedule_json)
         self.setMyLocationId(v_drm_schedule_json['LOCATION_ID'])
         self.setMyProfileId(v_drm_schedule_json['PROFILES'])
-        print("PROFILE : " + str(self.my_datatype_profile_id))
         self.setMyTargetId(v_drm_schedule_json['TARGET_ID'])
         self.setMyERIP(v_drm_schedule_json['IP'])
         self.setMyUserId(v_drm_schedule_json['ID'])
         self.setMyUserPW(v_drm_schedule_json['PD'])
-        #print(json.dumps(self.get_datatype_profiles(), indent=4))
+        self.current_ap_no = v_drm_schedule_json['AP_NO']
+        self.current_schedule_id = v_drm_schedule_json['SCHEDULE_ID']
+        #self.log.info(json.dumps(self.get_datatype_profiles(), indent=4))
 
     def setMyUserPW(self, userpw):
         self.userpw_encoded = base64.b64encode(userpw.encode('ascii'))
@@ -113,7 +137,7 @@ class er_agent():
     def request(self, method, url, payload=None):
         req_url = self.URL + url
 
-        print("URL:"+req_url)
+        self.log.debug("ER URL:"+req_url)
         userpw = base64.b64decode(self.userpw_encoded).decode('ascii')
         if 'post' == method:
             headers = {'Content-Type': 'application/json; charset=utf-8'}
@@ -254,17 +278,20 @@ class er_agent():
         return self.request('get', url)
 
     def is_schedule_completed(self, schedule_id):
-        result = self.list_schedules(schedule_id)
-        self.prt("SCHEDULE", result)
-        if 'targets' not in result: return False
-        if len(result['targets']) < 1: return False
-        if 'locations' not in result['targets'][0]: return False
-        if len(result['targets'][0]['locations']) < 1: return False
-        if 'status' not in result['targets'][0]['locations'][0]: return False
-        if 'completed' != result['targets'][0]['locations'][0]['status']: return False
-
-        self.prt("targets", result['targets'])
-        self.prt("locations", result['targets'][0]['locations'][0]['status'])
+        try:
+            result = self.list_schedules(schedule_id)
+            self.log.info("SCHEDULE " + str(result))
+            if 'targets' not in result: return False
+            if len(result['targets']) < 1: return False
+            if 'locations' not in result['targets'][0]: return False
+            if len(result['targets'][0]['locations']) < 1: return False
+            if 'status' not in result['targets'][0]['locations'][0]: return False
+            if 'completed' != result['targets'][0]['locations'][0]['status']: return False
+        except Exception as e:
+            import traceback
+            self.log.error(traceback.format_exc())
+            self.log.error(e)
+            return False
         return True
 
     # data structure of location list
