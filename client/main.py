@@ -436,28 +436,16 @@ def proc_main():        # the console process loop
 
             apiInterface = cApiInterface(service.configuration['server_address'], log)
 
-            drm_config = apiInterface.drm_configGet()
-            log.debug(drm_config)
-
-            v_drm_schedule = apiInterface.v_drm_scheduleGet()
-            er.load_v_drm_schedule(v_drm_schedule)
-            log.debug(v_drm_schedule)
-
-            '''
-            url = 'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"]
-            log.debug(url)
-            r = requests.get(url)
-            ret = r.json()
-            log.debug(ret)
-
-            if 'config' in ret and len(ret['config']) > 0:
-                service.configuration['sleep_seconds'] = max(int(ret['config'][0]['sleep_seconds']), service.configuration["min_sleep_seconds"])
+            c2s_job = apiInterface.c2s_jobGet()
+            if 'config' in c2s_job and len(c2s_job['config']) > 0:
+                service.configuration['sleep_seconds'] = max(int(c2s_job['config'][0]['sleep_seconds']), service.configuration["min_sleep_seconds"])
+                service.configuration['log_level'] = int(c2s_job['config'][0]['log_level'])
 
             job_result_list = []
-            for cmd in ret['job']:
+            for cmd in c2s_job['job']:
                 job_result = DO_proc_job(dscs_dll, cmd, service)
                 job_result_list.append(job_result)
-                #logging.info(json.dumps(job_result, indent=4, ensure_ascii=False))
+                log.info(json.dumps(job_result, indent=4, ensure_ascii=False))
 
             #[[ cardrecon process
             # process name pattern : 53cardrecon193247928347982
@@ -479,23 +467,19 @@ def proc_main():        # the console process loop
                     'disk_usage': lib_disk_usage(),
                 }
             }
-            try:
-                log.debug(json.dumps(post_data, ensure_ascii=False))
-                log.debug("URL:"+'http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"])
-                r = requests.post('http://'+service.configuration['server_address']+'/c2s_job' + "/" + service.configuration["hostname"], json=post_data)
-                result_ret = str(r.json())
-                log.debug(json.dumps(result_ret, indent=4, ensure_ascii=False))
-            except requests.exceptions.ChunkedEncodingError as e:
-                log.error(str(e))
-                return
-            except json.decoder.JSONDecodeError as e:
-                log.error(str(e))
-                return
+            c2s_job_post = apiInterface.c2s_jobPost(post_data)
 
-            # [[[[[[[[[[[[[ ER node interface
-            '''
+            # region ER node interface [[[[[[[[[[[[[[[[[[[[
+            v_drm_schedule = apiInterface.v_drm_scheduleGet()
+            er.load_v_drm_schedule(v_drm_schedule)
+            log.debug(json.dumps(v_drm_schedule, indent=4))
 
-            log.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+            if False == dscs_dll.isAvailable():
+                raise NameError('DSCS is not available')
+            if False == er.isAvailable():
+                raise NameError('Recon is not available')
+
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
             sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
@@ -508,9 +492,8 @@ def proc_main():        # the console process loop
                 file_size = fileinfo[2]
                 file_state = fileinfo[3]
 
-                print(service.configuration)
                 filepath2 = dscs_dll.decryptFile(file_path, service.configuration['bAppendDecryptedPostfix'])
-                log.info("FILE : " + filepath2)
+                log.info("FILE : " + str(filepath2))
 
                 if None != filepath2:    # decryption success
                     cwinsecurity.set_file_attribute_hidden(filepath2)
@@ -524,38 +507,71 @@ def proc_main():        # the console process loop
                     ])
                     sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
-                    apiInterface.pi_schedulesPost()
+                    apiInterface.pi_schedulesPost(
+                        er.current_schedule_id,
+                        er.current_ap_no,
+                        'S'
+                    )
+                else:                   # decryption failed
+                    sqlite3.fileinfo_delete(file_path)
 
             # proc decrypted & has schedule_id
             file_list = sqlite3.fileinfo_select_scheduled()
             for fileinfo in file_list:
                 file_path = fileinfo[1]
-                file_schedule_id = fileinfo[4]
+                file_DSCSIsEncryptedRet = fileinfo[4]
+                file_schedule_id = fileinfo[5]
+                log.info("FILE : " + str(file_path))
 
+                decrypted_filepath = Dscs_dll.get_decrypted_filepath(file_path, service.configuration['bAppendDecryptedPostfix'])
                 if er.is_schedule_completed(file_schedule_id):
                     #sqlite3.fileinfo_delete(file_path)
                     sqlite3.fileinfo_update_state(filepath=file_path, state="completed")
                     log.info(file_path + " completed (schedule_id:"+str(file_schedule_id)+")")
-                    decrypted_filepath = Dscs_dll.get_decrypted_filepath(file_path, service.configuration['bAppendDecryptedPostfix'])
                     os.remove(decrypted_filepath)
+                '''
+                else:
+                    try:
+                        if None == file_DSCSIsEncryptedRet:
+                            os.remove(decrypted_filepath)
+                    except FileNotFoundError as e:
+                        log.error(traceback.format_exc())
+                        log.error(str(e))
+                    finally:
+                        sqlite3.fileinfo_delete(file_path)
+                        log.info(" DELETE ##################################")
+                '''
 
-            # ]]]]]]]]]]]]]
+            # endregion ]]]]]]]]]]]]]]]]]]]]
 
             service.save_config()
-            sleep_seconds = max(service.configuration["min_sleep_seconds"],
-                service.configuration["sleep_seconds"])
-            log.debug("sleep " + str(sleep_seconds) + " seconds")
-            time.sleep(sleep_seconds) # Important work
+        except requests.exceptions.ChunkedEncodingError as e:
+            log.error(traceback.format_exc())
+            log.error(str(e))
+            return
         except requests.exceptions.ConnectionError as e:
+            log.error(traceback.format_exc())
             log.error(str(e))
             return
         except json.decoder.JSONDecodeError as e:
+            log.error(traceback.format_exc())
             log.error(str(e))
             return
+        except NameError as e:
+            log.error(traceback.format_exc())
+            log.error(e)
         except Exception as e:
-            log.error(traceback.format_exc().replace("\n", ""))
+            log.error(traceback.format_exc())
             log.error(str(e))
             return
+        finally:
+            sleep_seconds = max(service.configuration["min_sleep_seconds"],
+                service.configuration["sleep_seconds"])
+            log.debug("sleep " + str(sleep_seconds) + " seconds")
+
+            if logging.INFO == service.configuration['log_level'] or logging.DEBUG == service.configuration['log_level']:
+                log.setLevel(service.configuration['log_level'])
+            time.sleep(sleep_seconds) # Important work
 
 def proc_install():
     from lib_winsec import cwinsecurity
