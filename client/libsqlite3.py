@@ -14,6 +14,7 @@ class csqlite3:
         filepath text UNIQUE,
         filesize int,
         state text,
+        DSCSIsEncryptedRet tinyint(3),
         schedule_id int
     )
             ''')
@@ -59,7 +60,7 @@ class csqlite3:
 
     def fileinfo_select_scheduled(self):
         state = 'decrypted'
-        condition = " WHERE state='"+state+"' and schedule_id IS NOT NULL"
+        condition = " WHERE state='"+state+"' "#and schedule_id IS NOT NULL"
         sql_cmd = "SELECT * FROM fileinfo" + condition
 
         self.cur.execute(sql_cmd)
