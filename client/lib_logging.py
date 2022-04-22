@@ -8,8 +8,9 @@ class DbgViewHandler(logging.Handler):
     def emit(self, record):
         PREFIX_FOR_FILTERING = "[TT]"
         record = self.format(record)
-        record = record.replace("\n", "")
-        OutputDebugString(PREFIX_FOR_FILTERING+record)
+        record_list = record.split('\n')
+        for record_item in record_list:
+            OutputDebugString(PREFIX_FOR_FILTERING+record_item)
 
 log = logging.getLogger("output.debug.string.example")
 
