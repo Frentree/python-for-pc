@@ -35,11 +35,9 @@ class MyService:
         self.running = False
 
     def load_config(self):
-        if 'python.exe' == os.path.basename(sys.executable):
-            conf_path = "." + "\\configuration.json"
-        else:
-            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
-        log.info("LOAD_CONFIG: " + conf_path)
+        userprofile = os.getenv("userprofile", "")
+        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        log.debug("LOAD_CONFIG: " + conf_path)
         if False == os.path.isfile(conf_path):
             log.error("file not found")
             return
@@ -56,10 +54,8 @@ class MyService:
         MyService.configuration = configuration
 
     def save_config(self):
-        if 'python.exe' == os.path.basename(sys.executable):
-            conf_path = "." + "\\configuration.json"
-        else:
-            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+        userprofile = os.getenv("userprofile", "")
+        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
         log.debug("SAVE_CONFIG: " + conf_path)
 
         if False == os.path.isfile(conf_path):
