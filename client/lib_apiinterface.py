@@ -67,4 +67,4 @@ class cApiInterface:
     ret = r.json()
     self.log.debug(json.dumps(ret, indent=4))
 
-    self.log.info("################### pi_schedulesPost " + str(DRM_STATUS))  
+    self.log.info("################### pi_schedulesPost " + str(schedule_id) + " " + str(DRM_STATUS))
