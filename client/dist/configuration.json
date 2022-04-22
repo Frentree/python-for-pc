@@ -6,5 +6,6 @@
     "hostname": "DESKTOP-K316RAH",
     "bAppendDecryptedPostfix": true,
     "service_name": "Enterprise Recon 2 Agent",
-    "min_sleep_seconds": 1
+    "min_sleep_seconds": 1,
+    "log_level": 20
 }

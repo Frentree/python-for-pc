@@ -660,6 +660,16 @@ def proc_install():
             job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
             dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
+        elif "stop" == sys.argv[1]:
+            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
+            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
+            os.system("taskkill /F /IM ftclient.exe")
+            time.sleep(1)
+            os.system("taskkill /F /IM ftclient.exe")
+            sys.exit(0)
+        elif "list" == sys.argv[1]:
+            os.system("tasklist | findstr \"ftclient.exe\"")
+            sys.exit(0)
         '''            
         elif "debug" == sys.argv[1]:
             service = MyService()
