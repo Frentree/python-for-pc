@@ -352,13 +352,14 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
             break
 
         if 'decrypt' == job_type:
+            funcname = "DSCSDacEncryptFileV2"
             log.info("DECRYPT ##################################")
             ret = dscs_dll.decryptFile(job_path, service.configuration['bAppendDecryptedPostfix'])
 
             if 1 == ret:    # decryption success
                 sqlite3.fileinfo_update_state(filepath=job_path, state="decrypted")
 
-            job_result['message'] = " return " + str(Dscs_dll.retvalue2str(funcname, ret))
+            job_result['message'] = " return " + str(ret)
             post_data = {
                 job_result['message'],
             }
@@ -474,6 +475,8 @@ def proc_main():        # the console process loop
             er.load_v_drm_schedule(v_drm_schedule)
             log.debug(json.dumps(v_drm_schedule, indent=4))
 
+            # update V DRM schedule
+            apiInterface.pi_schedulesPost(er.current_schedule_id, er.current_ap_no, 'S')
 
             if False == dscs_dll.isAvailable():
                 raise NameError('DSCS is not available')
@@ -507,11 +510,9 @@ def proc_main():        # the console process loop
                     ])
                     sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
-                    apiInterface.pi_schedulesPost(
-                        er.current_schedule_id,
-                        er.current_ap_no,
-                        'S'
-                    )
+
+                    # insert DRM schedule
+                    apiInterface.pi_schedulesPost(schedule_id, er.current_ap_no, 'D')
                 else:                   # decryption failed
                     sqlite3.fileinfo_delete(file_path)
 
@@ -527,7 +528,12 @@ def proc_main():        # the console process loop
                 if er.is_schedule_completed(file_schedule_id):
                     #sqlite3.fileinfo_delete(file_path)
                     sqlite3.fileinfo_update_state(filepath=file_path, state="completed")
+                    log.info("schedule completed " + str(file_schedule_id))
+
+                    # upsert DRM schedule
+                    apiInterface.pi_schedulesPost(file_schedule_id, er.current_ap_no, 'C')
                     log.info(file_path + " completed (schedule_id:"+str(file_schedule_id)+")")
+                    sqlite3.fileinfo_delete(file_path)
                     os.remove(decrypted_filepath)
                 '''
                 else:
@@ -571,6 +577,8 @@ def proc_main():        # the console process loop
 
             if logging.INFO == service.configuration['log_level'] or logging.DEBUG == service.configuration['log_level']:
                 log.setLevel(service.configuration['log_level'])
+                setLogLevel(service.configuration['log_level'])
+                log.debug('set log level to ' + str(service.configuration['log_level']))
             time.sleep(sleep_seconds) # Important work
 
 def proc_install():
@@ -624,8 +632,21 @@ def proc_install():
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
             sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
-            job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
-            sqlite3.fileinfo_insert(job_path)
+
+            file_list = [
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (2).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (3).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (4).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (5).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (6).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (7).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (8).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (9).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (10).txt',
+            ]
+            for filepath in file_list:
+                sqlite3.fileinfo_insert(filepath)
             print("db path: " + workdir_path + '\\state.db')
             #os.system('"C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe" ' + \
             #    workdir_path + '\\state.db')
