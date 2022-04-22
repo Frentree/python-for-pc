@@ -24,6 +24,7 @@ from watchdog.utils import WatchdogShutdown
 from watchdog.tricks import LoggerTrick
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
+from lib_winsec import cwinsecurity
 
 config_logging()
 
@@ -91,8 +92,11 @@ class MyLoggerTrick(PatternMatchingEventHandler):
             return
 
     from libsqlite3 import csqlite3
-    workdir_path = ntpath.dirname(sys.executable)
-    sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=self.log)
+    mount_points = cwinsecurity._get_mount_points()
+    userprofile = mount_points[0]+"\\Users\\"+MyService.user_id
+    db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+    self.log.info("db path: " + db_path)
+    sqlite3 = csqlite3(name=db_path, log=self.log)
 
     target_path = ''
 
@@ -156,7 +160,6 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
     observer.start()
     try:
         myservice.running = True
-        from lib_winsec import cwinsecurity
         log.info("service process's integrity level: " + cwinsecurity.get_integrity_level(log))
 
         while myservice.running:
@@ -170,7 +173,8 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                 for pid in pid_list:
                     (user_sid, user0, user1) = lib_get_pid_owner(pid)
                     if None != user0 and 'system' != user0.lower():
-                        log.debug("user: " + user0)
+                        MyService.user_id = user0
+                        log.debug("user: " + str(MyService.user_id))
                         non_system_process_exists = True
 
                 if False == non_system_process_exists:
@@ -204,6 +208,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
 
 class MyService:
     """ application stub"""
+    user_id = ""
 
     configuration = {
         "debug": True,
@@ -227,10 +232,12 @@ class MyService:
         self.running = False
 
     def load_config(self):
-        if 'python.exe' == os.path.basename(sys.executable):
-            conf_path = "." + "\\configuration.json"
-        else:
-            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+        userprofile = os.getenv("userprofile", "")
+        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        #if 'python.exe' == os.path.basename(sys.executable):
+        #    conf_path = "." + "\\configuration.json"
+        #else:
+        #    conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
         log.info("LOAD_CONFIG: " + conf_path)
         if False == os.path.isfile(conf_path):
             log.error("file not found")
@@ -248,10 +255,12 @@ class MyService:
         MyService.configuration = configuration
 
     def save_config(self):
-        if 'python.exe' == os.path.basename(sys.executable):
-            conf_path = "." + "\\configuration.json"
-        else:
-            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+        userprofile = os.getenv("userprofile", "")
+        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        # if 'python.exe' == os.path.basename(sys.executable):
+        #     conf_path = "." + "\\configuration.json"
+        # else:
+        #     conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
         log.debug("SAVE_CONFIG: " + conf_path)
 
         if False == os.path.isfile(conf_path):
@@ -328,8 +337,10 @@ def init():
 
 def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
     from libsqlite3 import csqlite3
-    workdir_path = ntpath.dirname(sys.executable)
-    sqlite3 = csqlite3(name=workdir_path + '/state.db', log=log)
+    userprofile = os.getenv("userprofile", "")
+    db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+    log.info("db path: " + db_path)
+    sqlite3 = csqlite3(name=db_path, log=log)
 
     job_type = cmd['type']
     job_path = cmd['path']
@@ -484,8 +495,10 @@ def proc_main():        # the console process loop
                 raise NameError('Recon is not available')
 
             from libsqlite3 import csqlite3
-            workdir_path = ntpath.dirname(sys.executable)
-            sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
+            userprofile = os.getenv("userprofile", "")
+            db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+            log.debug("db path: " + db_path)
+            sqlite3 = csqlite3(name=db_path, log=log)
 
             # proc queued
             file_list = sqlite3.fileinfo_select(state='queued')
@@ -522,7 +535,7 @@ def proc_main():        # the console process loop
                 file_path = fileinfo[1]
                 file_DSCSIsEncryptedRet = fileinfo[4]
                 file_schedule_id = fileinfo[5]
-                log.info("FILE : " + str(file_path))
+                log.debug("FILE : " + str(file_path))
 
                 decrypted_filepath = Dscs_dll.get_decrypted_filepath(file_path, service.configuration['bAppendDecryptedPostfix'])
                 if er.is_schedule_completed(file_schedule_id):
@@ -532,7 +545,7 @@ def proc_main():        # the console process loop
 
                     # upsert DRM schedule
                     apiInterface.pi_schedulesPost(file_schedule_id, er.current_ap_no, 'C')
-                    log.info(file_path + " completed (schedule_id:"+str(file_schedule_id)+")")
+                    log.debug(file_path + " completed (schedule_id:"+str(file_schedule_id)+")")
                     sqlite3.fileinfo_delete(file_path)
                     os.remove(decrypted_filepath)
                 '''
@@ -594,6 +607,10 @@ def proc_install():
             os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
             os.system("\"" + sys.argv[0] + "\" start")
             #os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            workdir_path = ntpath.dirname(sys.executable)
+            userprofile = os.getenv("userprofile", "")
+            cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
+            os.system(cmd)
             time.sleep(1)
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
@@ -605,25 +622,6 @@ def proc_install():
             os.system("\"" + sys.argv[0] + "\" remove")
             time.sleep(1)
             sys.exit(0)
-        elif "debug" == sys.argv[1]:
-            service = MyService()
-
-            # import psutil
-            # pid_list = lig_get_pid_list_by_name_reg(r'ftclient.exe')
-            # non_system_process_exists = False
-            # for pid in pid_list:
-            #     (user_sid, user0, user1) = lib_get_pid_owner(pid)
-            #     if None != user0 and 'system' != user0.lower():
-            #         non_system_process_exists = True
-
-            # if False == non_system_process_exists:
-            #     print("runas console process")
-            #     # TODO runas
-            # else:
-            #     print("console process is running")
-
-            service.run()
-            sys.exit(0)
         elif "do_job" == sys.argv[1]:
             log.debug("DO_JOB")
             proc_main()
@@ -631,7 +629,10 @@ def proc_install():
         elif "insert_into_db" == sys.argv[1]:
             from libsqlite3 import csqlite3
             workdir_path = ntpath.dirname(sys.executable)
-            sqlite3 = csqlite3(name=workdir_path + '\\state.db', log=log)
+            userprofile = os.getenv("userprofile", "")
+            db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+            log.info("db path: " + db_path)
+            sqlite3 = csqlite3(name=db_path, log=log)
 
             file_list = [
                 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt',
@@ -659,6 +660,27 @@ def proc_install():
             job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
             dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
+        '''            
+        elif "debug" == sys.argv[1]:
+            service = MyService()
+
+            # import psutil
+            # pid_list = lig_get_pid_list_by_name_reg(r'ftclient.exe')
+            # non_system_process_exists = False
+            # for pid in pid_list:
+            #     (user_sid, user0, user1) = lib_get_pid_owner(pid)
+            #     if None != user0 and 'system' != user0.lower():
+            #         non_system_process_exists = True
+
+            # if False == non_system_process_exists:
+            #     print("runas console process")
+            #     # TODO runas
+            # else:
+            #     print("console process is running")
+
+            service.run()
+            sys.exit(0)
+        '''
 
 if __name__ == '__main__':
     try:
