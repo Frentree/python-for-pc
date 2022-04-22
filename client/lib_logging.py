@@ -12,6 +12,7 @@ class DbgViewHandler(logging.Handler):
         OutputDebugString(PREFIX_FOR_FILTERING+record)
 
 log = logging.getLogger("output.debug.string.example")
+
 def config_logging():
 
     # format
@@ -32,3 +33,10 @@ def config_logging():
     con.setLevel(logging_level)
     con.setFormatter(fmt)
     log.addHandler(con)
+
+    log.ods = ods
+    log.con = con
+
+def setLogLevel(level):
+    log.ods.setLevel(level)
+    log.con.setLevel(level)
