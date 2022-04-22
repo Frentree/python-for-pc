@@ -53,11 +53,18 @@ class cApiInterface:
     return ret
 
   def pi_schedulesPost(self, schedule_id, ap_no, DRM_STATUS):
-    url = 'http://'+self.server_address+'/pi_schedules' + "/" + self.hostname
+    url = 'http://'+self.server_address+'/pi_schedules'
     post_data = {
       'schedule_id': schedule_id,
       'ap_no': ap_no,
       'DRM_STATUS' : DRM_STATUS,
     }
+
+    self.log.debug(url)
+    self.log.debug(post_data)
     r = requests.post(url, json=post_data)
-    self.log.info("################### pi_schedulesPost " + str(DRM_STATUS))
+    self.log.debug(str(r))
+    ret = r.json()
+    self.log.debug(json.dumps(ret, indent=4))
+
+    self.log.info("################### pi_schedulesPost " + str(DRM_STATUS))  
