@@ -34,7 +34,8 @@ class cApiInterface:
     r = requests.get(url)
     ret = r.json()
     self.log.debug(json.dumps(ret, indent=4))
-    return ret
+
+    return ret['result']
 
   def v_drm_scheduleGet(self):
     url = 'http://'+self.server_address+'/v_drm_schedule' + "/" + self.hostname
