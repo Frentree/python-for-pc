@@ -212,6 +212,24 @@ class cwinsecurity:
       ctypes.windll.kernel32.CloseHandle(token)
 
   @staticmethod
+  def get_windir_driveletter_with_colon():
+    windir = os.getenv('WINDIR')
+    return os.path.splitdrive(windir)[0]
+
+  @staticmethod
+  def _split_name_ext_from_path(file_path):
+    import ntpath
+    import pathlib
+    bname = ntpath.basename(file_path)
+    pure_file_stem = pathlib.PurePath(bname).stem
+    pure_file_ext  = pathlib.PurePath(bname).suffix
+    
+    file_path = ntpath.dirname(file_path)
+    file_name = pure_file_stem
+    file_ext  = pure_file_ext
+    return (file_path, file_name, file_ext)     
+
+  @staticmethod
   def _get_mount_points():
     """Returns the list of 'fixed' drives in format 'X:\\'."""
     ctypes.windll.kernel32.GetDriveTypeW.argtypes = (ctypes.c_wchar_p,)
