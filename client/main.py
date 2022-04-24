@@ -333,14 +333,20 @@ class MyService:
     @staticmethod
     def save_drm_config(drm_config):
         except_path_list = drm_config['except_path'].split(',')
-        except_path_list.sort()
+        the_path_list = []
+        for except_path in except_path_list:
+            the_path_list.append(except_path.lower())
+        the_path_list.sort()
         with open(MyService.get_except_path(), 'w') as outfile:
-            json.dump(except_path_list, outfile, indent=4)
+            json.dump(the_path_list, outfile, indent=4)
 
         except_format_list = drm_config['except_format'].split(',')
-        except_format_list.sort()
+        the_format_list = []
+        for except_format in except_format_list:
+            the_format_list.append(except_format.lower())
+        the_format_list.sort()
         with open(MyService.get_except_format(), 'w') as outfile:
-            json.dump(except_format_list, outfile, indent=4)
+            json.dump(the_format_list, outfile, indent=4)
 
     @staticmethod
     def get_except_path():
@@ -352,8 +358,36 @@ class MyService:
         store_path = MyService.get_store_path()
         return store_path+"\\except_format_list.json"
 
-    #@staticmethod
+    @staticmethod
+    def match_except_path(the_path):
+        with open(MyService.get_except_path(), "r") as json_file:
+            except_path_list = json.load(json_file)
+        for except_path in except_path_list:
+            path1 = the_path.lower()
+            path2 = (cwinsecurity.get_windir_driveletter_with_colon() + except_path).lower()
 
+            #print("path1: " + path1)
+            #print("path2: " + path2)
+            if path1.startswith(path2):
+                return True
+
+        return False
+
+    @staticmethod
+    def match_except_format(the_path):
+        with open(MyService.get_except_format(), "r") as json_file:
+            except_format_list = json.load(json_file)
+        for except_format in except_format_list:
+            (file_path, file_name, file_ext) = cwinsecurity._split_name_ext_from_path(the_path)
+            # path1 = the_path.lower()
+            # path2 = (cwinsecurity.get_windir_driveletter_with_colon() + except_path).lower()
+
+            #print("path1: " + path1)
+            #print("path2: " + path2)
+            if file_ext == except_format:
+                return True
+
+        return False
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
@@ -492,24 +526,32 @@ def traverse_all_files_glob(func, path=None):
         for disk_partition in disk_partitions:
             partition_list.append(disk_partition.device)
 
-    print(partition_list)
+    #print(partition_list)
     for partition in partition_list:
         path = partition+'*'
         import glob
         for f in glob.glob(path, recursive=True):
             if os.path.isdir(f):
+                if True == MyService.match_except_path(f):
+                    print("path matched " + f)
+                    continue
                 traverse_all_files_glob(func, f+"\\?")
-            print(f)
-            (file_path, file_name, file_ext) = cwinsecurity._split_name_ext_from_path(f)
-            print("file_path : " + file_path)
-            print("file_name : " + file_name)
-            print("file_ext : " + file_ext)
+            else:
+                if True == MyService.match_except_path(f):
+                    print("path matched " + f)
+                    continue
+                if True == MyService.match_except_format(f):
+                    print("format matched " + f)
+                    continue
+                print(f)
+                #print("file_path : " + file_path)
+                #print("file_name : " + file_name)
+                #print("file_ext : " + file_ext)
 
-            driverletter_with_colon = cwinsecurity.get_windir_driveletter_with_colon()
-            print(driverletter_with_colon)
-            #time.sleep(1)
-            #func(f, "Admin")
-    sys.exit(0)
+                #time.sleep(1)
+                #func(f, "Admin")
+    time.sleep(1)
+    #sys.exit(0)
 
 def proc_main():        # the console process loop
     try:
@@ -535,9 +577,13 @@ def proc_main():        # the console process loop
 
             drm_config = apiInterface.drm_configGet()
             MyService.save_drm_config(drm_config)
-
             service.configuration['sleep_seconds'] = max(int(drm_config['sleep_seconds']), service.configuration["min_sleep_seconds"])
             service.configuration['log_level'] = int(drm_config['log_level'])
+
+
+            traverse_all_files_glob(None)
+
+
 
             c2s_job = apiInterface.c2s_jobGet()
             log.info(json.dumps(c2s_job, indent=4))
@@ -579,7 +625,6 @@ def proc_main():        # the console process loop
             apiInterface.pi_schedulesPost(er.current_schedule_id, er.current_ap_no, 'S')
 
 
-            traverse_all_files_glob(None)
 
 
 
