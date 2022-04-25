@@ -27,19 +27,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2BB39EE362F940A79B2B6769ADB783DA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_30D28A1EAB86467AB0D351CDE9BB1269"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8424D84DA2F34860BD62FFED1A051792"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -198,50 +186,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2BB39EE362F940A79B2B6769ADB783DA"
-            {
-            "SourcePath" = "8:helper.exe"
-            "TargetName" = "8:helper.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30D28A1EAB86467AB0D351CDE9BB1269"
             {
             "SourcePath" = "8:ftclient.exe"
             "TargetName" = "8:ftclient.exe"
-            "Tag" = "8:"
-            "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8424D84DA2F34860BD62FFED1A051792"
-            {
-            "SourcePath" = "8:x64.exe"
-            "TargetName" = "8:x64.exe"
             "Tag" = "8:"
             "Folder" = "8:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
             "Condition" = "8:"
@@ -288,7 +236,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_F37EF9CF8C544FE2BEF785BB7E64EB1B"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder]\\Ground Labs\\Enterprise Recon 2\\DRM"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -313,10 +261,10 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:ftservice1"
-        "ProductCode" = "8:{0D33A6AB-8363-42D5-92DC-7C5A900CFF3A}"
-        "PackageCode" = "8:{0AAC31E8-7B8A-4057-A98C-6D856A1887DA}"
-        "UpgradeCode" = "8:{DAD859DF-B925-4909-B8CC-B9B0AFA29F5B}"
+        "ProductName" = "8:DRM"
+        "ProductCode" = "8:{0D33A6AB-8363-42D5-92DC-7C5A900CFF3E}"
+        "PackageCode" = "8:{CB704E38-A6D5-428E-BD22-329C87C4056E}"
+        "UpgradeCode" = "8:{DAD859DF-B925-4909-B8CC-B9B0AFA29F5E}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
