@@ -316,3 +316,5 @@ client/watchdog/__pycache__/events.cpython-39.pyc
 client/watchdog/__pycache__/version.cpython-39.pyc
 client/watchdog/__pycache__/watchmedo.cpython-39.pyc
 *.pyc
+installer/.vs/ftservice/v16/ipch/1779937c084a8b8d.ipch
+installer/.vs/ftservice/v16/ipch/ab4417a270e74df2.ipch

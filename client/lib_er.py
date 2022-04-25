@@ -320,10 +320,13 @@ class er_agent():
     # return:
     #   success - SCHEDULE ID (str)
     #   fail - None
-    def my_add_schedule(self, subpath_list):
+    def my_add_schedule(self, subpath_list, postfix = ""):
         #location_id = self.get_location_id_by_path(self.my_target_id, \
         #    self.LOCATION_ROOT) # TODO
-        new_label = self.my_hostname+"_"+datetime.now().strftime("%Y%m%d_%H%M%S")
+        new_label = self.my_hostname+"_"+datetime.now().strftime("%Y%m%d %H%M%S_DRM")
+
+        if "" != postfix:
+            new_label = new_label + "_" + postfix
         location_id = self.my_location_id
 
         location_list = []
