@@ -41,51 +41,49 @@ class MyLoggerTrick(PatternMatchingEventHandler):
 
   def do_log(self, event):
     reg_list = [
-        r"^\\Users\\.*\\AppData\\Local\\Temp\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\Google\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\Packages\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\Microsoft\\.*$",
-        r"^\\Users\\.*\\AppData\\Roaming\\Code\\.*$",
-        r"^\\Users\\.*\\AppData\\Roaming\\GitHub Desktop\\.*$",
-        r"^\\Users\\.*\\AppData\\Roaming\\Microsoft\\Windows\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\Programs\\Python\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\ConnectedDevicesPlatform\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\NVIDIA Corporation\\.*$",
-        r"^\\Users\\.*\\AppData\\Local\\Kakao\\KakaoTalk\\.*$",
-        r"^\\Users\\.*\\AppData\\LocalLow\\Microsoft\\.*$",
-        r"^\\Users\\.*\\Documents\\Virtual Machines\\.*$",       # TODO
-        r"^\\Users\\.*\\Desktop\\repos\\GitHub\\Python\\.*$",       # TODO
-        r"^\\Users\\.*\\VirtualBox VMs\\.*$",       # TODO
-        r"^\\Windows\\OffWrite.log.*$",
-        r"^\\Windows\\Softcamp\\.*$",
-        r"^\\Windows\\Logs\\.*$",
-        r"^\\Windows\\Prefetch\\.*$",
-        r"^\\Windows\\System32\\.*$",
-        r"^\\Windows\\ServiceState\\EventLog\\.*$",
-        r"^\\Windows\\ServiceProfiles\\NetworkService\\.*$",
-        r"^\\Windows\\ServiceProfiles\\LocalService\\.*$",
-        r"^\\Windows\\SysWOW64\\.*$",
-        r"^\\Windows\\Temp\\.*$",
-        r"^\\Windows\\SoftwareDistributions\\DataStore\\.*$",
-        r"^\\Program Files\\AhnLab\\.*$",
-        r"^\\Program Files \(x86\)\\Ground Labs\\.*$",
-        r"^\\Program Files \(x86\)\\Ground Labs\\Enterprise Recon 2\\.*$",
-        r"^\\ProgramData\\Microsoft\\EdgeUpdate\\.*$",
-        r"^\\ProgramData\\Microsoft\\Diagnosis\\.*$",
-        r"^\\ProgramData\\Microsoft\\Windows\\.*$",
-        r"^\\ProgramData\\Microsoft\\Search\\Data\\.*$",
-        r"^\\ProgramData\\NVIDIA Corporation\\.*$",
-        r"^\\ProgramData\\Packages\\.*$",
-        r"^\\ProgramData\\SoftCamp\\Logs\\.*$",
-        r"^\\ProgramData\\USOPrivate\\Logs\\.*$",
-        r"^\\ProgramData\\USOPrivate\\UpdateStore\\.*$",
-        r"^\\ProgramData\\USOShared\\Logs\\.*$",
-        r"^\\ProgramData\\VMware\\.*$",
-        r"^\\\$Recycle\.Bin\\.*$",
-        # TODO working dir
-        r"^\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git\\.*$",
-        # TODO working dir
-        r"^\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Temp\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Google\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Packages\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Microsoft\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Roaming\\Code\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Roaming\\GitHub Desktop\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Roaming\\Microsoft\\Windows\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Programs\\Python\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\ConnectedDevicesPlatform\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\NVIDIA Corporation\\.*$",
+        r"^.:\\Users\\.*\\AppData\\Local\\Kakao\\KakaoTalk\\.*$",
+        r"^.:\\Users\\.*\\AppData\\LocalLow\\Microsoft\\.*$",
+        r"^.:\\Users\\.*\\Documents\\Virtual Machines\\.*$",       # TODO
+        r"^.:\\Users\\.*\\Desktop\\repos\\GitHub\\Python\\.*$",       # TODO
+        r"^.:\\Users\\.*\\VirtualBox VMs\\.*$",       # TODO
+        r"^.:\\Windows\\OffWrite.log.*$",
+        r"^.:\\Windows\\Softcamp\\.*$",
+        r"^.:\\Windows\\Logs\\.*$",
+        r"^.:\\Windows\\Prefetch\\.*$",
+        r"^.:\\Windows\\System32\\.*$",
+        r"^.:\\Windows\\ServiceState\\EventLog\\.*$",
+        r"^.:\\Windows\\ServiceProfiles\\NetworkService\\.*$",
+        r"^.:\\Windows\\ServiceProfiles\\LocalService\\.*$",
+        r"^.:\\Windows\\SysWOW64\\.*$",
+        r"^.:\\Windows\\Temp\\.*$",
+        r"^.:\\Windows\\SoftwareDistributions\\DataStore\\.*$",
+        r"^.:\\Program Files\\AhnLab\\.*$",
+        r"^.:\\Program Files \(x86\)\\Ground Labs\\.*$",
+        r"^.:\\Program Files \(x86\)\\Ground Labs\\Enterprise Recon 2\\.*$",
+        r"^.:\\ProgramData\\Microsoft\\EdgeUpdate\\.*$",
+        r"^.:\\ProgramData\\Microsoft\\Diagnosis\\.*$",
+        r"^.:\\ProgramData\\Microsoft\\Windows\\.*$",
+        r"^.:\\ProgramData\\Microsoft\\Search\\Data\\.*$",
+        r"^.:\\ProgramData\\NVIDIA Corporation\\.*$",
+        r"^.:\\ProgramData\\Packages\\.*$",
+        r"^.:\\ProgramData\\SoftCamp\\Logs\\.*$",
+        r"^.:\\ProgramData\\USOPrivate\\Logs\\.*$",
+        r"^.:\\ProgramData\\USOPrivate\\UpdateStore\\.*$",
+        r"^.:\\ProgramData\\USOShared\\Logs\\.*$",
+        r"^.:\\ProgramData\\VMware\\.*$",
+        r"^.:\\\$Recycle\.Bin\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",
     ]
     for reg in reg_list:
         import re
@@ -117,6 +115,9 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         # sqlite3.fileinfo_delete(event.src_path)
         return
     else:
+        return
+
+    if MyService.match_DRM_file_list(target_path):
         return
 
     if event.is_directory:
@@ -153,7 +154,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         retstr = str(ret) + '(암호화된 문서)'
         self.log.info("file call_DSCSIsEncryptedFile : " +
                       target_path + ", " + retstr)
-        sqlite3.fileinfo_insert(target_path, filesize)
+        sqlite3.fileinfo_insert_with_size(target_path, filesize)
         self.log.info("file enqueued : " + target_path + ", " + retstr)
 
   def on_any_event(self, event):
@@ -161,6 +162,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         self.do_log(event)
     except Exception as e:
         # self.log.error(traceback.print_stack().replace("\n", ""))
+        self.log.error(traceback.print_stack())
         self.log.error(str(e))
 
 
@@ -302,6 +304,12 @@ class MyService:
             "recursive": True,
         }
 
+        disk_partitions = psutil.disk_partitions()
+        pathnames = []
+        for disk_partition in disk_partitions:
+            pathnames.append(disk_partition.mountpoint)
+        myarg['pathnames'] = pathnames
+
         patterns, ignore_patterns = parse_patterns(
             myarg['patterns'], myarg['ignore_patterns'])
         try:
@@ -337,7 +345,7 @@ class MyService:
         for except_path in except_path_list:
             the_path_list.append(except_path.lower())
         the_path_list.sort()
-        with open(MyService.get_except_path(), 'w') as outfile:
+        with open(MyService.get_path('except_path_list.json'), 'w') as outfile:
             json.dump(the_path_list, outfile, indent=4)
 
         except_format_list = drm_config['except_format'].split(',')
@@ -345,49 +353,120 @@ class MyService:
         for except_format in except_format_list:
             the_format_list.append(except_format.lower())
         the_format_list.sort()
-        with open(MyService.get_except_format(), 'w') as outfile:
+        with open(MyService.get_path('except_format_list.json'), 'w') as outfile:
             json.dump(the_format_list, outfile, indent=4)
 
     @staticmethod
-    def get_except_path():
-        store_path = MyService.get_store_path()
-        return store_path+"\\except_path_list.json"
+    def get_searching_flag_conf():
+        try:
+            with open(MyService.get_path('searching_flag_conf.json'), "r") as json_file:
+                searching_flag_conf = json.load(json_file)
+                MyService.searching_flag_conf = searching_flag_conf
+                return searching_flag_conf['flag']
+        except FileNotFoundError as e:
+            log.error(e)
+            return False
+
+        return False
 
     @staticmethod
-    def get_except_format():
-        store_path = MyService.get_store_path()
-        return store_path+"\\except_format_list.json"
+    def set_searching_flag_conf():
+        the_list = {
+            "flag": True,
+        }
+        with open(MyService.get_path('searching_flag_conf.json'), 'w') as outfile:
+            json.dump(the_list, outfile, indent=4)
+
+    @staticmethod
+    def unset_searching_flag_conf():
+        os.system("del "+MyService.get_path('searching_flag_conf.json'))
+
+    @staticmethod
+    def load_except_path_list():
+        with open(MyService.get_path('except_path_list.json'), "r") as json_file:
+            except_path_list = json.load(json_file)
+            MyService.except_path_list = except_path_list
+
+        MyService.except_path_list.extend(MyService.get_DRM_file_list())
+
+    @staticmethod
+    def load_except_format_list():
+        with open(MyService.get_path('except_format_list.json'), "r") as json_file:
+            except_format_list = json.load(json_file)
+            MyService.except_format_list = except_format_list
 
     @staticmethod
     def match_except_path(the_path):
-        with open(MyService.get_except_path(), "r") as json_file:
-            except_path_list = json.load(json_file)
-        for except_path in except_path_list:
+        for except_path in MyService.except_path_list:
             path1 = the_path.lower()
             path2 = (cwinsecurity.get_windir_driveletter_with_colon() + except_path).lower()
-
-            #print("path1: " + path1)
-            #print("path2: " + path2)
+            #print("<-->: "+path1 +", "+path2)
             if path1.startswith(path2):
                 return True
 
         return False
 
     @staticmethod
-    def match_except_format(the_path):
-        with open(MyService.get_except_format(), "r") as json_file:
-            except_format_list = json.load(json_file)
-        for except_format in except_format_list:
+    def match_blacklist_format(the_path):
+        MyService.except_format_blacklist = [
+            #".pptx",
+            #".txt",
+            #".xlsx",
+            ".docx",
+        ]
+        for except_format in MyService.except_format_blacklist:
             (file_path, file_name, file_ext) = cwinsecurity._split_name_ext_from_path(the_path)
-            # path1 = the_path.lower()
-            # path2 = (cwinsecurity.get_windir_driveletter_with_colon() + except_path).lower()
-
-            #print("path1: " + path1)
-            #print("path2: " + path2)
-            if file_ext == except_format:
+            if file_ext.lower() == except_format.lower():
+                #print("format matched:"+file_ext)
                 return True
 
         return False
+
+    @staticmethod
+    def match_except_format(the_path):
+        for except_format in MyService.except_format_list:
+            (file_path, file_name, file_ext) = cwinsecurity._split_name_ext_from_path(the_path)
+            if file_ext.lower() == except_format.lower():
+                #print("format matched:"+file_ext)
+                return True
+
+        return False
+
+    @staticmethod
+    def get_DRM_file_list():
+        DRM_file_list = [
+            MyService.get_path('configuration.json'),
+            MyService.get_path('except_path_list.json'),
+            MyService.get_path('except_format_list.json'),
+            MyService.get_path('searching_flag_conf.json'),
+            MyService.get_path('state.db'),
+        ]
+        return DRM_file_list
+
+    @staticmethod
+    def match_DRM_file_list(the_path):
+        if the_path in MyService.get_DRM_file_list():
+            return True
+        return False
+
+    @staticmethod
+    def get_path(pathtype):
+        if '' == MyService.user_id:
+            MyService.user_id = os.getenv('USERNAME')
+        userprofile = cwinsecurity.get_windir_driveletter_with_colon()+"\\Users\\"+MyService.user_id
+        if 'configuration.json' == pathtype:
+            the_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        elif 'except_path_list.json' == pathtype:
+            the_path = (userprofile+"\\AppData\\Local\\Temp\\except_path_list.json")
+        elif 'except_format_list.json' == pathtype:
+            the_path = (userprofile+"\\AppData\\Local\\Temp\\except_format_list.json")
+        elif 'searching_flag_conf.json' == pathtype:
+            the_path = (userprofile+"\\AppData\\Local\\Temp\\searching_flag_conf.json")
+        elif 'state.db' == pathtype:
+            the_path = (userprofile+"\\AppData\\Local\\Temp\\state.db")
+
+        return the_path
+
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
@@ -526,31 +605,36 @@ def traverse_all_files_glob(func, path=None):
         for disk_partition in disk_partitions:
             partition_list.append(disk_partition.device)
 
-    #print(partition_list)
     for partition in partition_list:
         path = partition+'*'
+        #log.info("path: " + path)
         import glob
         for f in glob.glob(path, recursive=True):
+            if True == MyService.match_except_path(f):
+                continue
+
             if os.path.isdir(f):
-                if True == MyService.match_except_path(f):
-                    print("path matched " + f)
-                    continue
+                log.info("searching on : "+f)
                 traverse_all_files_glob(func, f+"\\?")
             else:
-                if True == MyService.match_except_path(f):
-                    print("path matched " + f)
+                if True == MyService.match_blacklist_format(f):
+                    log.info("##################### for faster output " + f)
+                    func(f)
                     continue
+
                 if True == MyService.match_except_format(f):
-                    print("format matched " + f)
+                    #log.info("format matched " + f)
+                    #print("f", end="", flush=True)
                     continue
-                print(f)
+                else:
+                    log.info("format ###### " + f)
+                    func(f)
+                #log.info(f)
                 #print("file_path : " + file_path)
                 #print("file_name : " + file_name)
                 #print("file_ext : " + file_ext)
-
-                #time.sleep(1)
                 #func(f, "Admin")
-    time.sleep(1)
+    #time.sleep(1)
     #sys.exit(0)
 
 def proc_main():        # the console process loop
@@ -566,22 +650,46 @@ def proc_main():        # the console process loop
     log.debug(service.configuration)
 
     from lib_winsec import cwinsecurity
-    log.info("restAPI client's integrity level: " + cwinsecurity.get_integrity_level(log))
+    log.info("API client's integrity level: " + cwinsecurity.get_integrity_level(log))
 
     while True:
         # GET JOB
         try:
-            from lib_apiinterface import cApiInterface
+            from libsqlite3 import csqlite3
+            sqlite3 = csqlite3(name=(MyService.get_store_path() + "\\state.db"), log=log)
 
+            from lib_apiinterface import cApiInterface
             apiInterface = cApiInterface(service.configuration['server_address'], log)
 
             drm_config = apiInterface.drm_configGet()
             MyService.save_drm_config(drm_config)
+            MyService.load_except_path_list()
+            MyService.load_except_format_list()
             service.configuration['sleep_seconds'] = max(int(drm_config['sleep_seconds']), service.configuration["min_sleep_seconds"])
             service.configuration['log_level'] = int(drm_config['log_level'])
 
+            if False == MyService.get_searching_flag_conf():
+                traverse_all_files_glob(sqlite3.fileinfo_insert)
+                MyService.set_searching_flag_conf()
 
-            traverse_all_files_glob(None)
+            if False == dscs_dll.isAvailable():
+                raise NameError('DSCS is not available')
+
+
+
+            # get config to connect to Recon
+            v_drm_schedule = apiInterface.v_drm_scheduleGet()
+            er.load_v_drm_schedule(v_drm_schedule)
+            log.debug(json.dumps(v_drm_schedule, indent=4))
+
+
+
+
+            if False == er.isAvailable():
+                raise NameError('Recon is not available')
+
+
+
 
 
 
@@ -616,10 +724,8 @@ def proc_main():        # the console process loop
             }
             c2s_job_post = apiInterface.c2s_jobPost(post_data)
 
+
             # region ER node interface [[[[[[[[[[[[[[[[[[[[
-            v_drm_schedule = apiInterface.v_drm_scheduleGet()
-            er.load_v_drm_schedule(v_drm_schedule)
-            log.debug(json.dumps(v_drm_schedule, indent=4))
 
             # update V DRM schedule
             apiInterface.pi_schedulesPost(er.current_schedule_id, er.current_ap_no, 'S')
@@ -635,16 +741,7 @@ def proc_main():        # the console process loop
 
 
 
-            if False == dscs_dll.isAvailable():
-                raise NameError('DSCS is not available')
-            if False == er.isAvailable():
-                raise NameError('Recon is not available')
 
-            from libsqlite3 import csqlite3
-            userprofile = os.getenv("userprofile", "")
-            db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
-            log.debug("db path: " + db_path)
-            sqlite3 = csqlite3(name=db_path, log=log)
 
             # proc queued
             file_list = sqlite3.fileinfo_select(state='queued')
@@ -663,10 +760,7 @@ def proc_main():        # the console process loop
                     sqlite3.fileinfo_update_state(filepath=file_path, state="decrypted")
 
                     # TODO add schedule
-                    schedule_id = er.my_add_schedule(subpath_list=[
-                        filepath2,
-                        # '\\users\\danny\\desktop\\s3.txt',
-                    ])
+                    schedule_id = er.my_add_schedule(subpath_list=[filepath2], postfix=str(file_id))
                     sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
                     log.info("schedule added " + str(schedule_id))
 
@@ -762,7 +856,7 @@ def proc_install():
         elif "closedown" == sys.argv[1]:
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
-            # os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
             os.system("\"" + sys.argv[0] + "\" remove")
@@ -810,17 +904,25 @@ def proc_install():
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
             os.system("taskkill /F /IM ftclient.exe")
-            time.sleep(1)
+            #time.sleep(1)
             os.system("taskkill /F /IM ftclient.exe")
             sys.exit(0)
         elif "list" == sys.argv[1]:
             os.system("tasklist | findstr \"ftclient.exe\"")
             sys.exit(0)
         elif "open_except_path_json" == sys.argv[1]:
-            os.system("code "+MyService.get_except_path())
+            os.system("code "+MyService.get_path('except_path_list.json'))
             sys.exit(0)
         elif "open_except_format_json" == sys.argv[1]:
-            os.system("code "+MyService.get_except_format())
+            os.system("code "+MyService.get_path('except_format_list.json'))
+            sys.exit(0)
+        elif "unset_searching_flag_conf" == sys.argv[1]:
+            MyService.unset_searching_flag_conf()
+            sys.exit(0)
+        elif "disk_partitions" == sys.argv[1]:
+            disk_partitions = psutil.disk_partitions()
+            print(disk_partitions[0])
+            print(json.dumps(disk_partitions, indent=4))
             sys.exit(0)
         '''            
         elif "debug" == sys.argv[1]:
