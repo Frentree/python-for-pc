@@ -26,10 +26,18 @@ class csqlite3:
     def __del__(self):
         self.con.close()
 
-    def fileinfo_insert(self, filepath, filesize = None):
+    def fileinfo_insert(self, filepath):
+        filesize = os.path.getsize(filepath)
+        self.fileinfo_insert_with_size(filepath, filesize)
+
+    def _filepath_preproc(self, filepath):
+        return filepath.replace("'", "''")
+
+    def fileinfo_insert_with_size(self, filepath, filesize):
         if None == filesize:
             filesize = os.path.getsize(filepath)
 
+        filepath = self._filepath_preproc(filepath)
         # sql_cmd = "INSERT INTO fileinfo (filepath, filesize, state) VALUES ('" + \
         #     filepath + "', " + \
         #     str(filesize) + ", " + \
@@ -71,18 +79,21 @@ class csqlite3:
         return rows
 
     def fileinfo_update_state(self, filepath, state):
+        filepath = self._filepath_preproc(filepath)
         condition = "WHERE filepath='"+ filepath +"'"
         sql_cmd = "UPDATE fileinfo SET state='"+state+"' " + condition
         self.cur.execute(sql_cmd)
         self.con.commit()
 
     def fileinfo_delete(self, filepath):
+        filepath = self._filepath_preproc(filepath)
         condition = "WHERE filepath='"+ filepath +"'"
         sql_cmd = "DELETE from fileinfo " + condition
         self.cur.execute(sql_cmd)
         self.con.commit()
 
     def fileinfo_update_schedule_id(self, filepath, schedule_id):
+        filepath = self._filepath_preproc(filepath)
         condition = "WHERE filepath='"+ filepath +"'"
         sql_cmd = "UPDATE fileinfo SET schedule_id='"+schedule_id+"' " + condition
         self.cur.execute(sql_cmd)
