@@ -21,14 +21,15 @@ class er_agent():
     userpw_encoded = 'ZnJlbjEyMTI='
     my_profile_label = "label1"# "frentree"
     LOCATION_ROOT = "C:"
+    my_location_id = ''
+    my_datatype_profile_id = ''
+    my_target_id = ''
 
     def __init__(self, log = None, er_host_addr = None):
         self.DEBUG_ON = True
 
         import platform
         self.my_hostname = platform.node()
-        #self.my_hostname = 'DESKTOP-J6FK55A'      # NOTE: dev
-        # target name: DESKTOP-J6FK55A ==> vbox vm win, id: 14952095194870184286
 
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self.log = logclass()
@@ -52,11 +53,9 @@ class er_agent():
             print("default group id " + self.default_group_id)
             self.create_server_target(self.my_hostname, self.default_group_id)
         locations = self.my_list_locations()
-        # for location in locations:
-        #     print("#################### my location ################")
-        #     print(json.dumps(location, indent=4))
         if 0 == len(locations):
             self.location_add_local(self.my_target_id, "C:")
+        self.my_location_id = ''
 
     def isAvailable(self):
         my_list = [
@@ -280,7 +279,7 @@ class er_agent():
     def is_schedule_completed(self, schedule_id):
         try:
             result = self.list_schedules(schedule_id)
-            self.log.info("SCHEDULE " + str(result))
+            self.log.info(json.dumps(result, indent=4))
             if 'targets' not in result: return False
             if len(result['targets']) < 1: return False
             if 'locations' not in result['targets'][0]: return False
@@ -312,7 +311,7 @@ class er_agent():
                 self.my_datatype_profile_id,
             ],
         }
-        self.log.info(data)
+        self.log.info(json.dumps(data, indent=4))
         ret = self.request('post', '/schedules', payload=json.dumps(data))
         return ret
 
