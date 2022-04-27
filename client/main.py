@@ -26,7 +26,15 @@ from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from lib_winsec import cwinsecurity
 
-config_logging()
+
+
+GLOBAL_ENV = {
+    "INITIAL_LOGGING_LEVEL": logging.INFO,
+    "DB_PATH_POSTFIX": "\\AppData\\Local\\Temp\\state.db",
+}
+
+
+config_logging(GLOBAL_ENV["INITIAL_LOGGING_LEVEL"])
 
 
 class MyLoggerTrick(PatternMatchingEventHandler):
@@ -100,7 +108,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     if '' == MyService.user_id:
         MyService.user_id = os.getenv('USERNAME')
     userprofile = mount_points[0]+"\\Users\\"+MyService.user_id
-    db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+    db_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
     self.log.debug("db path: " + db_path)
     sqlite3 = csqlite3(name=db_path, log=self.log)
 
@@ -316,8 +324,12 @@ class MyService:
         disk_partitions = psutil.disk_partitions()
         pathnames = []
         for disk_partition in disk_partitions:
-            pathnames.append(disk_partition.mountpoint)
+            if '' != disk_partition.fstype:
+                pathnames.append(disk_partition.mountpoint)
         myarg['pathnames'] = pathnames
+        log.info(pathnames)
+        log.info(disk_partitions)
+        log.info(json.dumps(disk_partitions, indent=4))
 
         patterns, ignore_patterns = parse_patterns(
             myarg['patterns'], myarg['ignore_patterns'])
@@ -325,8 +337,8 @@ class MyService:
             try:
                 dscs_dll = Dscs_dll()
             except FileNotFoundError as e:
+                log.error(traceback.print_stack())
                 log.error(e)
-                # sys.exit(0)
                 return
 
             handler = MyLoggerTrick(patterns=patterns,
@@ -472,28 +484,31 @@ class MyService:
         elif 'searching_flag_conf.json' == pathtype:
             the_path = (userprofile+"\\AppData\\Local\\Temp\\searching_flag_conf.json")
         elif 'state.db' == pathtype:
-            the_path = (userprofile+"\\AppData\\Local\\Temp\\state.db")
+            the_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
 
         return the_path
 
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
-    _svc_name_ = 'MyService1'
-    _svc_display_name_ = 'My Service display name'
+    _svc_name_ = 'MyService'
+    _svc_display_name_ = _svc_name_
+    _svc_description_ = _svc_name_ + " description"
+
+    def __init__(self, args):
+        win32serviceutil.ServiceFramework.__init__(self, args)
+        #self.hWaitStop = threading.Event()
+        #self.thread = workingthread(self.hWaitStop)
 
     def SvcStop(self):
-        """Stop the service"""
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        self.hWaitStop.set()
         self.service_impl.stop()
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
     def SvcDoRun(self):
         """Start the service; does not return until stopped"""
-        self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
         log.info("##################################### SVC DO RUN")
         self.service_impl = MyService()
-        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
         # Run the service
         self.service_impl.run()
@@ -512,7 +527,7 @@ def init():
 def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
     from libsqlite3 import csqlite3
     userprofile = os.getenv("userprofile", "")
-    db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
+    db_path = (userprofile+"\\AppData\\Local\\Temp\\state.db")
     log.info("db path: " + db_path)
     sqlite3 = csqlite3(name=db_path, log=log)
 
@@ -893,11 +908,10 @@ def proc_main():        # the console process loop
             time.sleep(sleep_seconds) # Important work
 
 def proc_install():
-    from lib_winsec import cwinsecurity
-    mount_points = cwinsecurity._get_mount_points()
-    SC_PATH = mount_points[0]+"windows\\system32\\sc"
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
+            mount_points = cwinsecurity._get_mount_points()
+            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
@@ -912,6 +926,8 @@ def proc_install():
             time.sleep(1)
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
+            mount_points = cwinsecurity._get_mount_points()
+            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
@@ -956,7 +972,9 @@ def proc_install():
             job_path = 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt'
             dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
-        elif "stop" == sys.argv[1]:
+        elif "stop_svc" == sys.argv[1]:
+            mount_points = cwinsecurity._get_mount_points()
+            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
@@ -964,7 +982,7 @@ def proc_install():
             #time.sleep(1)
             os.system("taskkill /F /IM ftclient.exe")
             sys.exit(0)
-        elif "list" == sys.argv[1]:
+        elif "tasklist" == sys.argv[1]:
             os.system("tasklist | findstr \"ftclient.exe\"")
             sys.exit(0)
         elif "open_except_path_json" == sys.argv[1]:
@@ -990,7 +1008,7 @@ def proc_install():
             log.info("IO: " + str(p.io_counters()))
             log.info("MEMORY: " + str(p.memory_info()))
             sys.exit(0)
-        elif "remove" == sys.argv[1]:
+        elif "remove_svc" == sys.argv[1]:
             MyService.unset_searching_flag_conf()
             os.system("del " + MyService.get_path('state.db'))
             mount_points = cwinsecurity._get_mount_points()
@@ -1038,7 +1056,6 @@ if __name__ == '__main__':
         full_dirpath = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM"
         exe_name = "ftclient.exe"
         full_path = "\"" + install_path + exe_name + "\""
-        log.info("FTCLIENT11")
         if (len(sys.argv) == 1 and False == os.path.isfile(install_path + exe_name)):
             MyService.unset_searching_flag_conf()
 
@@ -1046,7 +1063,7 @@ if __name__ == '__main__':
             mount_points = cwinsecurity._get_mount_points()
             SC_PATH = mount_points[0]+"windows\\system32\\sc"
             cmd_list = [
-                SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+                #SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
                 SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
                 SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
                 'taskkill /f /im '+exe_name,
@@ -1071,8 +1088,6 @@ if __name__ == '__main__':
             #cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
             #os.system(cmd)
             sys.exit(0)
-        log.info("FTCLIENT2")
-
         log.info(str(sys.argv))
         MyService.self_path = executable#sys.argv[0]
         proc_install()
