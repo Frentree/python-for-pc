@@ -25,6 +25,7 @@ from watchdog.tricks import LoggerTrick
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from lib_winsec import cwinsecurity
+from libsqlite3 import csqlite3
 
 
 
@@ -525,11 +526,7 @@ def init():
 
 
 def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
-    from libsqlite3 import csqlite3
-    userprofile = os.getenv("userprofile", "")
-    db_path = (userprofile+"\\AppData\\Local\\Temp\\state.db")
-    log.info("db path: " + db_path)
-    sqlite3 = csqlite3(name=db_path, log=log)
+    sqlite3 = csqlite3(name=MyService.get_path('state.db'), log=log)
 
     job_type = cmd['type']
     job_path = cmd['path']
@@ -676,9 +673,7 @@ def proc_main():        # the console process loop
     while True:
         # GET JOB
         try:
-            from libsqlite3 import csqlite3
-            log.debug("DB: " + MyService.get_store_path() + "\\state.db")
-            sqlite3 = csqlite3(name=(MyService.get_store_path() + "\\state.db"), log=log)
+            sqlite3 = csqlite3(name=MyService.get_path('state.db'), log=log)
 
             from lib_apiinterface import cApiInterface
             apiInterface = cApiInterface(service.configuration['server_address'], log)
@@ -939,12 +934,7 @@ def proc_install():
             proc_main()
             sys.exit(0)
         elif "insert_into_db" == sys.argv[1]:
-            from libsqlite3 import csqlite3
-            workdir_path = ntpath.dirname(sys.executable)
-            userprofile = os.getenv("userprofile", "")
-            db_path = (userprofile+"\\AppData\\Local\\Temp" + "\\state.db")
-            log.info("db path: " + db_path)
-            sqlite3 = csqlite3(name=db_path, log=log)
+            sqlite3 = csqlite3(name=MyService.get_path('state.db'), log=log)
 
             file_list = [
                 'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11.txt',
@@ -960,11 +950,6 @@ def proc_install():
             ]
             for filepath in file_list:
                 sqlite3.fileinfo_insert(filepath)
-            print("db path: " + workdir_path + '\\state.db')
-            # os.system('"C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe" ' + \
-            #    workdir_path + '\\state.db')
-            # subprocess.run(["C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe", \
-            #    workdir_path + '\\state.db'], stdout=subprocess.PIPE)
             sys.exit(0)
         elif "test_dscs" == sys.argv[1]:
             dscs_dll = Dscs_dll()
