@@ -3,6 +3,7 @@
 
 #include "framework.h"
 #include "SilentInstaller.h"
+#include <Psapi.h>
 
 #define MAX_LOADSTRING 100
 
@@ -73,8 +74,26 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    TCHAR szBuffer[MAX_PATH] = { 0 };
-    RunSilentEx(szBuffer, TEXT("package.exe"), TRUE);
+    TCHAR szBuffer[MAX_PATH] = _T("");
+
+    TCHAR szImagePath[MAX_PATH] = { 0, };
+    ZeroMemory(szImagePath, sizeof(szImagePath));
+    GetProcessImageFileName(GetCurrentProcess(), szImagePath, (sizeof(szImagePath) / sizeof(TCHAR)));
+    {
+        
+        TCHAR* filePart = _tcsrchr(szImagePath, '\\');
+        if (filePart) // strip off the leading device\path information
+            _tcscat_s(szBuffer, filePart + 1);
+        if (0 == _tcscmp(TEXT("install.exe"), szBuffer))
+        {
+            RunSilentEx(TEXT("package.exe"), TEXT(""), TRUE);
+        }
+        if (0 == _tcscmp(TEXT("uninstall.exe"), szBuffer))
+        {
+            RunSilentEx(TEXT("package.exe"), TEXT(" remove_svc"), TRUE);
+        }
+    }
+
     return 0;
 
     // TODO: Place code here.

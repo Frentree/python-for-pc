@@ -385,3 +385,7 @@ SilentInstaller/Release/SilentInstaller.tlog/SilentInstaller.write.1u.tlog
 SilentInstaller/Release/SilentInstaller.vcxproj.FileListAbsolute.txt
 SilentInstaller/Release/SilentInstaller.vcxproj.FileListAbsolute_decrypted.txt
 SilentInstaller/Release/vc142.pdb
+SilentInstaller/Release/SilentInstaller.pdb
+SilentInstaller/Release/SilentInstaller.ipdb
+SilentInstaller/Release/SilentInstaller.iobj
+SilentInstaller/Release/SilentInstaller.Build.CppClean.log
