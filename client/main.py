@@ -84,6 +84,9 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^.:\\\$Recycle\.Bin\\.*$",
         r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git\\.*$",
         r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",
+
+        r"^.:\\.*\\.*\.tsp$",
+        r"^.:\\.*\\.*\.tmp$",
     ]
     for reg in reg_list:
         import re
@@ -223,6 +226,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
 class MyService:
     """ application stub"""
     user_id = ""
+    prev_network_usage = None
 
     configuration = {
         "debug": True,
@@ -238,7 +242,11 @@ class MyService:
     self_path = ""
 
     def __init__(self):
-        self.load_config()
+        log.info("MyService __init__")
+        try:
+            self.load_config()
+        except Exception as e:
+            log.error(e)
 
     def stop(self):
         """Stop the service"""
@@ -260,7 +268,7 @@ class MyService:
             with open(conf_path, "r", encoding="utf-8-sig") as json_conf_file:
                 file_content = json_conf_file.read()
                 configuration = json.loads(file_content)
-        configuration['hostname'] = self.get_hostname()
+        configuration['hostname'] = MyService.get_hostname()
         configuration['min_sleep_seconds'] = 1
         # log.info(configuration)
 
@@ -289,7 +297,8 @@ class MyService:
             except FileNotFoundError as e:
                 log.error(str(e))
 
-    def get_hostname(self):
+    @staticmethod
+    def get_hostname():
         return os.getenv("COMPUTERNAME", "")
 
     def run(self):      # the service process loop
@@ -298,7 +307,7 @@ class MyService:
 
         myarg = {
             "patterns": "*",  # "*.txt",#;*.tmp",
-            "ignore_patterns": "*.dll;*.pyd;*.exe",  # "*.log;/$Recycle.Bin*",
+            "ignore_patterns": "*.tmp;*.dll;*.pyd;*.exe",  # "*.log;/$Recycle.Bin*",
             "timeout": 5,
             "pathnames": ['\\'],
             "recursive": True,
@@ -409,9 +418,9 @@ class MyService:
     @staticmethod
     def match_blacklist_format(the_path):
         MyService.except_format_blacklist = [
-            #".pptx",
-            #".txt",
-            #".xlsx",
+            ".pptx",
+            ".txt",
+            ".xlsx",
             ".docx",
         ]
         for except_format in MyService.except_format_blacklist:
@@ -470,7 +479,7 @@ class MyService:
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
-    _svc_name_ = 'MyService'
+    _svc_name_ = 'MyService1'
     _svc_display_name_ = 'My Service display name'
 
     def SvcStop(self):
@@ -482,6 +491,7 @@ class MyServiceFramework(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):
         """Start the service; does not return until stopped"""
         self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
+        log.info("##################################### SVC DO RUN")
         self.service_impl = MyService()
         self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
@@ -607,7 +617,6 @@ def traverse_all_files_glob(func, path=None):
 
     for partition in partition_list:
         path = partition+'*'
-        #log.info("path: " + path)
         import glob
         for f in glob.glob(path, recursive=True):
             if True == MyService.match_except_path(f):
@@ -618,7 +627,7 @@ def traverse_all_files_glob(func, path=None):
                 traverse_all_files_glob(func, f+"\\?")
             else:
                 if True == MyService.match_blacklist_format(f):
-                    log.info("##################### for faster output " + f)
+                    log.info("##### Format matched: " + f)
                     func(f)
                     continue
 
@@ -627,15 +636,12 @@ def traverse_all_files_glob(func, path=None):
                     #print("f", end="", flush=True)
                     continue
                 else:
-                    log.info("format ###### " + f)
+                    log.info("##### format matched : " + f)
                     func(f)
-                #log.info(f)
                 #print("file_path : " + file_path)
                 #print("file_name : " + file_name)
                 #print("file_ext : " + file_ext)
                 #func(f, "Admin")
-    #time.sleep(1)
-    #sys.exit(0)
 
 def proc_main():        # the console process loop
     try:
@@ -656,6 +662,7 @@ def proc_main():        # the console process loop
         # GET JOB
         try:
             from libsqlite3 import csqlite3
+            log.debug("DB: " + MyService.get_store_path() + "\\state.db")
             sqlite3 = csqlite3(name=(MyService.get_store_path() + "\\state.db"), log=log)
 
             from lib_apiinterface import cApiInterface
@@ -667,29 +674,66 @@ def proc_main():        # the console process loop
             MyService.load_except_format_list()
             service.configuration['sleep_seconds'] = max(int(drm_config['sleep_seconds']), service.configuration["min_sleep_seconds"])
             service.configuration['log_level'] = int(drm_config['log_level'])
+            sleep_seconds = max(service.configuration["min_sleep_seconds"],
+                service.configuration["sleep_seconds"])
+            log.debug("sleep " + str(sleep_seconds) + " seconds")
+
 
             if False == MyService.get_searching_flag_conf():
                 traverse_all_files_glob(sqlite3.fileinfo_insert)
                 MyService.set_searching_flag_conf()
 
+
+
+
+
+            # [[ cardrecon process
+            # process name pattern : 53cardrecon193247928347982
+            cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
+            log.info("cardrecon pid : " + str(cardrecon_pid))
+            p = psutil.Process(cardrecon_pid)
+            if None != p:
+                specific_cpu = str(p.cpu_percent()) + "/" + str(psutil.cpu_count())
+                specific_memory = str(p.memory_percent()) + "%"
+            #log.info("CPU : " + str(lib_cpu_usage()))
+            #print(json.dumps(lib_cpu_usage(), indent=4))
+            #print(json.dumps(p.io_counters(), indent=4))
+            #print(json.dumps(p.memory_info(), indent=4))
+            #log.info("IO: " + str(p.io_counters()))
+            #log.info("MEMORY: " + str(p.memory_info()))
+            if None == MyService.prev_network_usage:
+                MyService.prev_network_usage = \
+                    (psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv)
+                new_network_usage = MyService.prev_network_usage
+            else:
+                MyService.prev_network_usage = new_network_usage
+                new_network_usage = \
+                    (psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv)
+            network_usage = (new_network_usage - MyService.prev_network_usage) / sleep_seconds
+            post_data = {
+                'hostname'        : MyService.get_hostname(),
+                'total_cpu'       : str(lib_cpu_usage()) + "/" + str(psutil.cpu_count()),
+                'total_disk'      : str(lib_disk_usage()) + "%",
+
+                'new' : new_network_usage,
+                'pre' : MyService.prev_network_usage,
+
+                'total_network'   : str(network_usage) + "bytes per "+str(sleep_seconds)+" seconds",
+                'specific_cpu'    : specific_cpu,
+                'specific_memory' : specific_memory,
+                'specific_disk'   : 0,
+                'specific_network': 0,
+            }
+            log.debug(json.dumps(post_data, indent=4))
+            log.debug("cpu count: " + str(psutil.cpu_count()))
+
+            #log.info(json.dumps(p.net_io_counters(), indent=4))
+
+            c2s_job = apiInterface.drm_resourcePost(post_data)
+            # ]] cardrecon process
+
             if False == dscs_dll.isAvailable():
                 raise NameError('DSCS is not available')
-
-
-
-            # get config to connect to Recon
-            v_drm_schedule = apiInterface.v_drm_scheduleGet()
-            er.load_v_drm_schedule(v_drm_schedule)
-            log.debug(json.dumps(v_drm_schedule, indent=4))
-
-
-
-
-            if False == er.isAvailable():
-                raise NameError('Recon is not available')
-
-
-
 
 
 
@@ -702,38 +746,56 @@ def proc_main():        # the console process loop
                 job_result_list.append(job_result)
                 log.info(json.dumps(job_result, indent=4, ensure_ascii=False))
 
+
+
+
+
+
             # [[ cardrecon process
             # process name pattern : 53cardrecon193247928347982
-            cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
-            log.debug("cardrecon pid : " + str(cardrecon_pid))
-            p = psutil.Process(cardrecon_pid)
-            log.debug("CPU : " + str(lib_cpu_usage()))
-            log.debug("IO: " + str(p.io_counters()))
-            log.debug("MEMORY: " + str(p.memory_info()))
+            # cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
+            # log.debug("cardrecon pid : " + str(cardrecon_pid))
+            # p = psutil.Process(cardrecon_pid)
+            # log.debug("CPU : " + str(lib_cpu_usage()))
+            # log.debug("IO: " + str(p.io_counters()))
+            # log.debug("MEMORY: " + str(p.memory_info()))
             # ]] cardrecon process
 
             # POST JOB RESULT
             post_data = {
                 'job_results' : job_result_list,
-                'resource_usages' : {
-                    'virtual_memory': lib_virtual_memory(),
-                    'cpu_usage': lib_cpu_usage(),
-                    'net_io_counters': lib_net_io_counters(),
-                    'disk_usage': lib_disk_usage(),
-                }
+                # 'resource_usages' : {
+                #     'virtual_memory': lib_virtual_memory(),
+                #     'cpu_usage': lib_cpu_usage(),
+                #     'net_io_counters': lib_net_io_counters(),
+                #     'disk_usage': lib_disk_usage(),
+                # }
             }
             c2s_job_post = apiInterface.c2s_jobPost(post_data)
 
 
+
+
+
+            # get config to connect to Recon
+            v_drm_schedule = apiInterface.v_drm_scheduleGet()
+            er.load_v_drm_schedule(v_drm_schedule)
+            log.debug(json.dumps(v_drm_schedule, indent=4))
+
+
+
+            if False == er.isAvailable():
+                raise NameError('Recon is not available')
+
             # region ER node interface [[[[[[[[[[[[[[[[[[[[
+
+
+
+
+
 
             # update V DRM schedule
             apiInterface.pi_schedulesPost(er.current_schedule_id, er.current_ap_no, 'S')
-
-
-
-
-
 
 
 
@@ -824,10 +886,6 @@ def proc_main():        # the console process loop
             log.error(str(e))
             return
         finally:
-            sleep_seconds = max(service.configuration["min_sleep_seconds"],
-                service.configuration["sleep_seconds"])
-            log.debug("sleep " + str(sleep_seconds) + " seconds")
-
             if logging.INFO == service.configuration['log_level'] or logging.DEBUG == service.configuration['log_level']:
                 log.setLevel(service.configuration['log_level'])
                 setLogLevel(service.configuration['log_level'])
@@ -859,8 +917,6 @@ def proc_install():
             os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
-            os.system("\"" + sys.argv[0] + "\" remove")
-            time.sleep(1)
             sys.exit(0)
         elif "do_job" == sys.argv[1]:
             log.debug("DO_JOB")
@@ -901,6 +957,7 @@ def proc_install():
             dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
         elif "stop" == sys.argv[1]:
+            os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
             os.system("taskkill /F /IM ftclient.exe")
@@ -923,6 +980,35 @@ def proc_install():
             disk_partitions = psutil.disk_partitions()
             print(disk_partitions[0])
             print(json.dumps(disk_partitions, indent=4))
+            sys.exit(0)
+        elif "resource_monitor" == sys.argv[1]:
+            #cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
+            cardrecon_pid = lib_get_pid_by_name_reg(r'python*')
+            log.info("cardrecon pid : " + str(cardrecon_pid))
+            p = psutil.Process(cardrecon_pid)
+            log.info("CPU : " + str(lib_cpu_usage()))
+            log.info("IO: " + str(p.io_counters()))
+            log.info("MEMORY: " + str(p.memory_info()))
+            sys.exit(0)
+        elif "remove" == sys.argv[1]:
+            MyService.unset_searching_flag_conf()
+            os.system("del " + MyService.get_path('state.db'))
+            mount_points = cwinsecurity._get_mount_points()
+            SC_PATH = mount_points[0]+"windows\\system32\\sc"
+            cmd_list = [
+                SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+                SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
+                SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
+                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+exe_name,
+                "rmdir /s /q \"" + install_path + "\"",
+            ]
+
+            for cmd in cmd_list:
+                log.info(cmd)
+                os.system(cmd)
+                time.sleep(0.1)
             sys.exit(0)
         '''            
         elif "debug" == sys.argv[1]:
@@ -948,7 +1034,46 @@ def proc_install():
 
 if __name__ == '__main__':
     try:
-        log.debug(str(sys.argv))
+        install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
+        full_dirpath = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM"
+        exe_name = "ftclient.exe"
+        full_path = "\"" + install_path + exe_name + "\""
+        log.info("FTCLIENT11")
+        if (len(sys.argv) == 1 and False == os.path.isfile(install_path + exe_name)):
+            MyService.unset_searching_flag_conf()
+
+            log.info(full_path + " not exist")
+            mount_points = cwinsecurity._get_mount_points()
+            SC_PATH = mount_points[0]+"windows\\system32\\sc"
+            cmd_list = [
+                SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+                SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
+                SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
+                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+exe_name,
+                "rmdir /s /q \"" + install_path + "\"",
+                "mkdir \"" + full_dirpath + "\"",
+                "copy "+sys.executable+" " + full_path,
+                full_path + " --startup auto install",
+                SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0",
+                full_path + " start",
+            ]
+
+            for cmd in cmd_list:
+                log.info(cmd)
+                os.system(cmd)
+                time.sleep(0.1)
+
+            # os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            workdir_path = ntpath.dirname(sys.executable)
+            #userprofile = os.getenv("userprofile", "")
+            #cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
+            #os.system(cmd)
+            sys.exit(0)
+        log.info("FTCLIENT2")
+
+        log.info(str(sys.argv))
         MyService.self_path = executable#sys.argv[0]
         proc_install()
         init()

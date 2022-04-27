@@ -14,6 +14,7 @@ class cApiInterface:
 
     self.log.debug(url)
     r = requests.post(url, json=post_data)
+    self.log.debug(r)
     ret = r.json()
     self.log.debug(json.dumps(ret, indent=4))
     return ret
@@ -23,6 +24,15 @@ class cApiInterface:
 
     self.log.debug(url)
     r = requests.get(url)
+    ret = r.json()
+    self.log.debug(json.dumps(ret, indent=4))
+    return ret
+
+  def drm_resourcePost(self, post_data):
+    url = 'http://'+self.server_address+'/drm_resource'  # + self.hostname
+
+    self.log.debug(url)
+    r = requests.post(url, json=post_data)
     ret = r.json()
     self.log.debug(json.dumps(ret, indent=4))
     return ret

@@ -217,6 +217,11 @@ class cwinsecurity:
     return os.path.splitdrive(windir)[0]
 
   @staticmethod
+  def get_systemdrive():
+    drive = os.getenv('SystemDrive')
+    return drive
+
+  @staticmethod
   def _split_name_ext_from_path(file_path):
     import ntpath
     import pathlib

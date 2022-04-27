@@ -19,7 +19,7 @@ def config_logging():
     # format
     fmt = logging.Formatter(fmt='%(asctime)s.%(msecs)03d [%(thread)5s] %(levelname)-8s %(filename)-20s %(funcName)-20s %(lineno)d %(message)s', datefmt='%Y:%m:%d %H:%M:%S')
 
-    logging_level = logging.INFO
+    logging_level = logging.DEBUG
 
     log.setLevel(logging_level)
 

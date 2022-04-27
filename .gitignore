@@ -318,3 +318,13 @@ client/watchdog/__pycache__/watchmedo.cpython-39.pyc
 *.pyc
 installer/.vs/ftservice/v16/ipch/1779937c084a8b8d.ipch
 installer/.vs/ftservice/v16/ipch/ab4417a270e74df2.ipch
+client/build/installer/xref-installer.html
+client/build/installer/warn-installer.txt
+client/build/installer/PYZ-00.toc
+client/build/installer/PYZ-00.pyz
+client/build/installer/PKG-00.toc
+client/build/installer/installer.pkg
+client/build/installer/installer.exe.manifest
+client/build/installer/EXE-00.toc
+client/build/installer/base_library.zip
+client/build/installer/Analysis-00.toc
