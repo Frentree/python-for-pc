@@ -43,7 +43,7 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
     def SvcStop(self):
         self.stop()
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        win32event.SetEvent(self.hWaitStop)
+        #win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
         self.start()
@@ -59,7 +59,11 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
         pass
 
     def main(self):
+        while True:
+            print("AAA")
+            import time
+            time.sleep(1)
         pass
 
-#if __name__ == '__main__':
-#    BaseWinservice.parse_command_line()
+if __name__ == '__main__':
+    BaseWinservice.parse_command_line()
