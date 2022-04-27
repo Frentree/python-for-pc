@@ -1,3 +1,4 @@
+from pickle import GLOBAL
 import time
 import win32serviceutil  # ServiceFramework and commandline helper
 import win32service  # Events
@@ -28,11 +29,21 @@ from lib_winsec import cwinsecurity
 from libsqlite3 import csqlite3
 
 
-
+CONF_PATH_MIDDLE = "\\AppData\\Local\\Temp\\"
 GLOBAL_ENV = {
     "INITIAL_LOGGING_LEVEL": logging.INFO,
-    "DB_PATH_POSTFIX": "\\AppData\\Local\\Temp\\state.db",
+    "WINDOWS_SERVICE_NAME": 'MyService',
+    "EXE_FILENAME": "ftclient.exe",
+    "DB_PATH_POSTFIX"         : CONF_PATH_MIDDLE + "state.db",
+    "CONF_PATH_POSTFIX_SEARCHING_FLAG": CONF_PATH_MIDDLE + "searching_flag_conf.json",
+    "CONF_PATH_POSTFIX_EXCEPT_FORMAT" : CONF_PATH_MIDDLE + "except_format_list.json",
+    "CONF_PATH_POSTFIX_EXCEPT_PATH"   : CONF_PATH_MIDDLE + "except_path_list.json",
+    "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
 }
+
+
+print(json.dumps(GLOBAL_ENV, indent=4))
+#sys.exit(0)
 
 
 config_logging(GLOBAL_ENV["INITIAL_LOGGING_LEVEL"])
@@ -104,14 +115,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         if m != None:
             return
 
-    from libsqlite3 import csqlite3
-    mount_points = cwinsecurity._get_mount_points()
-    if '' == MyService.user_id:
-        MyService.user_id = os.getenv('USERNAME')
-    userprofile = mount_points[0]+"\\Users\\"+MyService.user_id
-    db_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
-    self.log.debug("db path: " + db_path)
-    sqlite3 = csqlite3(name=db_path, log=self.log)
+    sqlite3 = csqlite3(name=MyService.get_path('state.db'), log=log)
 
     target_path = ''
 
@@ -209,7 +213,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                 else:
                     log.debug("console process is running")
 
-                # helpercmd = "\""+ntpath.dirname(sys.executable) + "\\" + "helper.exe\""+" -n ftclient.exe"
+                # helpercmd = "\""+ntpath.dirname(sys.executable) + "\\" + "helper.exe\""+" -n "+GLOBAL_ENV["EXE_FILENAME"]
                 # log.debug(helpercmd)
                 # os.system(helpercmd)
 
@@ -263,8 +267,7 @@ class MyService:
         self.running = False
 
     def load_config(self):
-        userprofile = os.getenv("userprofile", "")
-        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        conf_path = MyService.get_path('configuration.json')
         # if 'python.exe' == os.path.basename(sys.executable):
         #    conf_path = "." + "\\configuration.json"
         # else:
@@ -285,14 +288,12 @@ class MyService:
         MyService.configuration = configuration
 
     def save_config(self):
-        userprofile = os.getenv("userprofile", "")
-        conf_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+        conf_path = MyService.get_path('configuration.json')
         # if 'python.exe' == os.path.basename(sys.executable):
         #     conf_path = "." + "\\configuration.json"
         # else:
         #     conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
         log.debug("SAVE_CONFIG: " + conf_path)
-
         if False == os.path.isfile(conf_path):
             log.error("file not found")
             return
@@ -357,7 +358,7 @@ class MyService:
         if '' == MyService.user_id:
             MyService.user_id = os.getenv('USERNAME')
         userprofile = mount_point+"\\Users\\"+MyService.user_id
-        store_path = (userprofile+"\\AppData\\Local\\Temp")
+        store_path = (userprofile+CONF_PATH_MIDDLE)
         return store_path
 
     @staticmethod
@@ -477,13 +478,13 @@ class MyService:
             MyService.user_id = os.getenv('USERNAME')
         userprofile = cwinsecurity.get_windir_driveletter_with_colon()+"\\Users\\"+MyService.user_id
         if 'configuration.json' == pathtype:
-            the_path = (userprofile+"\\AppData\\Local\\Temp\\configuration.json")
+            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_DRM_CONF"])
         elif 'except_path_list.json' == pathtype:
-            the_path = (userprofile+"\\AppData\\Local\\Temp\\except_path_list.json")
+            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_EXCEPT_PATH"])
         elif 'except_format_list.json' == pathtype:
-            the_path = (userprofile+"\\AppData\\Local\\Temp\\except_format_list.json")
+            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_EXCEPT_FORMAT"])
         elif 'searching_flag_conf.json' == pathtype:
-            the_path = (userprofile+"\\AppData\\Local\\Temp\\searching_flag_conf.json")
+            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_SEARCHING_FLAG"])
         elif 'state.db' == pathtype:
             the_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
 
@@ -492,7 +493,7 @@ class MyService:
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
-    _svc_name_ = 'MyService'
+    _svc_name_ = GLOBAL_ENV["WINDOWS_SERVICE_NAME"]
     _svc_display_name_ = _svc_name_
     _svc_description_ = _svc_name_ + " description"
 
@@ -697,7 +698,7 @@ def proc_main():        # the console process loop
 
 
 
-            # [[ cardrecon process
+            # region [[[[[[[[[[[[[[[[[[[[ cardrecon process
             # process name pattern : 53cardrecon193247928347982
             cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
             log.info("cardrecon pid : " + str(cardrecon_pid))
@@ -736,55 +737,29 @@ def proc_main():        # the console process loop
             }
             log.debug(json.dumps(post_data, indent=4))
             log.debug("cpu count: " + str(psutil.cpu_count()))
-
             #log.info(json.dumps(p.net_io_counters(), indent=4))
-
             c2s_job = apiInterface.drm_resourcePost(post_data)
-            # ]] cardrecon process
+            # endregion ]]]]]]]]]]]]]]]]] cardrecon process
 
             if False == dscs_dll.isAvailable():
                 raise NameError('DSCS is not available')
 
 
-
+            # region [[[[[[[[[[[[[[[[[[[ C2S JOB
             c2s_job = apiInterface.c2s_jobGet()
             log.info(json.dumps(c2s_job, indent=4))
-
             job_result_list = []
             for cmd in c2s_job['job']:
                 job_result = DO_proc_job(dscs_dll, cmd, service)
                 job_result_list.append(job_result)
                 log.info(json.dumps(job_result, indent=4, ensure_ascii=False))
 
-
-
-
-
-
-            # [[ cardrecon process
-            # process name pattern : 53cardrecon193247928347982
-            # cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
-            # log.debug("cardrecon pid : " + str(cardrecon_pid))
-            # p = psutil.Process(cardrecon_pid)
-            # log.debug("CPU : " + str(lib_cpu_usage()))
-            # log.debug("IO: " + str(p.io_counters()))
-            # log.debug("MEMORY: " + str(p.memory_info()))
-            # ]] cardrecon process
-
             # POST JOB RESULT
             post_data = {
                 'job_results' : job_result_list,
-                # 'resource_usages' : {
-                #     'virtual_memory': lib_virtual_memory(),
-                #     'cpu_usage': lib_cpu_usage(),
-                #     'net_io_counters': lib_net_io_counters(),
-                #     'disk_usage': lib_disk_usage(),
-                # }
             }
             c2s_job_post = apiInterface.c2s_jobPost(post_data)
-
-
-
+            # endregion ]]]]]]]]]]]]]]]]] C2S JOB
 
 
             # get config to connect to Recon
@@ -793,29 +768,17 @@ def proc_main():        # the console process loop
             log.debug(json.dumps(v_drm_schedule, indent=4))
 
 
-
             if False == er.isAvailable():
                 raise NameError('Recon is not available')
 
             # region ER node interface [[[[[[[[[[[[[[[[[[[[
 
 
-
-
-
-
             # update V DRM schedule
             apiInterface.pi_schedulesPost(er.current_schedule_id, er.current_ap_no, 'S')
 
 
-
-
-
-
-
-
-
-            # proc queued
+            # region proc queued
             file_list = sqlite3.fileinfo_select(state='queued')
             for fileinfo in file_list:
                 file_id = fileinfo[0]
@@ -840,8 +803,9 @@ def proc_main():        # the console process loop
                     apiInterface.pi_schedulesPost(schedule_id, er.current_ap_no, 'D')
                 else:                   # decryption failed
                     sqlite3.fileinfo_delete(file_path)
+            # endregion proc queued
 
-            # proc decrypted & has schedule_id
+            # region proc decrypted & has schedule_id
             file_list = sqlite3.fileinfo_select_scheduled()
             for fileinfo in file_list:
                 file_path = fileinfo[1]
@@ -873,7 +837,7 @@ def proc_main():        # the console process loop
                         log.info(" DELETE ##################################")
                 '''
 
-            # endregion ]]]]]]]]]]]]]]]]]]]]
+            # endregion proc decrypted & has schedule_id
 
             service.save_config()
         except requests.exceptions.ChunkedEncodingError as e:
@@ -963,12 +927,12 @@ def proc_install():
             os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
             os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
-            os.system("taskkill /F /IM ftclient.exe")
+            os.system("taskkill /F /IM "+GLOBAL_ENV["EXE_FILENAME"])
             #time.sleep(1)
-            os.system("taskkill /F /IM ftclient.exe")
+            os.system("taskkill /F /IM "+GLOBAL_ENV["EXE_FILENAME"])
             sys.exit(0)
         elif "tasklist" == sys.argv[1]:
-            os.system("tasklist | findstr \"ftclient.exe\"")
+            os.system("tasklist | findstr "+GLOBAL_ENV["EXE_FILENAME"])
             sys.exit(0)
         elif "open_except_path_json" == sys.argv[1]:
             os.system("code "+MyService.get_path('except_path_list.json'))
@@ -998,13 +962,14 @@ def proc_install():
             os.system("del " + MyService.get_path('state.db'))
             mount_points = cwinsecurity._get_mount_points()
             SC_PATH = mount_points[0]+"windows\\system32\\sc"
+            install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
             cmd_list = [
                 SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
                 SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
                 SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
-                'taskkill /f /im '+exe_name,
-                'taskkill /f /im '+exe_name,
-                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 "rmdir /s /q \"" + install_path + "\"",
             ]
 
@@ -1014,7 +979,7 @@ def proc_install():
                 time.sleep(0.1)
             sys.exit(0)
         '''            
-        elif "debug" == sys.argv[1]:
+        elif "debug_svc" == sys.argv[1]:
             service = MyService()
 
             # import psutil
@@ -1039,9 +1004,8 @@ if __name__ == '__main__':
     try:
         install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
         full_dirpath = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM"
-        exe_name = "ftclient.exe"
-        full_path = "\"" + install_path + exe_name + "\""
-        if (len(sys.argv) == 1 and False == os.path.isfile(install_path + exe_name)):
+        full_path = "\"" + install_path + GLOBAL_ENV["EXE_FILENAME"] + "\""
+        if (len(sys.argv) == 1 and False == os.path.isfile(install_path + GLOBAL_ENV["EXE_FILENAME"])):
             MyService.unset_searching_flag_conf()
 
             log.info(full_path + " not exist")
@@ -1051,9 +1015,9 @@ if __name__ == '__main__':
                 #SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
                 SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
                 SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
-                'taskkill /f /im '+exe_name,
-                'taskkill /f /im '+exe_name,
-                'taskkill /f /im '+exe_name,
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
+                'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 "rmdir /s /q \"" + install_path + "\"",
                 "mkdir \"" + full_dirpath + "\"",
                 "copy "+sys.executable+" " + full_path,
