@@ -1,4 +1,3 @@
-from pickle import GLOBAL
 import time
 import win32serviceutil  # ServiceFramework and commandline helper
 import win32service  # Events
@@ -22,7 +21,6 @@ from lib_logging import log
 from lib_er import *
 from win32serviceutil import StartService, QueryServiceStatus
 from watchdog.utils import WatchdogShutdown
-from watchdog.tricks import LoggerTrick
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 from lib_winsec import cwinsecurity
@@ -40,10 +38,6 @@ GLOBAL_ENV = {
     "CONF_PATH_POSTFIX_EXCEPT_PATH"   : CONF_PATH_MIDDLE + "except_path_list.json",
     "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
 }
-
-
-print(json.dumps(GLOBAL_ENV, indent=4))
-#sys.exit(0)
 
 
 config_logging(GLOBAL_ENV["INITIAL_LOGGING_LEVEL"])
@@ -107,6 +101,8 @@ class MyLoggerTrick(PatternMatchingEventHandler):
 
         r"^.:\\.*\\.*\.tsp$",
         r"^.:\\.*\\.*\.tmp$",
+
+        r"^.:\\.*\\.*_decrypted.*$",
     ]
     for reg in reg_list:
         import re
@@ -183,13 +179,14 @@ class MyLoggerTrick(PatternMatchingEventHandler):
 
 
 def observe_with(observer, event_handler, pathnames, recursive, myservice):
-    for pathname in set(pathnames):
-        observer.schedule(event_handler, pathname, recursive)
-    observer.start()
+    myservice.running = False
+    observer_started = False
     try:
         myservice.running = True
         log.info("service process's integrity level: " +
                  cwinsecurity.get_integrity_level(log))
+        MyService.integrity_level = cwinsecurity.get_integrity_level(log)
+        MyService.process_type = "service"
 
         while myservice.running:
             try:
@@ -202,14 +199,17 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                 for pid in pid_list:
                     (user_sid, user0, user1) = lib_get_pid_owner(pid)
                     if None != user0 and 'system' != user0.lower():
-                        MyService.user_id = user0
-                        log.debug("user: " + str(MyService.user_id))
                         non_system_process_exists = True
 
+                        if '' == MyService.user_id:
+                            MyService.user_id = user0
+                            log.info("user: " + str(MyService.user_id))
+                        break
+
                 if False == non_system_process_exists:
-                    log.debug("runas console process")
-                    log.debug("run as " + sys.executable)
-                    runas("\""+sys.executable+"\"", "do_job")
+                    log.info("run as " + sys.executable)
+                    # runas("\""+sys.executable+"\"", "do_job")
+                    runas(""+sys.executable+"", "do_job", None, False)
                 else:
                     log.debug("console process is running")
 
@@ -219,6 +219,13 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
 
                 # myservice.load_config()
                 ensure_svc_running(myservice.configuration['service_name'])
+
+                if True == non_system_process_exists and False == observer_started:
+                    for pathname in set(pathnames):
+                        observer.schedule(event_handler, pathname, recursive)
+                    observer.start()
+                    observer_started = True
+
             except Exception as e:
                 log.error(traceback.print_stack())
                 log.error(e)
@@ -240,6 +247,8 @@ class MyService:
     """ application stub"""
     user_id = ""
     prev_network_usage = None
+    integrity_level = ""
+    process_type = ""
 
     configuration = {
         "debug": True,
@@ -272,6 +281,11 @@ class MyService:
         #    conf_path = "." + "\\configuration.json"
         # else:
         #    conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+
+        # use configuration with the exe
+        if (os.path.isfile(os.path.dirname(sys.executable) + "\\configuration.json")):
+            conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
+
         log.info("LOAD_CONFIG: " + conf_path)
         if False == os.path.isfile(conf_path):
             log.error("file not found")
@@ -294,18 +308,15 @@ class MyService:
         # else:
         #     conf_path = os.path.dirname(sys.executable) + "\\configuration.json"
         log.debug("SAVE_CONFIG: " + conf_path)
-        if False == os.path.isfile(conf_path):
-            log.error("file not found")
-            return
-        else:
-            try:
-                with open(conf_path, 'w', encoding="utf-8-sig") as json_out_file:
-                    json.dump(self.configuration, json_out_file,
-                              indent=4, ensure_ascii=False)
-                    log.debug("SAVE_CONFIG: " +
-                              json.dumps(self.configuration, ensure_ascii=False))
-            except FileNotFoundError as e:
-                log.error(str(e))
+
+        try:
+            with open(conf_path, 'w', encoding="utf-8-sig") as json_out_file:
+                json.dump(self.configuration, json_out_file,
+                            indent=4, ensure_ascii=False)
+                log.debug("SAVE_CONFIG: " +
+                            json.dumps(self.configuration, ensure_ascii=False))
+        except FileNotFoundError as e:
+            log.error(str(e))
 
     @staticmethod
     def get_hostname():
@@ -335,22 +346,23 @@ class MyService:
 
         patterns, ignore_patterns = parse_patterns(
             myarg['patterns'], myarg['ignore_patterns'])
-        try:
+        while True:
             try:
                 dscs_dll = Dscs_dll()
+
+                handler = MyLoggerTrick(patterns=patterns,
+                    ignore_patterns=ignore_patterns, log=log, dscs_dll=dscs_dll)
+                observer = Observer(timeout=myarg['timeout'])
+                observe_with(observer, handler,
+                            myarg['pathnames'], myarg['recursive'], self)
             except FileNotFoundError as e:
                 log.error(traceback.print_stack())
                 log.error(e)
-                return
-
-            handler = MyLoggerTrick(patterns=patterns,
-                ignore_patterns=ignore_patterns, log=log, dscs_dll=dscs_dll)
-            observer = Observer(timeout=myarg['timeout'])
-            observe_with(observer, handler,
-                         myarg['pathnames'], myarg['recursive'], self)
-        except Exception as e:
-            log.error(traceback.print_stack())
-            log.error(str(e))
+            except Exception as e:
+                log.error(traceback.print_stack())
+                log.error(str(e))
+            finally:
+                time.sleep(5) # Important work
 
     @staticmethod
     def get_store_path():
@@ -381,6 +393,7 @@ class MyService:
 
     @staticmethod
     def get_searching_flag_conf():
+        return True
         try:
             with open(MyService.get_path('searching_flag_conf.json'), "r") as json_file:
                 searching_flag_conf = json.load(json_file)
@@ -493,24 +506,28 @@ class MyService:
 
 class MyServiceFramework(win32serviceutil.ServiceFramework):
 
-    _svc_name_ = GLOBAL_ENV["WINDOWS_SERVICE_NAME"]
-    _svc_display_name_ = _svc_name_
+    #_svc_name_ = 'MyService'
+    #_svc_display_name_ = _svc_name_
+    _svc_name_ = 'MyService'
+    _svc_display_name_ = 'My Service display name'    
     _svc_description_ = _svc_name_ + " description"
 
     def __init__(self, args):
+        log.info("##################################### init")
+        OutputDebugString("[TT]"+"AAAAAAA")
         win32serviceutil.ServiceFramework.__init__(self, args)
-        #self.hWaitStop = threading.Event()
-        #self.thread = workingthread(self.hWaitStop)
 
     def SvcStop(self):
-        self.hWaitStop.set()
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         self.service_impl.stop()
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
 
     def SvcDoRun(self):
-        """Start the service; does not return until stopped"""
         log.info("##################################### SVC DO RUN")
+        """Start the service; does not return until stopped"""
+        self.ReportServiceStatus(win32service.SERVICE_START_PENDING)
         self.service_impl = MyService()
+        self.ReportServiceStatus(win32service.SERVICE_RUNNING)
 
         # Run the service
         self.service_impl.run()
@@ -573,7 +590,9 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
             ret = dscs_dll.call_DSCSDacEncryptFileV2(job_path)
             '''
             funcname = "DSCSMacEncryptFile"
-            ret = dscs_dll.call_DSCSMacEncryptFile(job_path, "0000001")
+            category_id = "0000001"
+            log.info("############## category id : " + category_id)
+            ret = dscs_dll.call_DSCSMacEncryptFile(job_path, category_id)
             # 1:허용, 0:차단 (편집, 캡쳐, 인쇄, 마킹)
 
             job_result['message'] = " return " + \
@@ -666,11 +685,14 @@ def proc_main():        # the console process loop
     er = er_agent(log)
 
     service = MyService()
+
     log.debug(service.configuration)
 
     from lib_winsec import cwinsecurity
     log.info("API client's integrity level: " + cwinsecurity.get_integrity_level(log))
-
+    MyService.integrity_level = cwinsecurity.get_integrity_level(log)
+    MyService.process_type = "console"
+    
     while True:
         # GET JOB
         try:
@@ -764,9 +786,12 @@ def proc_main():        # the console process loop
 
             # get config to connect to Recon
             v_drm_schedule = apiInterface.v_drm_scheduleGet()
-            er.load_v_drm_schedule(v_drm_schedule)
-            log.debug(json.dumps(v_drm_schedule, indent=4))
 
+            if None == v_drm_schedule:
+                raise NameError('v_drm_schedule is not available')
+
+            er.load_v_drm_schedule(v_drm_schedule)
+            log.info(json.dumps(v_drm_schedule, indent=4))
 
             if False == er.isAvailable():
                 raise NameError('Recon is not available')
@@ -867,6 +892,7 @@ def proc_main():        # the console process loop
             time.sleep(sleep_seconds) # Important work
 
 def proc_install():
+    log.info("begin")
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
             mount_points = cwinsecurity._get_mount_points()
@@ -978,6 +1004,17 @@ def proc_install():
                 os.system(cmd)
                 time.sleep(0.1)
             sys.exit(0)
+
+
+
+        ##### Commands for Debugging
+        elif "dbg_open_sqlite_db" == sys.argv[1]:
+            sqlite_browser = "C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe"
+
+            import subprocess
+            subprocess.Popen("\"" + sqlite_browser + "\" " + MyService.get_path('state.db'))
+            sys.exit(0)
+
         '''            
         elif "debug_svc" == sys.argv[1]:
             service = MyService()
@@ -999,6 +1036,7 @@ def proc_install():
             service.run()
             sys.exit(0)
         '''
+    log.info("end")
 
 if __name__ == '__main__':
     try:
@@ -1009,8 +1047,11 @@ if __name__ == '__main__':
             MyService.unset_searching_flag_conf()
 
             log.info(full_path + " not exist")
+            log.info(sys.executable)
             mount_points = cwinsecurity._get_mount_points()
             SC_PATH = mount_points[0]+"windows\\system32\\sc"
+            workdir_path = ntpath.dirname(sys.executable)
+
             cmd_list = [
                 #SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
                 SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
@@ -1021,6 +1062,7 @@ if __name__ == '__main__':
                 "rmdir /s /q \"" + install_path + "\"",
                 "mkdir \"" + full_dirpath + "\"",
                 "copy "+sys.executable+" " + full_path,
+                "copy \"" + workdir_path + "\\configuration.json\" \""+install_path+"\"",
                 full_path + " --startup auto install",
                 SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0",
                 full_path + " start",
@@ -1032,12 +1074,11 @@ if __name__ == '__main__':
                 time.sleep(0.1)
 
             # os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
-            workdir_path = ntpath.dirname(sys.executable)
             #userprofile = os.getenv("userprofile", "")
             #cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
             #os.system(cmd)
             sys.exit(0)
-        log.info(str(sys.argv))
+        #log.info(str(sys.argv))
         MyService.self_path = executable#sys.argv[0]
         proc_install()
         init()
