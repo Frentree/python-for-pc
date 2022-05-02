@@ -122,18 +122,18 @@ class Dscs_dll():
 
 	# region DSCSDecryptFile
 	@staticmethod
-	def get_decrypted_filepath(file_abspath, bAppendPrefix, prefix='_decrypted'):
+	def get_decrypted_filepath(file_abspath, bAppendPostfix, postfix='_decrypted'):
 		import ntpath
 		import pathlib
 		bname = ntpath.basename(file_abspath)
 		pure_file_stem = pathlib.PurePath(bname).stem
 		pure_file_ext  = pathlib.PurePath(bname).suffix
 		filepath2 = ntpath.dirname(file_abspath) + "\\" + pure_file_stem + \
-				(prefix if bAppendPrefix else "") + pure_file_ext
+				(postfix if bAppendPostfix else "") + pure_file_ext
 		return filepath2
 
-	def decryptFile(self, file_abspath, bAppendPrefix, prefix='_decrypted'):
-		filepath2 = Dscs_dll.get_decrypted_filepath(file_abspath, bAppendPrefix, prefix)
+	def decryptFile(self, file_abspath, bAppendPostfix, postfix='_decrypted'):
+		filepath2 = Dscs_dll.get_decrypted_filepath(file_abspath, bAppendPostfix, postfix)
 		ret = self.call_DSCSDecryptFile(file_abspath, filepath2)
 		if 1 != ret:
 			log.error("Dscs_dll::call_DSCSDecryptFile() : " + file_abspath + " " + str(ret))
