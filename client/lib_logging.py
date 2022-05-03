@@ -15,12 +15,12 @@ class DbgViewHandler(logging.Handler):
 log = logging.getLogger("output.debug.string.example")
 
 def config_logging(logging_level):
+    # format
+    fmt = logging.Formatter(fmt='%(asctime)s.%(msecs)03d [%(thread)5s] %(levelname)-8s %(filename)-20s %(funcName)-20s %(lineno)d %(message)s', datefmt='%Y:%m:%d %H:%M:%S')
+
     if None == logging_level:
         logging_level = logging.INFO
     log.setLevel(logging_level)
-
-    # format
-    fmt = logging.Formatter(fmt='%(asctime)s.%(msecs)03d [%(thread)5s] %(levelname)-8s %(filename)-20s %(funcName)-20s %(lineno)d %(message)s', datefmt='%Y:%m:%d %H:%M:%S')
 
     # "OutputDebugString\DebugView"
     ods = DbgViewHandler()
