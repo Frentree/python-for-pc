@@ -37,6 +37,7 @@ GLOBAL_ENV = {
     "CONF_PATH_POSTFIX_EXCEPT_FORMAT" : CONF_PATH_MIDDLE + "except_format_list.json",
     "CONF_PATH_POSTFIX_EXCEPT_PATH"   : CONF_PATH_MIDDLE + "except_path_list.json",
     "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
+    "QUEUE_SIZE_LIMIT"                  : 500*1024*1024,
 }
 
 
@@ -166,6 +167,8 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         retstr = str(ret) + '(암호화된 문서)'
         self.log.info("file call_DSCSIsEncryptedFile : " +
                       target_path + ", " + retstr)
+        if filesize >= int(GLOBAL_ENV['QUEUE_SIZE_LIMIT']):
+            return
         sqlite3.fileinfo_insert_with_size(target_path, filesize)
         self.log.info("file enqueued : " + target_path + ", " + retstr)
 
@@ -210,6 +213,27 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                     log.info("run as " + sys.executable)
                     # runas("\""+sys.executable+"\"", "do_job")
                     runas(""+sys.executable+"", "do_job", None, False)
+
+                    import sys
+                    import psutil
+                    pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
+                    non_system_process_exists = False
+                    for pid in pid_list:
+                        log.info("*** PID: " + str(pid))
+                        (user_sid, user0, user1) = lib_get_pid_owner(pid)
+                        if None != user0 and 'system' != user0.lower():
+                            non_system_process_exists = True
+
+                            log.info("user: " + str(user0))
+                            log.info("MyService.user_id: " + str(MyService.user_id))
+                            if '' == MyService.user_id:
+                                MyService.user_id = user0
+                                log.info("user: " + str(MyService.user_id))
+                            break
+                        else:
+                            log.info("else user: " + str(user0))
+
+
                 else:
                     log.debug("console process is running")
 
@@ -369,8 +393,9 @@ class MyService:
     @staticmethod
     def get_store_path():
         mount_point = cwinsecurity.get_windir_driveletter_with_colon()
-        if '' == MyService.user_id:
-            MyService.user_id = os.getenv('USERNAME')
+        # if '' == MyService.user_id:
+        #     log.error("########## GET STORE PATH ")
+        #     MyService.user_id = os.getenv('USERNAME')
         userprofile = mount_point+"\\Users\\"+MyService.user_id
         store_path = (userprofile+CONF_PATH_MIDDLE)
         return store_path
@@ -488,8 +513,10 @@ class MyService:
 
     @staticmethod
     def get_path(pathtype):
-        if '' == MyService.user_id:
-            MyService.user_id = os.getenv('USERNAME')
+        # if '' == MyService.user_id:
+        #     log.error("########## GET_PATH ")
+        #     log.error(traceback.format_exc())
+        #     MyService.user_id = os.getenv('USERNAME')
         userprofile = cwinsecurity.get_windir_driveletter_with_colon()+"\\Users\\"+MyService.user_id
         if 'configuration.json' == pathtype:
             the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_DRM_CONF"])
@@ -657,7 +684,7 @@ def traverse_all_files_glob(func, path=None):
                 continue
 
             if os.path.isdir(f):
-                log.debug("searching on : "+f)
+                log.info("searching on : "+f)
                 traverse_all_files_glob(func, f+"\\?")
             else:
                 if True == MyService.match_blacklist_format(f):
@@ -682,7 +709,19 @@ def pushFileIfEncrypted(filepath):
     if 1 == ret:
         log.info("############## PUSH FILE IF ENCRYPTED : " + filepath)
         log.info("IS ENCRYPTED True : " + str(filepath))
-        MyService.sqlite3.fileinfo_insert(filepath)
+
+        try:
+            filesize = os.path.getsize(filepath)
+        except FileNotFoundError as e:
+            log.error('FileNotFoundError  ' + str(e))
+            return
+        except PermissionError as e:
+            log.error('PermissionError ' + str(e))
+            return
+        
+        if filesize >= int(GLOBAL_ENV['QUEUE_SIZE_LIMIT']):
+            return
+        MyService.sqlite3.fileinfo_insert_with_size(filepath, filesize)
 
 def proc_main():        # the console process loop
     try:
@@ -694,6 +733,7 @@ def proc_main():        # the console process loop
     er = er_agent(log)
 
     service = MyService()
+    MyService.user_id = os.getenv('USERNAME')
 
     log.debug(service.configuration)
 
@@ -833,6 +873,12 @@ def proc_main():        # the console process loop
                 filepath2 = dscs_dll.decryptFile(file_path, service.configuration['bAppendDecryptedPostfix'])
                 log.info("FILE : " + str(filepath2))
 
+                size_limit = GLOBAL_ENV['QUEUE_SIZE_LIMIT']
+                size_sum = int(sqlite3.fileinfo_get_queued_file_size_total()) + file_size
+                if size_sum > size_limit:
+                    log.info("########################## SIZE LIMIT exceeded : " + str(size_limit))
+                    continue
+
                 if None != filepath2:    # decryption success
                     cwinsecurity.set_file_attribute_hidden(filepath2)
                     log.info("file decrypted : " + filepath2)
@@ -910,7 +956,6 @@ def proc_main():        # the console process loop
             time.sleep(sleep_seconds) # Important work
 
 def proc_install():
-    log.info("begin")
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
             mount_points = cwinsecurity._get_mount_points()
@@ -984,9 +1029,6 @@ def proc_install():
         elif "open_except_format_json" == sys.argv[1]:
             os.system("code "+MyService.get_path('except_format_list.json'))
             sys.exit(0)
-        elif "unset_searching_flag_conf" == sys.argv[1]:
-            MyService.unset_searching_flag_conf()
-            sys.exit(0)
         elif "disk_partitions" == sys.argv[1]:
             disk_partitions = psutil.disk_partitions()
             print(disk_partitions[0])
@@ -1026,15 +1068,40 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_set_searching_flag_conf" == sys.argv[1]:
+            MyService.user_id = os.getenv('USERNAME')
+            MyService.set_searching_flag_conf()
+            sys.exit(0)
+        elif "dbg_unset_searching_flag_conf" == sys.argv[1]:
+            MyService.user_id = os.getenv('USERNAME')
+            MyService.unset_searching_flag_conf()
+            sys.exit(0)
+        elif "dbg_get_queued_file_size_total" == sys.argv[1]:
+            MyService.user_id = os.getenv('USERNAME')
+            sqlite3 = csqlite3(name=MyService.get_path('state.db'), log=log)
+            total_size = sqlite3.fileinfo_get_queued_file_size_total()
+            log.info("FILE size total : " + str(total_size))
+            kilobytes = int(int(total_size) / 1024)
+            log.info(str(kilobytes) + " kilobytes")
+
+            sys.exit(0)
+        elif "dbg_open_except_path_list" == sys.argv[1]:
+            code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+            import subprocess
+            MyService.user_id = os.getenv('USERNAME')
+            subprocess.Popen("\"" + code_path + "\" " + MyService.get_path('except_path_list.json'))
+            sys.exit(0)
         elif "dbg_open_configuration" == sys.argv[1]:
             code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
             import subprocess
+            MyService.user_id = os.getenv('USERNAME')
             subprocess.Popen("\"" + code_path + "\" " + MyService.get_path('configuration.json'))
             sys.exit(0)
         elif "dbg_open_sqlite_db" == sys.argv[1]:
             sqlite_browser = "C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe"
 
             import subprocess
+            MyService.user_id = os.getenv('USERNAME')
             subprocess.Popen("\"" + sqlite_browser + "\" " + MyService.get_path('state.db'))
             sys.exit(0)
 
@@ -1059,7 +1126,6 @@ def proc_install():
             service.run()
             sys.exit(0)
         '''
-    log.info("end")
 
 if __name__ == '__main__':
     try:
