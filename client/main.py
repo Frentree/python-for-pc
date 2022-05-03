@@ -29,17 +29,19 @@ from libsqlite3 import csqlite3
 
 CONF_PATH_MIDDLE = "\\AppData\\Local\\Temp\\"
 GLOBAL_ENV = {
-    "INITIAL_LOGGING_LEVEL": logging.INFO,
-    "WINDOWS_SERVICE_NAME": 'MyService',
-    "EXE_FILENAME": "ftclient.exe",
-    "DB_PATH_POSTFIX"         : CONF_PATH_MIDDLE + "state.db",
-    "CONF_PATH_POSTFIX_SEARCHING_FLAG": CONF_PATH_MIDDLE + "searching_flag_conf.json",
-    "CONF_PATH_POSTFIX_EXCEPT_FORMAT" : CONF_PATH_MIDDLE + "except_format_list.json",
-    "CONF_PATH_POSTFIX_EXCEPT_PATH"   : CONF_PATH_MIDDLE + "except_path_list.json",
-    "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
+    "INITIAL_LOGGING_LEVEL"             : logging.INFO,
+    "WINDOWS_SERVICE_NAME"              : 'MyService',
+    "EXE_FILENAME"                      : "ftclient.exe",
+    "DB_PATH_POSTFIX"                   : CONF_PATH_MIDDLE + "state.db",
+    "CONF_PATH_POSTFIX_SEARCHING_FLAG"  : CONF_PATH_MIDDLE + "searching_flag_conf.json",
+    "CONF_PATH_POSTFIX_EXCEPT_FORMAT"   : CONF_PATH_MIDDLE + "except_format_list.json",
+    "CONF_PATH_POSTFIX_EXCEPT_PATH"     : CONF_PATH_MIDDLE + "except_path_list.json",
+    "CONF_PATH_POSTFIX_DRM_CONF"        : CONF_PATH_MIDDLE + "configuration.json",
     "QUEUE_SIZE_LIMIT"                  : 500*1024*1024,
     "DEFAULT_CATEGORY_ID"               : "0000001",
     "POST_JOB_DELAY"                    : 5,
+    # "MIN_FREE_SPACE"                    : 2*2**30,    #2 GB
+    "MIN_FREE_SPACE"                    : 30*2**30,    #30 GB
 }
 
 
