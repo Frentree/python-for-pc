@@ -38,6 +38,7 @@ GLOBAL_ENV = {
     "CONF_PATH_POSTFIX_EXCEPT_PATH"   : CONF_PATH_MIDDLE + "except_path_list.json",
     "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
     "QUEUE_SIZE_LIMIT"                  : 500*1024*1024,
+    "DEFAULT_CATEGORY_ID"               : "0000001",
 }
 
 
@@ -576,6 +577,7 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
 
     job_type = cmd['type']
     job_path = cmd['path']
+    job_category_no = cmd['category_no']
     job_index = cmd['index']
     log.info("COMMAND: type({:10s}) path({})".format(
         str(job_type), str(job_path)))
@@ -619,7 +621,13 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
             '''
             funcname = "DSCSMacEncryptFile"
             log.info(json.dumps(service.configuration, indent=4))
-            category_id = "0000001"
+
+            category_id = GLOBAL_ENV["DEFAULT_CATEGORY_ID"]
+            if job_category_no + '_no' in service.configuration:
+                category_id = service.configuration[job_category_no + '_no']
+            if len(job_category_no) == 7 and job_category_no.isnumeric():
+                category_id = job_category_no
+
             log.info("############## category id : " + category_id)
             ret = dscs_dll.call_DSCSMacEncryptFile(job_path, category_id)
             # 1:허용, 0:차단 (편집, 캡쳐, 인쇄, 마킹)
@@ -774,10 +782,13 @@ def proc_main():        # the console process loop
             # process name pattern : 53cardrecon193247928347982
             cardrecon_pid = lib_get_pid_by_name_reg(r'\d\dcardrecon\d*')
             log.info("cardrecon pid : " + str(cardrecon_pid))
-            p = psutil.Process(cardrecon_pid)
-            if None != p:
+            if None != cardrecon_pid:
+                p = psutil.Process(cardrecon_pid)
                 specific_cpu = str(p.cpu_percent()) + "/" + str(psutil.cpu_count())
                 specific_memory = str(p.memory_percent()) + "%"
+            else:
+                specific_cpu = "N/A"
+                specific_memory = "N/A"
             #log.info("CPU : " + str(lib_cpu_usage()))
             #print(json.dumps(lib_cpu_usage(), indent=4))
             #print(json.dumps(p.io_counters(), indent=4))
@@ -966,7 +977,7 @@ def proc_install():
             os.system("\"" + sys.argv[0] + "\" --startup auto install")
             os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
             os.system("\"" + sys.argv[0] + "\" start")
-            # os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             workdir_path = ntpath.dirname(sys.executable)
             userprofile = os.getenv("userprofile", "")
             cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
@@ -1068,6 +1079,18 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_hide_svc" == sys.argv[1]:
+            SC_PATH = cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc"
+            cmd = SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+            print(cmd)
+            os.system(cmd)
+            sys.exit(0)
+        elif "dbg_unhide_svc" == sys.argv[1]:
+            SC_PATH = cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc"
+            cmd = SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+            print(cmd)
+            os.system(cmd)
+            sys.exit(0)
         elif "dbg_set_searching_flag_conf" == sys.argv[1]:
             MyService.user_id = os.getenv('USERNAME')
             MyService.set_searching_flag_conf()
