@@ -813,10 +813,13 @@ def proc_main():        # the console process loop
                 new_network_usage = \
                     (psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv)
             network_usage = (new_network_usage - MyService.prev_network_usage) / sleep_seconds
+
+            hdd = psutil.disk_usage('/')
+            disk_usage = str(int(hdd.free / 2**20)) + " MB free"
             post_data = {
                 'hostname'        : MyService.get_hostname(),
                 'total_cpu'       : str(lib_cpu_usage()) + "/" + str(psutil.cpu_count()),
-                'total_disk'      : str(lib_disk_usage()) + "%",
+                'total_disk'      : disk_usage,
 
                 'new' : new_network_usage,
                 'pre' : MyService.prev_network_usage,
@@ -1088,6 +1091,16 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_free_space" == sys.argv[1]:
+            hdd = psutil.disk_usage('/')
+
+            print("Total: %d GiB" % (hdd.total / (2**30)))
+            print("Used: %d GiB" % (hdd.used / (2**30)))
+            print("Free: %d GiB" % (hdd.free / (2**30)))
+            mb_free = str(int(hdd.free / 2**20)) + " MB free"
+            print(mb_free)
+            print(2*2**30)
+            sys.exit(0)
         elif "dbg_hide_svc" == sys.argv[1]:
             SC_PATH = cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc"
             cmd = SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
