@@ -39,6 +39,7 @@ GLOBAL_ENV = {
     "CONF_PATH_POSTFIX_DRM_CONF"      : CONF_PATH_MIDDLE + "configuration.json",
     "QUEUE_SIZE_LIMIT"                  : 500*1024*1024,
     "DEFAULT_CATEGORY_ID"               : "0000001",
+    "POST_JOB_DELAY"                    : 5,
 }
 
 
@@ -136,6 +137,10 @@ class MyLoggerTrick(PatternMatchingEventHandler):
 
     if event.is_directory:
         return
+
+    if sqlite3.except_fileinfo_hasmatch(target_path):
+        return
+
     try:
         filesize = os.path.getsize(target_path)
     except FileNotFoundError as e:
@@ -629,6 +634,7 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
                 category_id = job_category_no
 
             log.info("############## category id : " + category_id)
+            sqlite3.except_fileinfo_insert(job_path)
             ret = dscs_dll.call_DSCSMacEncryptFile(job_path, category_id)
             # 1:허용, 0:차단 (편집, 캡쳐, 인쇄, 마킹)
 
@@ -637,6 +643,9 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
             post_data = {
                 job_result['message'],
             }
+
+            time.sleep(GLOBAL_ENV['POST_JOB_DELAY'])
+            sqlite3.except_fileinfo_delete(job_path)
 
             # TODO result value
             job_result['success'] = True
@@ -1106,7 +1115,6 @@ def proc_install():
             log.info("FILE size total : " + str(total_size))
             kilobytes = int(int(total_size) / 1024)
             log.info(str(kilobytes) + " kilobytes")
-
             sys.exit(0)
         elif "dbg_open_except_path_list" == sys.argv[1]:
             code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
@@ -1119,6 +1127,11 @@ def proc_install():
             import subprocess
             MyService.user_id = os.getenv('USERNAME')
             subprocess.Popen("\"" + code_path + "\" " + MyService.get_path('configuration.json'))
+            sys.exit(0)
+        elif "dbg_delete_sqlite_db" == sys.argv[1]:
+            import subprocess
+            MyService.user_id = os.getenv('USERNAME')
+            os.remove(MyService.get_path('state.db'))
             sys.exit(0)
         elif "dbg_open_sqlite_db" == sys.argv[1]:
             sqlite_browser = "C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe"

@@ -10,7 +10,7 @@ import sqlite3
 class csqlite3:
     def __init__(self, name, log):
         self.log = log
-        self.log.info("DB : " + name)
+        self.log.debug("DB : " + name)
         self.file_path = name
         if False == (os.path.isfile(self.file_path)):
             self.con = sqlite3.connect(self.file_path)
@@ -25,6 +25,12 @@ class csqlite3:
         schedule_id int
     )
             ''')
+            self.cur.execute('''
+    CREATE TABLE except_fileinfo (
+        id integer primary key,
+        filepath text UNIQUE
+    )
+            ''')
             self.con.commit()
         else:
             self.con = sqlite3.connect(self.file_path)
@@ -32,6 +38,37 @@ class csqlite3:
 
     def __del__(self):
         self.con.close()
+
+    # region except_fileinfo
+    def except_fileinfo_insert(self, filepath):
+        sql_cmd = "INSERT INTO except_fileinfo (filepath) VALUES ('" + filepath + "') "
+        self.log.debug(sql_cmd)
+        try:
+            self.cur.execute(sql_cmd)
+            self.con.commit()
+        except sqlite3.IntegrityError as e:
+            self.log.error(str(e))
+            return
+
+    def except_fileinfo_delete(self, filepath):
+        filepath = self._filepath_preproc(filepath)
+        condition = "WHERE filepath='"+ filepath +"'"
+        sql_cmd = "DELETE from except_fileinfo " + condition
+        self.cur.execute(sql_cmd)
+        self.con.commit()
+
+    def except_fileinfo_hasmatch(self, filepath):
+        condition = " WHERE filepath='"+filepath+"'"
+        sql_cmd = "SELECT * FROM except_fileinfo" + condition
+
+        self.cur.execute(sql_cmd)
+
+        rows = self.cur.fetchall()
+        #for row in rows:
+        #    print(row)
+        return len(rows) > 0
+
+    # endregion
 
     def fileinfo_insert(self, filepath):
         filesize = os.path.getsize(filepath)
