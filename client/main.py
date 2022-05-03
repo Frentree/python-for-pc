@@ -250,6 +250,7 @@ class MyService:
     integrity_level = ""
     process_type = ""
     dscs = None
+    sqlite3 = None
 
     configuration = {
         "debug": True,
@@ -656,11 +657,11 @@ def traverse_all_files_glob(func, path=None):
                 continue
 
             if os.path.isdir(f):
-                log.info("searching on : "+f)
+                log.debug("searching on : "+f)
                 traverse_all_files_glob(func, f+"\\?")
             else:
                 if True == MyService.match_blacklist_format(f):
-                    log.info("##### Format matched: " + f)
+                    log.debug("Format matched: " + f)
                     func(f)
                     continue
 
@@ -669,7 +670,7 @@ def traverse_all_files_glob(func, path=None):
                     #print("f", end="", flush=True)
                     continue
                 else:
-                    log.info("##### format matched : " + f)
+                    log.debug("format matched : " + f)
                     func(f)
                 #print("file_path : " + file_path)
                 #print("file_name : " + file_name)
@@ -677,9 +678,11 @@ def traverse_all_files_glob(func, path=None):
                 #func(f, "Admin")
 
 def pushFileIfEncrypted(filepath):
-    log.info("############## PUSH FILE IF ENCRYPTED : " + filepath)
     ret = MyService.dscs.call_DSCSIsEncryptedFile(filepath)
-    log.info("RET: " + str(ret))
+    if 1 == ret:
+        log.info("############## PUSH FILE IF ENCRYPTED : " + filepath)
+        log.info("IS ENCRYPTED True : " + str(filepath))
+        MyService.sqlite3.fileinfo_insert(filepath)
 
 def proc_main():        # the console process loop
     try:
@@ -774,10 +777,10 @@ def proc_main():        # the console process loop
                 MyService.dscs = None
                 raise NameError('DSCS is not available')
 
-            log.info("$$$$$$$$$$$$$$$$$$$$$$ DSCS AVAILABLE")
             # searching can't be started without DSCS
             if False == MyService.get_searching_flag_conf():
                 MyService.dscs = dscs_dll
+                MyService.sqlite3 = sqlite3
                 traverse_all_files_glob(pushFileIfEncrypted)
                 MyService.set_searching_flag_conf()
 
@@ -1035,7 +1038,7 @@ def proc_install():
             subprocess.Popen("\"" + sqlite_browser + "\" " + MyService.get_path('state.db'))
             sys.exit(0)
 
-        '''            
+        '''
         elif "debug_svc" == sys.argv[1]:
             service = MyService()
 
