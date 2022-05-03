@@ -1,4 +1,4 @@
-from lib_logging import *
+#from lib_logging import *
 #import ctypes
 #import subprocess
 #import os
@@ -7,10 +7,29 @@ import win32con
 import win32profile
 import win32ts
 
-def runas(appname, param = None, show = False):
-    log.debug("RUNAS")
+def _lib_find_procs_by_name(name):
+    import psutil
+    "Return a list of processes matching 'name'."
+    ls = []
+    for p in psutil.process_iter(['name']):
+        if p.info['name'] == name:
+            ls.append(p)
+    return ls
+
+def get_explorer_session_id():
+    proc_list = _lib_find_procs_by_name("explorer.exe")
+    for p in proc_list:
+        pid = p.pid
+        session_id = win32ts.ProcessIdToSessionId(pid)
+        return session_id
+    return None
+
+def runas(appname, param, console_session_id = None, show = False):
     #appname = "C:\\WINDOWS\\system32\\cmd.exe"
-    console_session_id = win32ts.WTSGetActiveConsoleSessionId()
+    if None == console_session_id:
+        console_session_id = get_explorer_session_id()
+        if None == console_session_id:
+            console_session_id = win32ts.WTSGetActiveConsoleSessionId()
     console_user_token = win32ts.WTSQueryUserToken(console_session_id)
 
     StartInfo = win32process.STARTUPINFO()
@@ -38,3 +57,6 @@ def runas(appname, param = None, show = False):
         environment,
         None,
         StartInfo)
+
+if '__main__' == __name__:
+    print(get_explorer_session_id())
