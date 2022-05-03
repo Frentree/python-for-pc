@@ -249,6 +249,7 @@ class MyService:
     prev_network_usage = None
     integrity_level = ""
     process_type = ""
+    dscs = None
 
     configuration = {
         "debug": True,
@@ -393,7 +394,6 @@ class MyService:
 
     @staticmethod
     def get_searching_flag_conf():
-        return True
         try:
             with open(MyService.get_path('searching_flag_conf.json'), "r") as json_file:
                 searching_flag_conf = json.load(json_file)
@@ -590,6 +590,7 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
             ret = dscs_dll.call_DSCSDacEncryptFileV2(job_path)
             '''
             funcname = "DSCSMacEncryptFile"
+            log.info(json.dumps(service.configuration, indent=4))
             category_id = "0000001"
             log.info("############## category id : " + category_id)
             ret = dscs_dll.call_DSCSMacEncryptFile(job_path, category_id)
@@ -675,6 +676,11 @@ def traverse_all_files_glob(func, path=None):
                 #print("file_ext : " + file_ext)
                 #func(f, "Admin")
 
+def pushFileIfEncrypted(filepath):
+    log.info("############## PUSH FILE IF ENCRYPTED : " + filepath)
+    ret = MyService.dscs.call_DSCSIsEncryptedFile(filepath)
+    log.info("RET: " + str(ret))
+
 def proc_main():        # the console process loop
     try:
         dscs_dll = Dscs_dll()
@@ -709,12 +715,13 @@ def proc_main():        # the console process loop
             service.configuration['log_level'] = int(drm_config['log_level'])
             sleep_seconds = max(service.configuration["min_sleep_seconds"],
                 service.configuration["sleep_seconds"])
+            service.configuration['s_no'] = drm_config['s_no']
+            service.configuration['p_no'] = drm_config['p_no']
+            log.info(drm_config)
             log.debug("sleep " + str(sleep_seconds) + " seconds")
+            service.save_config()
 
 
-            if False == MyService.get_searching_flag_conf():
-                traverse_all_files_glob(sqlite3.fileinfo_insert)
-                MyService.set_searching_flag_conf()
 
 
 
@@ -764,7 +771,16 @@ def proc_main():        # the console process loop
             # endregion ]]]]]]]]]]]]]]]]] cardrecon process
 
             if False == dscs_dll.isAvailable():
+                MyService.dscs = None
                 raise NameError('DSCS is not available')
+
+            log.info("$$$$$$$$$$$$$$$$$$$$$$ DSCS AVAILABLE")
+            # searching can't be started without DSCS
+            if False == MyService.get_searching_flag_conf():
+                MyService.dscs = dscs_dll
+                traverse_all_files_glob(pushFileIfEncrypted)
+                MyService.set_searching_flag_conf()
+
 
 
             # region [[[[[[[[[[[[[[[[[[[ C2S JOB
@@ -864,7 +880,6 @@ def proc_main():        # the console process loop
 
             # endregion proc decrypted & has schedule_id
 
-            service.save_config()
         except requests.exceptions.ChunkedEncodingError as e:
             log.error(traceback.format_exc())
             log.error(str(e))
@@ -1008,6 +1023,11 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_open_configuration" == sys.argv[1]:
+            code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
+            import subprocess
+            subprocess.Popen("\"" + code_path + "\" " + MyService.get_path('configuration.json'))
+            sys.exit(0)
         elif "dbg_open_sqlite_db" == sys.argv[1]:
             sqlite_browser = "C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe"
 
