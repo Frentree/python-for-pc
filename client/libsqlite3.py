@@ -1,9 +1,16 @@
 import os
 import sqlite3
 
+"""
+    file state transition:
+        queued
+        decrypted and schedule_id is NULL
+        decrypted and schedule_id is NOT NULL
+"""
 class csqlite3:
     def __init__(self, name, log):
         self.log = log
+        self.log.info("DB : " + name)
         self.file_path = name
         if False == (os.path.isfile(self.file_path)):
             self.con = sqlite3.connect(self.file_path)
@@ -99,3 +106,17 @@ class csqlite3:
         self.cur.execute(sql_cmd)
         self.con.commit()
 
+    def fileinfo_get_queued_file_size_total(self):
+        condition = "WHERE state='decrypted' and schedule_id IS NOT NULL"
+        #condition = "WHERE state='decrypted' and schedule_id IS NULL"
+        sql_cmd = "SELECT sum(filesize) FROM fileinfo " + condition
+        self.cur.execute(sql_cmd)
+        rows = self.cur.fetchall()
+
+        ret_value = None
+        if len(rows) > 0:
+            ret_value = (rows[0][0])
+        if None == ret_value:
+            return 0
+        else:    
+            return ret_value
