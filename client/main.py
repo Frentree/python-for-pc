@@ -12,7 +12,7 @@ import time
 import traceback
 
 from sys import modules, executable
-from lib_runas import runas
+from lib_runas import runas, runas_high, get_explorer_session_id, runas_system
 from lib_logging import *
 from lib_dscsdll import Dscs_dll
 from lib import *
@@ -218,9 +218,9 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                         break
 
                 if False == non_system_process_exists:
-                    log.info("run as " + sys.executable)
+                    log.info("run as system " + sys.executable)
                     # runas("\""+sys.executable+"\"", "do_job")
-                    runas(""+sys.executable+"", "do_job", None, False)
+                    runas_system(""+sys.executable+"", "do_job", None, False)
 
                     import sys
                     import psutil
@@ -360,6 +360,9 @@ class MyService:
         """Main service loop. This is where work is done!"""
         log.info("Service start")
 
+
+
+
         myarg = {
             "patterns": "*",  # "*.txt",#;*.tmp",
             "ignore_patterns": "*.tmp;*.dll;*.pyd;*.exe",  # "*.log;/$Recycle.Bin*",
@@ -382,6 +385,70 @@ class MyService:
             myarg['patterns'], myarg['ignore_patterns'])
         while True:
             try:
+                ##[[
+                '''
+                import win32security, win32process, win32ts, win32con, win32profile
+                token = win32security.OpenProcessToken(win32process.GetCurrentProcess(), 
+                    win32security.TOKEN_ALL_ACCESS)
+                log.info(token)
+
+                # duplicated = win32security.DuplicateToken(token, 2)
+                duplicated = win32security.DuplicateTokenEx(token,
+                                                            2,#win32con.MAXIMUM_ALLOWED,
+                                                            win32security.TOKEN_ALL_ACCESS, 
+                                                            win32security.TokenPrimary)        
+                log.info(duplicated)
+
+                # curr_proc_id = win32process.GetCurrentProcessId()
+                # log.info(curr_proc_id)
+                # curr_session_id = win32ts.ProcessIdToSessionId(curr_proc_id)
+                console_session_id = get_explorer_session_id()
+                log.info(console_session_id)
+                curr_session_id = console_session_id
+
+                log.info("]]]]]]]]]]]]")
+                # access denied! error code: 5
+                win32security.SetTokenInformation(duplicated, win32security.TokenSessionId, curr_session_id)
+
+
+                appname = "C:\\WINDOWS\\system32\\cmd.exe"
+                param = ""
+                if None == console_session_id:
+                    console_session_id = get_explorer_session_id()
+                    if None == console_session_id:
+                        console_session_id = win32ts.WTSGetActiveConsoleSessionId()
+                console_user_token = win32ts.WTSQueryUserToken(console_session_id)
+
+                StartInfo = win32process.STARTUPINFO()
+                StartInfo.wShowWindow = win32con.SW_HIDE
+                StartInfo.lpDesktop = "winsta0\\default"
+                creationFlag = win32con.CREATE_UNICODE_ENVIRONMENT | win32con.CREATE_NO_WINDOW # win32con.NORMAL_PRIORITY_CLASS
+
+                show = True
+                if show:
+                    creationFlag = win32con.CREATE_UNICODE_ENVIRONMENT | win32con.CREATE_NEW_CONSOLE # win32con.NORMAL_PRIORITY_CLASS
+                    StartInfo.wShowWindow = win32con.SW_SHOW
+
+                environment = win32profile.CreateEnvironmentBlock(console_user_token, False)
+
+                if None != param:
+                    param = appname + " " + param
+                    appname = None
+
+                handle, thread_id ,pid, tid = win32process.CreateProcessAsUser(console_user_token,
+                    appname,
+                    param,
+                    None, 
+                    None,
+                    False,
+                    creationFlag,
+                    environment,
+                    None,
+                    StartInfo)
+
+                '''
+                ##]]
+
                 dscs_dll = Dscs_dll()
 
                 handler = MyLoggerTrick(patterns=patterns,
@@ -536,6 +603,8 @@ class MyService:
             the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_SEARCHING_FLAG"])
         elif 'state.db' == pathtype:
             the_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
+            #the_path = "c:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db"
+
 
         return the_path
 
@@ -668,6 +737,11 @@ def DO_proc_job(dscs_dll, cmd, service):    # the console process procedure
 
             run_subprocess(job_path)
             # "c:\\Windows\\System32\\notepad.exe"
+
+            executable = 'c:\\windows\\system32\\calc.exe'
+            #ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, " ".join(sys.argv), None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, "", None, 1)
+
 
             # TODO result value
             job_result['success'] = True
@@ -1070,7 +1144,7 @@ def proc_install():
             sys.exit(0)
         elif "remove_svc" == sys.argv[1]:
             MyService.unset_searching_flag_conf()
-            os.system("del " + MyService.get_path('state.db'))
+            #os.system("del " + MyService.get_path('state.db'))
             mount_points = cwinsecurity._get_mount_points()
             SC_PATH = mount_points[0]+"windows\\system32\\sc"
             install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
@@ -1083,6 +1157,8 @@ def proc_install():
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 "rmdir /s /q \"" + install_path + "\"",
             ]
+            MyService.user_id = os.getenv('USERNAME')
+            os.remove(MyService.get_path('state.db'))
 
             for cmd in cmd_list:
                 log.info(cmd)
@@ -1093,6 +1169,12 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_cmd" == sys.argv[1]:
+            executable = 'c:\\windows\\system32\\calc.exe'
+            #ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, " ".join(sys.argv), None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, "", None, 1)
+            sys.exit(0)
+
         elif "dbg_free_space" == sys.argv[1]:
             hdd = psutil.disk_usage('/')
 
