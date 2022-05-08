@@ -27,16 +27,18 @@ from lib_winsec import cwinsecurity
 from libsqlite3 import csqlite3
 
 
-CONF_PATH_MIDDLE = "\\AppData\\Local\\Temp\\"
+install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
 GLOBAL_ENV = {
     "INITIAL_LOGGING_LEVEL"             : logging.INFO,
     "WINDOWS_SERVICE_NAME"              : 'MyService',
     "EXE_FILENAME"                      : "ftclient.exe",
-    "DB_PATH_POSTFIX"                   : CONF_PATH_MIDDLE + "state.db",
-    "CONF_PATH_POSTFIX_SEARCHING_FLAG"  : CONF_PATH_MIDDLE + "searching_flag_conf.json",
-    "CONF_PATH_POSTFIX_EXCEPT_FORMAT"   : CONF_PATH_MIDDLE + "except_format_list.json",
-    "CONF_PATH_POSTFIX_EXCEPT_PATH"     : CONF_PATH_MIDDLE + "except_path_list.json",
-    "CONF_PATH_POSTFIX_DRM_CONF"        : CONF_PATH_MIDDLE + "configuration.json",
+    "SC_PATH"                           : cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc",
+    "INSTALL_PATH"                      : install_path,
+    "CONF_PATH_DB"                      : install_path + "state.db",
+    "CONF_PATH_SEARCHING_FLAG"          : install_path + "searching_flag_conf.json",
+    "CONF_PATH_EXCEPT_FORMAT"           : install_path + "except_format_list.json",
+    "CONF_PATH_EXCEPT_PATH"             : install_path + "except_path_list.json",
+    "CONF_PATH_DRM_CONF"                : install_path + "configuration.json",
     "QUEUE_SIZE_LIMIT"                  : 500*1024*1024,
     "DEFAULT_CATEGORY_ID"               : "0000001",
     "POST_JOB_DELAY"                    : 5,
@@ -203,45 +205,17 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
             try:
                 log.debug(myservice.configuration['server_address'])
 
-                import sys
-                import psutil
                 pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
-                non_system_process_exists = False
+                console_process_exist = False
                 for pid in pid_list:
-                    (user_sid, user0, user1) = lib_get_pid_owner(pid)
-                    if None != user0 and 'system' != user0.lower():
-                        non_system_process_exists = True
-
-                        if '' == MyService.user_id:
-                            MyService.user_id = user0
-                            log.info("user: " + str(MyService.user_id))
+                    bServiceProcess = is_service_process(pid)
+                    if False == bServiceProcess:
+                        console_process_exist = True
                         break
 
-                if False == non_system_process_exists:
+                if False == console_process_exist:
                     log.info("run as system " + sys.executable)
-                    # runas("\""+sys.executable+"\"", "do_job")
                     runas_system(""+sys.executable+"", "do_job", None, False)
-
-                    import sys
-                    import psutil
-                    pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
-                    non_system_process_exists = False
-                    for pid in pid_list:
-                        log.info("*** PID: " + str(pid))
-                        (user_sid, user0, user1) = lib_get_pid_owner(pid)
-                        if None != user0 and 'system' != user0.lower():
-                            non_system_process_exists = True
-
-                            log.info("user: " + str(user0))
-                            log.info("MyService.user_id: " + str(MyService.user_id))
-                            if '' == MyService.user_id:
-                                MyService.user_id = user0
-                                log.info("user: " + str(MyService.user_id))
-                            break
-                        else:
-                            log.info("else user: " + str(user0))
-
-
                 else:
                     log.debug("console process is running")
 
@@ -252,7 +226,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                 # myservice.load_config()
                 ensure_svc_running(myservice.configuration['service_name'])
 
-                if True == non_system_process_exists and False == observer_started:
+                if True == console_process_exist and False == observer_started:
                     for pathname in set(pathnames):
                         observer.schedule(event_handler, pathname, recursive)
                     observer.start()
@@ -466,16 +440,6 @@ class MyService:
                 time.sleep(5) # Important work
 
     @staticmethod
-    def get_store_path():
-        mount_point = cwinsecurity.get_windir_driveletter_with_colon()
-        # if '' == MyService.user_id:
-        #     log.error("########## GET STORE PATH ")
-        #     MyService.user_id = os.getenv('USERNAME')
-        userprofile = mount_point+"\\Users\\"+MyService.user_id
-        store_path = (userprofile+CONF_PATH_MIDDLE)
-        return store_path
-
-    @staticmethod
     def save_drm_config(drm_config):
         except_path_list = drm_config['except_path'].split(',')
         the_path_list = []
@@ -588,23 +552,16 @@ class MyService:
 
     @staticmethod
     def get_path(pathtype):
-        # if '' == MyService.user_id:
-        #     log.error("########## GET_PATH ")
-        #     log.error(traceback.format_exc())
-        #     MyService.user_id = os.getenv('USERNAME')
-        userprofile = cwinsecurity.get_windir_driveletter_with_colon()+"\\Users\\"+MyService.user_id
         if 'configuration.json' == pathtype:
-            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_DRM_CONF"])
+            the_path = (GLOBAL_ENV["CONF_PATH_DRM_CONF"])
         elif 'except_path_list.json' == pathtype:
-            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_EXCEPT_PATH"])
+            the_path = (GLOBAL_ENV["CONF_PATH_EXCEPT_PATH"])
         elif 'except_format_list.json' == pathtype:
-            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_EXCEPT_FORMAT"])
+            the_path = (GLOBAL_ENV["CONF_PATH_EXCEPT_FORMAT"])
         elif 'searching_flag_conf.json' == pathtype:
-            the_path = (userprofile+GLOBAL_ENV["CONF_PATH_POSTFIX_SEARCHING_FLAG"])
+            the_path = (GLOBAL_ENV["CONF_PATH_SEARCHING_FLAG"])
         elif 'state.db' == pathtype:
-            the_path = (userprofile+GLOBAL_ENV["DB_PATH_POSTFIX"])
-            #the_path = "c:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db"
-
+            the_path = (GLOBAL_ENV["CONF_PATH_DB"])
 
         return the_path
 
@@ -796,6 +753,14 @@ def traverse_all_files_glob(func, path=None):
                 #print("file_name : " + file_name)
                 #print("file_ext : " + file_ext)
                 #func(f, "Admin")
+
+def is_service_process(pid):
+    import win32ts
+    session_id = win32ts.ProcessIdToSessionId(pid)
+    if 1 == session_id:
+        return False
+    else:
+        return True
 
 def pushFileIfEncrypted(filepath):
     ret = MyService.dscs.call_DSCSIsEncryptedFile(filepath)
@@ -1058,14 +1023,13 @@ def proc_install():
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
             mount_points = cwinsecurity._get_mount_points()
-            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
             os.system("\"" + sys.argv[0] + "\" --startup auto install")
-            os.system(SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
+            os.system(GLOBAL_ENV['SC_PATH'] + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0")
             os.system("\"" + sys.argv[0] + "\" start")
-            os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             workdir_path = ntpath.dirname(sys.executable)
             userprofile = os.getenv("userprofile", "")
             cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
@@ -1074,12 +1038,11 @@ def proc_install():
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
             mount_points = cwinsecurity._get_mount_points()
-            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
-            os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
-            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
-            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
+            os.system(GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(GLOBAL_ENV['SC_PATH'] + " stop \"" + MyServiceFramework._svc_name_ + "")
+            os.system(GLOBAL_ENV['SC_PATH'] + " delete \"" + MyServiceFramework._svc_name_ + "")
             sys.exit(0)
         elif "do_job" == sys.argv[1]:
             log.debug("DO_JOB")
@@ -1110,11 +1073,9 @@ def proc_install():
             dscs_dll.decryptFile(job_path, bAppendPrefix=bAppendPrefix)
             sys.exit(0)
         elif "stop_svc" == sys.argv[1]:
-            mount_points = cwinsecurity._get_mount_points()
-            SC_PATH = mount_points[0]+"windows\\system32\\sc"
-            os.system(SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
-            os.system(SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "")
-            os.system(SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "")
+            os.system(GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            os.system(GLOBAL_ENV['SC_PATH'] + " stop \"" + MyServiceFramework._svc_name_ + "")
+            os.system(GLOBAL_ENV['SC_PATH'] + " delete \"" + MyServiceFramework._svc_name_ + "")
             os.system("taskkill /F /IM "+GLOBAL_ENV["EXE_FILENAME"])
             #time.sleep(1)
             os.system("taskkill /F /IM "+GLOBAL_ENV["EXE_FILENAME"])
@@ -1143,23 +1104,16 @@ def proc_install():
             log.info("MEMORY: " + str(p.memory_info()))
             sys.exit(0)
         elif "remove_svc" == sys.argv[1]:
-            MyService.unset_searching_flag_conf()
-            #os.system("del " + MyService.get_path('state.db'))
-            mount_points = cwinsecurity._get_mount_points()
-            SC_PATH = mount_points[0]+"windows\\system32\\sc"
-            install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
+            import os
             cmd_list = [
-                SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
-                SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
-                SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
+                GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+                GLOBAL_ENV['SC_PATH'] + " stop \"" + MyServiceFramework._svc_name_ + "",
+                GLOBAL_ENV['SC_PATH'] + " delete \"" + MyServiceFramework._svc_name_ + "",
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
-                "rmdir /s /q \"" + install_path + "\"",
+                "rmdir /s /q \"" + GLOBAL_ENV["INSTALL_PATH"] + "\"",
             ]
-            MyService.user_id = os.getenv('USERNAME')
-            os.remove(MyService.get_path('state.db'))
-
             for cmd in cmd_list:
                 log.info(cmd)
                 os.system(cmd)
@@ -1169,6 +1123,34 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_get_process" == sys.argv[1]:
+            import os, win32ts
+            for process in psutil.process_iter():
+                if 0 == process.pid: continue
+                if 'ftclient.exe' != process.name(): continue
+
+                session_id = win32ts.ProcessIdToSessionId(process.pid)
+                print(process.name() + " " + str(session_id))
+
+                #print(os.getsid(process.pid))
+            pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
+            non_system_process_exists = False
+            for pid in pid_list:
+                log.info("*** PID: " + str(pid))
+                (user_sid, user0, user1) = lib_get_pid_owner(pid)
+                if None != user0 and 'system' != user0.lower():
+                    non_system_process_exists = True
+
+                    log.info("user: " + str(user0))
+                    log.info("MyService.user_id: " + str(MyService.user_id))
+                    if '' == MyService.user_id:
+                        MyService.user_id = user0
+                        log.info("user: " + str(MyService.user_id))
+                    break
+                else:
+                    log.info("else user: " + str(user0))
+            sys.exit(0)
+
         elif "dbg_cmd" == sys.argv[1]:
             executable = 'c:\\windows\\system32\\calc.exe'
             #ctypes.windll.shell32.ShellExecuteW(None, "runas", executable, " ".join(sys.argv), None, 1)
@@ -1186,14 +1168,12 @@ def proc_install():
             print(2*2**30)
             sys.exit(0)
         elif "dbg_hide_svc" == sys.argv[1]:
-            SC_PATH = cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc"
-            cmd = SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+            cmd = GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
             print(cmd)
             os.system(cmd)
             sys.exit(0)
         elif "dbg_unhide_svc" == sys.argv[1]:
-            SC_PATH = cwinsecurity.get_systemdrive()+"\\windows\\system32\\sc"
-            cmd = SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+            cmd = GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
             print(cmd)
             os.system(cmd)
             sys.exit(0)
@@ -1262,31 +1242,29 @@ def proc_install():
 
 if __name__ == '__main__':
     try:
-        install_path = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\"
         full_dirpath = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM"
-        full_path = "\"" + install_path + GLOBAL_ENV["EXE_FILENAME"] + "\""
-        if (len(sys.argv) == 1 and False == os.path.isfile(install_path + GLOBAL_ENV["EXE_FILENAME"])):
+        full_path = "\"" + GLOBAL_ENV["INSTALL_PATH"] + GLOBAL_ENV["EXE_FILENAME"] + "\""
+        if (len(sys.argv) == 1 and False == os.path.isfile(GLOBAL_ENV["INSTALL_PATH"] + GLOBAL_ENV["EXE_FILENAME"])):
             MyService.unset_searching_flag_conf()
 
             log.info(full_path + " not exist")
             log.info(sys.executable)
             mount_points = cwinsecurity._get_mount_points()
-            SC_PATH = mount_points[0]+"windows\\system32\\sc"
             workdir_path = ntpath.dirname(sys.executable)
 
             cmd_list = [
                 #SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
-                SC_PATH + " stop \"" + MyServiceFramework._svc_name_ + "",
-                SC_PATH + " delete \"" + MyServiceFramework._svc_name_ + "",
+                GLOBAL_ENV['SC_PATH'] + " stop \"" + MyServiceFramework._svc_name_ + "",
+                GLOBAL_ENV['SC_PATH'] + " delete \"" + MyServiceFramework._svc_name_ + "",
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
-                "rmdir /s /q \"" + install_path + "\"",
+                "rmdir /s /q \"" + GLOBAL_ENV["INSTALL_PATH"] + "\"",
                 "mkdir \"" + full_dirpath + "\"",
                 "copy "+sys.executable+" " + full_path,
-                "copy \"" + workdir_path + "\\configuration.json\" \""+install_path+"\"",
+                "copy \"" + workdir_path + "\\configuration.json\" \""+GLOBAL_ENV["INSTALL_PATH"]+"\"",
                 full_path + " --startup auto install",
-                SC_PATH + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0",
+                GLOBAL_ENV['SC_PATH'] + " failure \"" + MyServiceFramework._svc_name_ + "\" reset= 0 actions= restart/0/restart/0/restart/0",
                 full_path + " start",
             ]
 
@@ -1295,7 +1273,7 @@ if __name__ == '__main__':
                 os.system(cmd)
                 time.sleep(0.1)
 
-            # os.system(SC_PATH + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
+            # os.system(GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
             #userprofile = os.getenv("userprofile", "")
             #cmd = "copy \"" + workdir_path + "\\configuration.json\" \""+userprofile+"\\AppData\\Local\\Temp\""
             #os.system(cmd)
@@ -1305,5 +1283,6 @@ if __name__ == '__main__':
         proc_install()
         init()
     except Exception as e:
-        log.error(traceback.print_stack())
+        #log.error(traceback.print_stack())
+        log.error(traceback.format_exc())
         log.error(e)
