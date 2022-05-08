@@ -44,6 +44,13 @@ GLOBAL_ENV = {
     "POST_JOB_DELAY"                    : 5,
     # "MIN_FREE_SPACE"                    : 2*2**30,    #2 GB
     "MIN_FREE_SPACE"                    : 30*2**30,    #30 GB
+
+    "EMBEDDED_EXCEPT_PATH_LIST"         : [
+        #"\\Users\\Admin\\Desktop",
+    ],
+    "EMBEDDED_EXCEPT_FORMAT_LIST"       : [
+
+    ],
 }
 
 
@@ -445,6 +452,9 @@ class MyService:
         the_path_list = []
         for except_path in except_path_list:
             the_path_list.append(except_path.lower())
+
+        the_path_list = the_path_list + GLOBAL_ENV['EMBEDDED_EXCEPT_PATH_LIST']
+
         the_path_list.sort()
         with open(MyService.get_path('except_path_list.json'), 'w') as outfile:
             json.dump(the_path_list, outfile, indent=4)
@@ -927,6 +937,7 @@ def proc_main():        # the console process loop
 
 
             # region proc queued
+            subpath_list = {}
             file_list = sqlite3.fileinfo_select(state='queued')
             for fileinfo in file_list:
                 file_id = fileinfo[0]
@@ -948,16 +959,26 @@ def proc_main():        # the console process loop
                     log.info("file decrypted : " + filepath2)
                     sqlite3.fileinfo_update_state(filepath=file_path, state="decrypted")
 
-                    # TODO add schedule
-                    schedule_id = er.my_add_schedule(subpath_list=[filepath2], postfix=str(file_id))
-                    sqlite3.fileinfo_update_schedule_id(file_path, schedule_id)
-                    log.info("schedule added " + str(schedule_id))
-
-                    # insert DRM schedule
-                    apiInterface.pi_schedulesPost(schedule_id, er.current_ap_no, 'D')
+                    # [NOTE] key: decrypted path, value: original path
+                    subpath_list[filepath2] = file_path
                 else:                   # decryption failed
                     sqlite3.fileinfo_delete(file_path)
+
+
+            if len(subpath_list) > 0:
+                schedule_id = er.my_add_schedule(subpath_list=subpath_list)
+                log.info("schedule added " + str(schedule_id))
+                for subpath in subpath_list:
+                    decrypted_path = subpath
+                    original_path = subpath_list[subpath]
+                    sqlite3.fileinfo_update_schedule_id(original_path, schedule_id)
+
+                # insert DRM schedule
+                apiInterface.pi_schedulesPost(schedule_id, er.current_ap_no, 'D')
+
             # endregion proc queued
+
+
 
             # region proc decrypted & has schedule_id
             file_list = sqlite3.fileinfo_select_scheduled()
@@ -1123,6 +1144,75 @@ def proc_install():
 
 
         ##### Commands for Debugging
+        elif "dbg_fileattr" == sys.argv[1]:
+            filepath_list = [
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (2).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (3).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (4).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (5).txt',
+            ]
+            import win32con
+            import win32api
+            for filepath in filepath_list:
+                attrs = win32api.GetFileAttributes(filepath)
+                print(filepath)
+                print(f'0x{attrs:02x} 0b{attrs:08b} {attrs:02}(10)')
+                attr_dic = {
+                    win32con.FILE_ATTRIBUTE_SYSTEM:"FILE_ATTRIBUTE_SYSTEM",
+                    win32con.FILE_ATTRIBUTE_HIDDEN:"FILE_ATTRIBUTE_HIDDEN",
+                    win32con.FILE_ATTRIBUTE_READONLY:"FILE_ATTRIBUTE_READONLY",
+                    win32con.FILE_ATTRIBUTE_HIDDEN:"FILE_ATTRIBUTE_HIDDEN",
+                    win32con.FILE_ATTRIBUTE_SYSTEM:"FILE_ATTRIBUTE_SYSTEM",
+                    win32con.FILE_ATTRIBUTE_DIRECTORY:"FILE_ATTRIBUTE_DIRECTORY",
+                    win32con.FILE_ATTRIBUTE_ARCHIVE:"FILE_ATTRIBUTE_ARCHIVE",
+                    win32con.FILE_ATTRIBUTE_DEVICE:"FILE_ATTRIBUTE_DEVICE",
+                    win32con.FILE_ATTRIBUTE_NORMAL:"FILE_ATTRIBUTE_NORMAL",
+                    win32con.FILE_ATTRIBUTE_TEMPORARY:"FILE_ATTRIBUTE_TEMPORARY",
+                    win32con.FILE_ATTRIBUTE_SPARSE_FILE:"FILE_ATTRIBUTE_SPARSE_FILE",
+                    win32con.FILE_ATTRIBUTE_REPARSE_POINT:"FILE_ATTRIBUTE_REPARSE_POINT",
+                    win32con.FILE_ATTRIBUTE_COMPRESSED:"FILE_ATTRIBUTE_COMPRESSED",
+                    win32con.FILE_ATTRIBUTE_OFFLINE:"FILE_ATTRIBUTE_OFFLINE",
+                    win32con.FILE_ATTRIBUTE_NOT_CONTENT_INDEXED:"FILE_ATTRIBUTE_NOT_CONTENT_INDEXED",
+                    win32con.FILE_ATTRIBUTE_ENCRYPTED:"FILE_ATTRIBUTE_ENCRYPTED",
+                    win32con.FILE_ATTRIBUTE_VIRTUAL:"FILE_ATTRIBUTE_VIRTUAL",
+                }
+                for attr in attr_dic:
+                    if attrs & attr:
+                        print(attr_dic[attr])
+            sys.exit(0)
+
+        elif "dbg_test" == sys.argv[1]:
+            subpath_list = {}
+            filepath_list = [
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (2).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (3).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (4).txt',
+                'C:\\Users\\Admin\\Desktop\\repos\\GitHub\\testdoc 공백 특수ㅁㄴㅇㄹ가나♣♣11 - 복사본 (5).txt',
+            ]
+            for filepath in filepath_list:
+                filepath2 = Dscs_dll.get_decrypted_filepath(filepath, True)
+                subpath_list[filepath] = filepath2
+
+            print(json.dumps(subpath_list, indent=4))
+
+            for subpath in subpath_list:
+                print(subpath)
+                print(subpath_list[subpath])
+
+
+            list1 = [
+                1,2,3,
+            ]
+            list2 = [
+                4,5,6,
+            ]
+            print(list1)
+            print(list2)
+            the_list = list1 + list2
+            print(the_list)
+            print(len(subpath_list))
+            sys.exit(0)
+
         elif "dbg_get_process" == sys.argv[1]:
             import os, win32ts
             for process in psutil.process_iter():
@@ -1196,8 +1286,7 @@ def proc_install():
         elif "dbg_open_except_path_list" == sys.argv[1]:
             code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
             import subprocess
-            MyService.user_id = os.getenv('USERNAME')
-            subprocess.Popen("\"" + code_path + "\" " + MyService.get_path('except_path_list.json'))
+            subprocess.Popen("\"" + code_path + "\" \"" + MyService.get_path('except_path_list.json')+"\"")
             sys.exit(0)
         elif "dbg_open_configuration" == sys.argv[1]:
             code_path = "C:\\Program Files\\Microsoft VS Code\\Code.exe"
