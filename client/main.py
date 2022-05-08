@@ -1214,8 +1214,7 @@ def proc_install():
             sqlite_browser = "C:\\Users\\Admin\\Downloads\\SQLiteDatabaseBrowserPortable\\App\\SQLiteDatabaseBrowser64\\DB Browser for SQLCipher.exe"
 
             import subprocess
-            MyService.user_id = os.getenv('USERNAME')
-            subprocess.Popen("\"" + sqlite_browser + "\" " + MyService.get_path('state.db'))
+            subprocess.Popen("\"" + sqlite_browser + "\" \"" + MyService.get_path('state.db') + "\"")
             sys.exit(0)
 
         '''
