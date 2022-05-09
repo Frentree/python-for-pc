@@ -792,12 +792,6 @@ def pushFileIfEncrypted(filepath):
         MyService.sqlite3.fileinfo_insert_with_size(filepath, filesize)
 
 def proc_main():        # the console process loop
-    try:
-        dscs_dll = Dscs_dll()
-    except FileNotFoundError as e:
-        log.error(e)
-        return
-
     er = er_agent(log)
 
     service = MyService()
@@ -887,6 +881,12 @@ def proc_main():        # the console process loop
             c2s_job = apiInterface.drm_resourcePost(post_data)
             # endregion ]]]]]]]]]]]]]]]]] cardrecon process
 
+            try:
+                dscs_dll = Dscs_dll()
+            except FileNotFoundError as e:
+                log.error(e)
+                raise NameError('DSCS is not available')
+
             if False == dscs_dll.isAvailable():
                 MyService.dscs = None
                 raise NameError('DSCS is not available')
@@ -946,6 +946,7 @@ def proc_main():        # the console process loop
                 file_state = fileinfo[3]
 
                 filepath2 = dscs_dll.decryptFile(file_path, service.configuration['bAppendDecryptedPostfix'])
+                # TODO alternate data streams (ADS)
                 log.info("FILE : " + str(filepath2))
 
                 size_limit = GLOBAL_ENV['QUEUE_SIZE_LIMIT']
@@ -1029,6 +1030,7 @@ def proc_main():        # the console process loop
         except NameError as e:
             log.error(traceback.format_exc())
             log.error(e)
+            return
         except Exception as e:
             log.error(traceback.format_exc())
             log.error(str(e))

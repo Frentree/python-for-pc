@@ -25,7 +25,7 @@ if '__main__' == __name__:
     # r"^\\Program Files\\AhnLab\\.*$",
     # r"^\\Program Files (x86)\\Ground Labs\\.*$",
 #    r"\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\.*$",
-    r"^\\ProgramFiles(x).*$",
+    r"^.:\\Program Files\(x86\).*$",
     # r"^\\ProgramData\\Microsoft\\Diagnosis\\.*$",
     # r"^\\ProgramData\\Microsoft\\Windows\\.*$",
     # r"^\\ProgramData\\Microsoft\\Search\\Data\\.*$",
@@ -36,14 +36,14 @@ if '__main__' == __name__:
     # r"^\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",     # TODO working dir
   ]
   src_path = "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\agent-queue.dat-journal"
-  src_path = "\\ProgramFiles(x86)\\GroundLabs\\EnterpriseRecon2"#\\agent-queue.dat-journal"
+  src_path = "C:\\Program Files(x86)\\GroundLabs\\EnterpriseRecon2"#\\agent-queue.dat-journal"
 
   for reg in reg_list:
     import re
     p = re.compile(reg, re.IGNORECASE)
     m = p.fullmatch(src_path)
-    print(reg)
-    print(src_path)
+    #print(reg)
+    #print(src_path)
     if m != None:
       print("NOT NONE")
-  print("PASS")
+  #print("PASS")

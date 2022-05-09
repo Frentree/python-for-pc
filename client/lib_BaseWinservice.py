@@ -24,6 +24,17 @@ import win32serviceutil
 import servicemanager
 import win32event
 import win32service
+import ctypes
+import sys
+
+# output "logging" messages to DbgView via OutputDebugString (Windows only!)
+OutputDebugString = ctypes.windll.kernel32.OutputDebugStringW
+
+def prt(record):
+    record_list = record.split('\n')
+    PREFIX_FOR_FILTERING = "[TT]"
+    for record_item in record_list:
+        OutputDebugString(PREFIX_FOR_FILTERING+record_item)
 
 
 class BaseWinservice(win32serviceutil.ServiceFramework):    
@@ -33,14 +44,17 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
 
     @classmethod
     def parse_command_line(cls):
+        prt("parse_command_line")
         win32serviceutil.HandleCommandLine(cls)
 
     def __init__(self, args):
+        prt("__init__")
         win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
 
     def SvcStop(self):
+        prt("SvcStop")
         self.stop()
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         #win32event.SetEvent(self.hWaitStop)
@@ -50,6 +64,7 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
         servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_, ''))
+        prt("SvcDoRun")
         self.main()
 
     def start(self):
@@ -60,10 +75,16 @@ class BaseWinservice(win32serviceutil.ServiceFramework):
 
     def main(self):
         while True:
-            print("AAA")
+            prt("main code")
             import time
             time.sleep(1)
         pass
 
 if __name__ == '__main__':
-    BaseWinservice.parse_command_line()
+    prt("__main__")
+    if len(sys.argv) == 1:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(BaseWinservice)
+        servicemanager.StartServiceCtrlDispatcher()
+    else:
+        win32serviceutil.HandleCommandLine(BaseWinservice)

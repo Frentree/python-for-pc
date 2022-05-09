@@ -8,7 +8,11 @@ import win32serviceutil  # ServiceFramework and commandline helper
 import servicemanager  # Simple setup and logging
 from win32serviceutil import StartService, QueryServiceStatus, ServiceFramework, HandleCommandLine
 from lib_runas import runas
-from lib_logging import log
+from lib_logging import log, config_logging
+import logging
+
+
+config_logging(logging.DEBUG)
 
 class MyService:
     """ application stub"""
@@ -92,8 +96,8 @@ class MyService:
                 # os.system(helpercmd)
 
                 self.load_config()
-                if True != self.configuration['flag_skip_checking_er_service']:
-                    ensure_svc_running(self.configuration['service_name'])
+                # if True != self.configuration['flag_skip_checking_er_service']:
+                #     ensure_svc_running(self.configuration['service_name'])
             except Exception as e:
                 log.error(e)
                 pass
@@ -137,4 +141,15 @@ class MyServiceFramework(ServiceFramework):
 
     @staticmethod
     def handle_commandline():
+        win32serviceutil.HandleCommandLine(MyServiceFramework)
+
+
+
+if __name__ == '__main__':
+    log.info("__main__")
+    if len(sys.argv) == 1:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(MyServiceFramework)
+        servicemanager.StartServiceCtrlDispatcher()
+    else:
         win32serviceutil.HandleCommandLine(MyServiceFramework)

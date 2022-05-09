@@ -19,10 +19,14 @@ rem dist\installer start
 
 copy dist\ftclient.exe ..\00.RELEASE\package.exe
 cd ..\00.RELEASE
+rem package dbg_unhide_svc
+rem package stop_svc
 uninstall
 install
+rem package
+rem package setup
 cd ..\client
-rem python lib_pysftp.py
+python lib_pysftp.py
 
 rem c:\windows\system32\msiexec /x ftservice.msi
 rem cd ..\installer & devenv /ReBuild Release ftservice.sln
