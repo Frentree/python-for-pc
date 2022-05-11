@@ -46,7 +46,7 @@ GLOBAL_ENV = {
     "MIN_FREE_SPACE"                    : 30*2**30,    #30 GB
 
     "EMBEDDED_EXCEPT_PATH_LIST"         : [
-        #"\\Users\\Admin\\Desktop",
+        "\\Users\\Admin\\Desktop",
         "\\Users\\Admin\\Desktop\\electron-app",
         "\\Users\\Admin\\Desktop\\electron-xls-app",
         "\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git",
@@ -1022,7 +1022,6 @@ def proc_main():        # the console process loop
 def proc_install():
     if len(sys.argv) == 2:
         if "setup" == sys.argv[1]:
-            mount_points = cwinsecurity._get_mount_points()
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             # os.system("\"" + sys.argv[0] + "\" --startup delayed install")
@@ -1037,7 +1036,6 @@ def proc_install():
             time.sleep(1)
             sys.exit(0)
         elif "closedown" == sys.argv[1]:
-            mount_points = cwinsecurity._get_mount_points()
             for i in range(len(sys.argv)):
                 print(sys.argv[i])
             os.system(GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)")
@@ -1309,14 +1307,12 @@ def proc_install():
 
 if __name__ == '__main__':
     try:
-        full_dirpath = cwinsecurity.get_systemdrive() + "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM"
         full_path = "\"" + GLOBAL_ENV["INSTALL_PATH"] + GLOBAL_ENV["EXE_FILENAME"] + "\""
         if (len(sys.argv) == 1 and False == os.path.isfile(GLOBAL_ENV["INSTALL_PATH"] + GLOBAL_ENV["EXE_FILENAME"])):
             MyService.unset_searching_flag_conf()
 
             log.info(full_path + " not exist")
             log.info(sys.executable)
-            mount_points = cwinsecurity._get_mount_points()
             workdir_path = ntpath.dirname(sys.executable)
 
             cmd_list = [
@@ -1327,7 +1323,7 @@ if __name__ == '__main__':
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
                 "rmdir /s /q \"" + GLOBAL_ENV["INSTALL_PATH"] + "\"",
-                "mkdir \"" + full_dirpath + "\"",
+                "mkdir \"" + GLOBAL_ENV["INSTALL_PATH"] + "\"",
                 "copy "+sys.executable+" " + full_path,
                 "copy \"" + workdir_path + "\\configuration.json\" \""+GLOBAL_ENV["INSTALL_PATH"]+"\"",
                 full_path + " --startup auto install",
