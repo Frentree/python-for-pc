@@ -47,6 +47,18 @@ GLOBAL_ENV = {
 
     "EMBEDDED_EXCEPT_PATH_LIST"         : [
         #"\\Users\\Admin\\Desktop",
+        "\\Users\\Admin\\Desktop\\electron-app",
+        "\\Users\\Admin\\Desktop\\electron-xls-app",
+        "\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git",
+        "\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client",
+        "\\Users\\Admin\\Desktop\\my_movie_2022",
+        "\\Users\\Admin\\Desktop\\my-electron-app",
+        "\\Users\\Admin\\Desktop\\hello_rollup",
+        "\\Users\\Admin\\Desktop\\hello_next",
+        "\\Users\\Admin\\Desktop\\electron-xls-app - 복사본",
+        "\\Users\\Admin\\Desktop\\Adobe Photoshop cc 2019",
+        "\\Users\\Admin\\Desktop\\Adobe CS5.5 Master Collection",
+        "\\Users\\Admin\\Desktop\\NBITS",
     ],
     "EMBEDDED_EXCEPT_FORMAT_LIST"       : [
 
@@ -84,6 +96,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^.:\\Users\\.*\\Documents\\Virtual Machines\\.*$",       # TODO
         r"^.:\\Users\\.*\\Desktop\\repos\\GitHub\\Python\\.*$",       # TODO
         r"^.:\\Users\\.*\\VirtualBox VMs\\.*$",       # TODO
+        r"^.:\\Windows\\CbsTemp\\.*$",
         r"^.:\\Windows\\OffWrite.log.*$",
         r"^.:\\Windows\\Softcamp\\.*$",
         r"^.:\\Windows\\Logs\\.*$",
@@ -95,6 +108,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^.:\\Windows\\SysWOW64\\.*$",
         r"^.:\\Windows\\Temp\\.*$",
         r"^.:\\Windows\\SoftwareDistributions\\DataStore\\.*$",
+        r"^.:\\Windows\\servicing\\LCU\\.*$",
         r"^.:\\Program Files\\AhnLab\\.*$",
         r"^.:\\Program Files \(x86\)\\Ground Labs\\.*$",
         r"^.:\\Program Files \(x86\)\\Ground Labs\\Enterprise Recon 2\\.*$",
@@ -112,6 +126,14 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         r"^.:\\\$Recycle\.Bin\\.*$",
         r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\.git\\.*$",
         r"^.:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\my_movie_2022\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\my-electron-app\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\hello_rollup\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\hello_next\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\electron-xls-app - 복사본\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\Adobe Photoshop cc 2019\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\Adobe CS5.5 Master Collection\\.*$",
+        r"^.:\\Users\\Admin\\Desktop\\NBITS\\.*$",
 
         r"^.:\\.*\\.*\.tsp$",
         r"^.:\\.*\\.*\.tmp$",
@@ -193,8 +215,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     try:
         self.do_log(event)
     except Exception as e:
-        # self.log.error(traceback.print_stack().replace("\n", ""))
-        self.log.error(traceback.print_stack())
+        self.log.error(traceback.format_exc())
         self.log.error(str(e))
 
 
@@ -240,7 +261,7 @@ def observe_with(observer, event_handler, pathnames, recursive, myservice):
                     observer_started = True
 
             except Exception as e:
-                log.error(traceback.print_stack())
+                log.error(traceback.format_exc())
                 log.error(e)
             finally:
                 sleep_seconds = max(myservice.configuration["min_sleep_seconds"],
@@ -366,71 +387,24 @@ class MyService:
             myarg['patterns'], myarg['ignore_patterns'])
         while True:
             try:
-                ##[[
-                '''
-                import win32security, win32process, win32ts, win32con, win32profile
-                token = win32security.OpenProcessToken(win32process.GetCurrentProcess(), 
-                    win32security.TOKEN_ALL_ACCESS)
-                log.info(token)
+                pid_list = lib_get_pid_list_by_name_reg(r'ftclient.exe')
+                console_process_exist = False
+                for pid in pid_list:
+                    bServiceProcess = is_service_process(pid)
+                    if False == bServiceProcess:
+                        console_process_exist = True
+                        break
 
-                # duplicated = win32security.DuplicateToken(token, 2)
-                duplicated = win32security.DuplicateTokenEx(token,
-                                                            2,#win32con.MAXIMUM_ALLOWED,
-                                                            win32security.TOKEN_ALL_ACCESS, 
-                                                            win32security.TokenPrimary)        
-                log.info(duplicated)
+                if False == console_process_exist:
+                    log.info("run as system " + sys.executable)
+                    runas_system(""+sys.executable+"", "do_job", None, False)
+                else:
+                    log.info("console process is running")
 
-                # curr_proc_id = win32process.GetCurrentProcessId()
-                # log.info(curr_proc_id)
-                # curr_session_id = win32ts.ProcessIdToSessionId(curr_proc_id)
-                console_session_id = get_explorer_session_id()
-                log.info(console_session_id)
-                curr_session_id = console_session_id
-
-                log.info("]]]]]]]]]]]]")
-                # access denied! error code: 5
-                win32security.SetTokenInformation(duplicated, win32security.TokenSessionId, curr_session_id)
-
-
-                appname = "C:\\WINDOWS\\system32\\cmd.exe"
-                param = ""
-                if None == console_session_id:
-                    console_session_id = get_explorer_session_id()
-                    if None == console_session_id:
-                        console_session_id = win32ts.WTSGetActiveConsoleSessionId()
-                console_user_token = win32ts.WTSQueryUserToken(console_session_id)
-
-                StartInfo = win32process.STARTUPINFO()
-                StartInfo.wShowWindow = win32con.SW_HIDE
-                StartInfo.lpDesktop = "winsta0\\default"
-                creationFlag = win32con.CREATE_UNICODE_ENVIRONMENT | win32con.CREATE_NO_WINDOW # win32con.NORMAL_PRIORITY_CLASS
-
-                show = True
-                if show:
-                    creationFlag = win32con.CREATE_UNICODE_ENVIRONMENT | win32con.CREATE_NEW_CONSOLE # win32con.NORMAL_PRIORITY_CLASS
-                    StartInfo.wShowWindow = win32con.SW_SHOW
-
-                environment = win32profile.CreateEnvironmentBlock(console_user_token, False)
-
-                if None != param:
-                    param = appname + " " + param
-                    appname = None
-
-                handle, thread_id ,pid, tid = win32process.CreateProcessAsUser(console_user_token,
-                    appname,
-                    param,
-                    None, 
-                    None,
-                    False,
-                    creationFlag,
-                    environment,
-                    None,
-                    StartInfo)
-
-                '''
-                ##]]
-
-                dscs_dll = Dscs_dll()
+                try:
+                    dscs_dll = Dscs_dll()
+                except Exception as e:
+                    log.error(traceback.format_exc())
 
                 handler = MyLoggerTrick(patterns=patterns,
                     ignore_patterns=ignore_patterns, log=log, dscs_dll=dscs_dll)
@@ -438,10 +412,10 @@ class MyService:
                 observe_with(observer, handler,
                             myarg['pathnames'], myarg['recursive'], self)
             except FileNotFoundError as e:
-                log.error(traceback.print_stack())
+                log.error(traceback.format_exc())
                 log.error(e)
             except Exception as e:
-                log.error(traceback.print_stack())
+                log.error(traceback.format_exc())
                 log.error(str(e))
             finally:
                 time.sleep(5) # Important work
@@ -1036,6 +1010,9 @@ def proc_main():        # the console process loop
             log.error(str(e))
             return
         finally:
+            sleep_seconds = max(service.configuration["min_sleep_seconds"],
+                service.configuration["sleep_seconds"])
+            log.debug("sleep " + str(sleep_seconds) + " seconds")
             if logging.INFO == service.configuration['log_level'] or logging.DEBUG == service.configuration['log_level']:
                 log.setLevel(service.configuration['log_level'])
                 setLogLevel(service.configuration['log_level'])
@@ -1343,7 +1320,7 @@ if __name__ == '__main__':
             workdir_path = ntpath.dirname(sys.executable)
 
             cmd_list = [
-                #SC_PATH + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
+                GLOBAL_ENV['SC_PATH'] + " sdset myservice D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)",
                 GLOBAL_ENV['SC_PATH'] + " stop \"" + MyServiceFramework._svc_name_ + "",
                 GLOBAL_ENV['SC_PATH'] + " delete \"" + MyServiceFramework._svc_name_ + "",
                 'taskkill /f /im '+GLOBAL_ENV["EXE_FILENAME"],
@@ -1373,6 +1350,5 @@ if __name__ == '__main__':
         proc_install()
         init()
     except Exception as e:
-        #log.error(traceback.print_stack())
         log.error(traceback.format_exc())
         log.error(e)
