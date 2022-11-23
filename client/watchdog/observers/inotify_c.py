@@ -286,6 +286,8 @@ class Inotify:
             except OSError as e:
                 if e.errno == errno.EINTR:
                     continue
+                elif e.errno == errno.EBADF:
+                    return []
                 else:
                     raise
             break
@@ -323,7 +325,6 @@ class Inotify:
                     path = self._path_for_wd.pop(wd)
                     if self._wd_for_path[path] == wd:
                         del self._wd_for_path[path]
-                    continue
 
                 event_list.append(inotify_event)
 

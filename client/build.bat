@@ -1,33 +1,8 @@
-@echo off
-rem start /b kill.bat
+python build.py generate_file_version
 
-rem taskkill /F /IM ftclient.exe
-rem timeout 1
-rem taskkill /F /IM x64.exe
-rem timeout 1
-rem taskkill /F /IM ftclient.exe
-rem timeout 1
-rem taskkill /F /IM x64.exe
-rem timeout 1
+del dist\ftclient.exe
+python -m PyInstaller --version-file file_version.txt -F --hidden-import=win32timezone -n ftclient main.py
+copy dist\ftclient.exe  ..\00.RELEASE\package.exe
 
-rem taskkill /F /IM installer.exe
-python -m PyInstaller -F --hidden-import=win32timezone -n ftclient main.py
-
-rem dist\installer remove
-rem dist\installer install
-rem dist\installer start
-
-copy dist\ftclient.exe ..\00.RELEASE\package.exe
-cd ..\00.RELEASE
-rem package dbg_unhide_svc
-rem package stop_svc
-uninstall
-install
-rem package
-rem package setup
-cd ..\client
-python lib_pysftp.py
-
-rem c:\windows\system32\msiexec /x ftservice.msi
-rem cd ..\installer & devenv /ReBuild Release ftservice.sln
-rem cd ..\client
+python build.py
+run.bat

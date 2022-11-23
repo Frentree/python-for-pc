@@ -1,0 +1,1996 @@
+2022:07:12 09:31:18.893 [18608] DEBUG    main.py              env_load_config_file 54 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:12 09:31:18.893 [18608] DEBUG    main.py              env_load_config_file 55 LOAD CONFIG FILE : .\configuration.json
+2022:07:12 09:31:18.895 [18608] DEBUG    main.py              env_load_config_file 64 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "True",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "",
+    "WATCHDOG_IGNORE_PATTERNS": ""
+}
+2022:07:12 09:31:18.898 [18608] DEBUG    main.py              env_load_config_file 54 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:12 09:31:18.898 [18608] DEBUG    main.py              env_load_config_file 55 LOAD CONFIG FILE : .\configuration.json
+2022:07:12 09:31:18.898 [18608] DEBUG    main.py              env_load_config_file 64 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "True",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "",
+    "WATCHDOG_IGNORE_PATTERNS": ""
+}
+2022:07:12 09:31:18.900 [18608] INFO     main.py              dev_diag             27 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "True",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "",
+    "WATCHDOG_IGNORE_PATTERNS": ""
+}
+2022:07:12 09:31:18.901 [18608] INFO     main.py              dev_diag             37 [DIAG] False  : is_drm_installed()
+2022:07:12 09:31:18.902 [18608] INFO     main.py              dev_diag             37 [DIAG] True   : is_er2_installed()
+2022:07:12 09:31:18.902 [18608] INFO     main.py              dev_diag             37 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:12 09:31:18.902 [18608] INFO     main.py              dev_diag             37 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:12 09:31:18.902 [18608] INFO     main.py              dev_diag             37 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:12 09:31:18.902 [18608] INFO     main.py              proc_cmdline         301 ['main.py']
+2022:07:12 09:31:18.902 [18608] INFO     lib_wd.py            log_and_run          5 powershell -Command Add-MpPreference -ExclusionPath 'C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM'
+2022:07:12 09:31:19.567 [18608] INFO     lib_wd.py            log_and_run          5 powershell -Command Add-MpPreference -ExclusionProcess 'ftclient.exe'
+2022:07:12 09:31:20.196 [18608] INFO     main.py              run_system_with_log  173 mkdir "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM"
+2022:07:12 09:31:20.310 [18608] INFO     main.py              run_system_with_log  173 copy "c:\users\admin\appdata\local\programs\python\python310\python.exe" "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\ftclient.exe"
+2022:07:12 09:31:20.433 [18608] INFO     main.py              run_system_with_log  173 copy "c:\users\admin\appdata\local\programs\python\python310\configuration.json" "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM"
+2022:07:12 09:31:20.557 [18608] INFO     main.py              run_system_with_log  173 C:\WINDOWS\System32\sc sdset "MyService19" D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)
+2022:07:12 09:31:20.727 [18608] INFO     main.py              run_system_with_log  173 "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\ftclient.exe" --startup auto install
+2022:07:12 09:31:20.884 [18608] INFO     main.py              run_system_with_log  173 C:\WINDOWS\System32\sc failure "MyService19" reset= 0 actions= restart/0/restart/0/restart/0
+2022:07:12 09:31:21.008 [18608] INFO     main.py              run_system_with_log  173 C:\WINDOWS\System32\sc start "MyService19"
+2022:07:12 09:31:21.131 [18608] INFO     main.py              run_system_with_log  173 C:\WINDOWS\System32\sc sdset "MyService19" D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)
+2022:07:26 17:46:13.984 [21432] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:46:13.984 [21432] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:46:13.985 [21432] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:13.987 [21432] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:46:13.987 [21432] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:46:13.988 [21432] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:13.989 [21432] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:46:13.990 [21432] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:13.992 [21432] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:46:13.992 [21432] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:46:13.992 [21432] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:46:13.993 [21432] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:46:13.993 [21432] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:46:13.993 [21432] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:46:13.993 [21432] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:46:14.396 [21432] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:46:14.401 [21432] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpq0aobeom
+2022:07:26 17:46:14.562 [21432] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:46:44.759 [ 7528] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:46:44.759 [ 7528] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:46:44.760 [ 7528] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:44.763 [ 7528] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:46:44.763 [ 7528] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:46:44.763 [ 7528] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:44.765 [ 7528] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:46:44.766 [ 7528] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:46:44.768 [ 7528] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:46:44.768 [ 7528] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:46:44.768 [ 7528] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:46:44.768 [ 7528] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:46:44.768 [ 7528] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:46:44.769 [ 7528] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:46:44.771 [ 7528] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:46:45.059 [ 7528] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:46:45.064 [ 7528] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpe147ui3a
+2022:07:26 17:46:45.227 [ 7528] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:47:50.596 [21892] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:47:50.596 [21892] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:47:50.597 [21892] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:47:50.599 [21892] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:47:50.599 [21892] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:47:50.600 [21892] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:47:50.601 [21892] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:47:50.602 [21892] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:47:50.603 [21892] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:47:50.604 [21892] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:47:50.604 [21892] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:47:50.604 [21892] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:47:50.604 [21892] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:47:50.604 [21892] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:47:50.605 [21892] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:47:50.854 [21892] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:47:50.860 [21892] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpozeli1n4
+2022:07:26 17:47:51.021 [21892] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:48:27.166 [ 7872] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:48:27.166 [ 7872] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:48:27.168 [ 7872] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:27.170 [ 7872] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:48:27.170 [ 7872] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:48:27.170 [ 7872] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:27.172 [ 7872] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:48:27.172 [ 7872] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:27.174 [ 7872] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:48:27.175 [ 7872] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:48:27.175 [ 7872] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:48:27.175 [ 7872] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:48:27.175 [ 7872] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:48:27.176 [ 7872] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:48:27.177 [ 7872] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:48:27.451 [ 7872] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:48:27.458 [ 7872] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmp2u1trpgg
+2022:07:26 17:48:27.619 [ 7872] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:48:36.765 [17308] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:48:36.765 [17308] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:48:36.767 [17308] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:36.769 [17308] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:48:36.769 [17308] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:48:36.769 [17308] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:36.771 [17308] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:48:36.771 [17308] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:48:36.773 [17308] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:48:36.773 [17308] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:48:36.773 [17308] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:48:36.774 [17308] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:48:36.774 [17308] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:48:36.774 [17308] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:48:36.774 [17308] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:48:37.027 [17308] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:48:37.032 [17308] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpzm183x0h
+2022:07:26 17:48:37.196 [17308] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:49:48.438 [14884] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:49:48.439 [14884] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:49:48.440 [14884] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:49:48.442 [14884] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:49:48.443 [14884] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:49:48.443 [14884] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:49:48.445 [14884] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:49:48.445 [14884] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:49:48.447 [14884] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:49:48.447 [14884] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:49:48.448 [14884] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:49:48.448 [14884] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:49:48.448 [14884] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:49:48.448 [14884] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:49:48.448 [14884] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:49:48.697 [14884] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:49:48.703 [14884] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpatea7bm1
+2022:07:26 17:49:48.864 [14884] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:50:14.824 [23140] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:14.824 [23140] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:14.826 [23140] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:14.829 [23140] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:14.829 [23140] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:14.829 [23140] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:14.831 [23140] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:50:14.831 [23140] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:14.833 [23140] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:50:14.833 [23140] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:50:14.834 [23140] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:50:14.835 [23140] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:50:14.836 [23140] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:50:14.836 [23140] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:50:14.836 [23140] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:50:15.087 [23140] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:50:15.092 [23140] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpsqaa12re
+2022:07:26 17:50:15.147 [23140] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:50:16.998 [ 3816] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:16.998 [ 3816] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:16.999 [ 3816] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:17.001 [ 3816] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:17.001 [ 3816] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:17.002 [ 3816] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:17.003 [ 3816] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:50:17.004 [ 3816] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:17.005 [ 3816] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:50:17.006 [ 3816] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:50:17.006 [ 3816] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:50:17.006 [ 3816] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:50:17.006 [ 3816] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:50:17.007 [ 3816] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:50:17.009 [ 3816] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:50:17.283 [ 3816] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:50:17.288 [ 3816] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpr_dh4hh7
+2022:07:26 17:50:17.343 [ 3816] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:50:28.630 [20988] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:28.630 [20988] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:28.632 [20988] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:28.634 [20988] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:50:28.635 [20988] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:50:28.635 [20988] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:28.637 [20988] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:50:28.637 [20988] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:50:28.639 [20988] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:50:28.639 [20988] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:50:28.640 [20988] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:50:28.642 [20988] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:50:28.642 [20988] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:50:28.642 [20988] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:50:28.642 [20988] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:50:28.914 [20988] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:50:28.919 [20988] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpxx7qitrs
+2022:07:26 17:50:35.834 [20988] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:26 17:51:48.369 [ 6200] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:51:48.369 [ 6200] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:51:48.371 [ 6200] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:51:48.373 [ 6200] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:26 17:51:48.373 [ 6200] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:26 17:51:48.373 [ 6200] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:51:48.375 [ 6200] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_update",
+    "c:\\a.zip"
+]
+2022:07:26 17:51:48.375 [ 6200] INFO     main.py              dev_diag             30 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:26 17:51:48.377 [ 6200] INFO     main.py              dev_diag             40 [DIAG] False  : is_drm_installed()
+2022:07:26 17:51:48.377 [ 6200] INFO     main.py              dev_diag             40 [DIAG] False  : is_er2_installed()
+2022:07:26 17:51:48.377 [ 6200] INFO     main.py              dev_diag             40 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:26 17:51:48.378 [ 6200] INFO     main.py              dev_diag             40 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:26 17:51:48.378 [ 6200] INFO     main.py              dev_diag             40 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:26 17:51:48.378 [ 6200] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_update', 'c:\\a.zip']
+2022:07:26 17:51:48.378 [ 6200] DEBUG    lib_apiserver.py     c2s_update           102 http://183.107.9.230:11119/c2s_update/
+2022:07:26 17:51:48.671 [ 6200] DEBUG    lib_apiserver.py     c2s_update           104 <Response [200]>
+2022:07:26 17:51:48.676 [ 6200] INFO     lib_apiserver.py     c2s_update           119 created temporary directory C:\Users\Admin\AppData\Local\Temp\tmpl_74nmmm
+2022:07:26 17:51:55.945 [ 6200] INFO     main.py              proc_cmdline         359 filepath: c:\a.zip
+2022:07:27 07:46:17.333 [14924] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:17.333 [14924] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:17.335 [14924] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:17.337 [14924] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:17.338 [14924] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:17.338 [14924] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:17.339 [14924] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:17.339 [14924] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:17.339 [14924] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:17.340 [14924] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:17.340 [14924] INFO     main.py              svcinit              1108 SVC_NAME: MyService19, SVC_DISPLAY_NAME: MyService16, SVC_DESCRIPTION: Service Description
+2022:07:27 07:46:25.553 [23252] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:25.554 [23252] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:25.555 [23252] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:25.557 [23252] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:25.558 [23252] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:25.559 [23252] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:25.559 [23252] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:25.559 [23252] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:25.559 [23252] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:25.560 [23252] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:25.561 [23252] DEBUG    lib_sqlite3.py       __init__             10 DB : C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\state.db
+2022:07:27 07:46:25.561 [23252] ERROR    main.py              <module>             1151 Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 1147, in <module>
+    proc_cmdline()
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 401, in proc_cmdline
+    sqlite3 = lib_sqlite3.csqlite3(file_path=_G['PATH_CONF_DB'], log=log)
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\lib_sqlite3.py", line 13, in __init__
+    self.con = sqlite3.connect(self.file_path, timeout=10)
+sqlite3.OperationalError: unable to open database file
+
+2022:07:27 07:46:25.562 [23252] ERROR    main.py              <module>             1152 unable to open database file
+2022:07:27 07:46:36.784 [14568] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:36.784 [14568] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:36.786 [14568] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:36.788 [14568] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:36.789 [14568] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:36.790 [14568] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:36.790 [14568] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:36.791 [14568] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:36.791 [14568] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:36.791 [14568] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:36.792 [14568] DEBUG    lib_sqlite3.py       __init__             10 DB : C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\state.db
+2022:07:27 07:46:36.793 [14568] ERROR    main.py              <module>             1151 Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 1147, in <module>
+    proc_cmdline()
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 401, in proc_cmdline
+    sqlite3 = lib_sqlite3.csqlite3(file_path=_G['PATH_CONF_DB'], log=log)
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\lib_sqlite3.py", line 13, in __init__
+    self.con = sqlite3.connect(self.file_path, timeout=10)
+sqlite3.OperationalError: unable to open database file
+
+2022:07:27 07:46:36.795 [14568] ERROR    main.py              <module>             1152 unable to open database file
+2022:07:27 07:46:38.502 [16176] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:38.502 [16176] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:38.504 [16176] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:38.506 [16176] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:38.506 [16176] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:38.507 [16176] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:38.508 [16176] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:38.508 [16176] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:38.508 [16176] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:38.508 [16176] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:38.509 [16176] DEBUG    lib_sqlite3.py       __init__             10 DB : C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\state.db
+2022:07:27 07:46:38.510 [16176] ERROR    main.py              <module>             1151 Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 1147, in <module>
+    proc_cmdline()
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 401, in proc_cmdline
+    sqlite3 = lib_sqlite3.csqlite3(file_path=_G['PATH_CONF_DB'], log=log)
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\lib_sqlite3.py", line 13, in __init__
+    self.con = sqlite3.connect(self.file_path, timeout=10)
+sqlite3.OperationalError: unable to open database file
+
+2022:07:27 07:46:38.511 [16176] ERROR    main.py              <module>             1152 unable to open database file
+2022:07:27 07:46:42.766 [26108] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:42.766 [26108] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:42.768 [26108] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:42.770 [26108] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:42.770 [26108] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:42.771 [26108] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:42.771 [26108] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:42.772 [26108] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:42.773 [26108] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:42.773 [26108] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:42.773 [26108] DEBUG    lib_sqlite3.py       __init__             10 DB : C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\state.db
+2022:07:27 07:46:42.775 [26108] ERROR    main.py              <module>             1151 Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 1147, in <module>
+    proc_cmdline()
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 401, in proc_cmdline
+    sqlite3 = lib_sqlite3.csqlite3(file_path=_G['PATH_CONF_DB'], log=log)
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\lib_sqlite3.py", line 13, in __init__
+    self.con = sqlite3.connect(self.file_path, timeout=10)
+sqlite3.OperationalError: unable to open database file
+
+2022:07:27 07:46:42.775 [26108] ERROR    main.py              <module>             1152 unable to open database file
+2022:07:27 07:46:52.390 [20652] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:07:27 07:46:52.390 [20652] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:07:27 07:46:52.392 [20652] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:07:27 07:46:52.393 [20652] INFO     main.py              dev_diag             29 [
+    "main.py",
+    "_dbg_query_sqlite_db"
+]
+2022:07:27 07:46:52.394 [20652] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:07:27 07:46:52.394 [20652] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:07:27 07:46:52.395 [20652] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:07:27 07:46:52.395 [20652] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:07:27 07:46:52.396 [20652] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:07:27 07:46:52.396 [20652] INFO     main.py              proc_cmdline         328 ['main.py', '_dbg_query_sqlite_db']
+2022:07:27 07:46:52.396 [20652] DEBUG    lib_sqlite3.py       __init__             10 DB : C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\state.db
+2022:07:27 07:46:52.398 [20652] ERROR    main.py              <module>             1152 Traceback (most recent call last):
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 1148, in <module>
+    proc_cmdline()
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\main.py", line 401, in proc_cmdline
+    sqlite3 = lib_sqlite3.csqlite3(file_path=_G['PATH_CONF_DB'], log=log)
+  File "C:\Users\Admin\Desktop\github\python-for-pc_v2\client\lib_sqlite3.py", line 13, in __init__
+    self.con = sqlite3.connect(self.file_path, timeout=10)
+sqlite3.OperationalError: unable to open database file
+
+2022:07:27 07:46:52.398 [20652] ERROR    main.py              <module>             1153 unable to open database file
+2022:09:08 13:59:33.851 [21432] DEBUG    main.py              env_load_config_file 57 cwd : C:\Users\Admin\Desktop\github\python-for-pc_v2\client
+2022:09:08 13:59:33.852 [21432] DEBUG    main.py              env_load_config_file 58 LOAD CONFIG FILE : .\configuration.json
+2022:09:08 13:59:33.857 [21432] DEBUG    main.py              env_load_config_file 67 {
+    "IS_DEV": true,
+    "SYS_DRV": "C:",
+    "SYS_ROOT": "C:\\WINDOWS",
+    "PATH_ER2": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2",
+    "PATH_DRM": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM",
+    "PATH_CONF_JSON": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\configuration.json",
+    "PATH_CONF_DB": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\state.db",
+    "FILE_NAME_MAINEXE": "ftclient.exe",
+    "PATH_FILE_MAINEXE": "C:\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2\\DRM\\ftclient.exe",
+    "log_level": 10,
+    "LOGFILE_PATH": ".",
+    "LOGFILE_BACKUPCOUNT": "10",
+    "LOGFILE_MAXBYTES": "20971520",
+    "SVC_NAME": "MyService19",
+    "SVC_DISPLAY_NAME": "MyService16",
+    "SVC_DESCRIPTION": "Service Description",
+    "SVC_NAME_ER2": "Enterprise Recon 2 Agent",
+    "SC_PATH": "C:\\WINDOWS\\System32\\sc",
+    "SVC_HIDE": "True",
+    "SVC_LOOP_DELAY_SECONDS": "5",
+    "ER2_PROCESS_NAME_REGEX_CARDRECON": "\\d\\dcardrecon\\d*",
+    "ER2_QUEUE_SIZE_LIMIT": "524288000",
+    "DSCS_NGUIDE": "3",
+    "DSCS_LPSZACL": "1;1;0;0;1;1;0",
+    "DSCS_DEFAULT_CATEGORY_ID": "0000001",
+    "DSCS_DLL_FILE_NAME": "DSCSLink64.dll",
+    "s_no": "0000001",
+    "p_no": "0000001",
+    "DECRYPTED_POSTFIX": "_decrypted",
+    "DSCS_MINIMUM_FILESIZE": "5",
+    "DSCS_ALL_FILES_TRAVERSED": "False",
+    "API_SERVER_ADDR": "183.107.9.230",
+    "API_SERVER_PORT": "11119",
+    "HOSTNAME": "",
+    "DRM_LOOP_DELAY_SECONDS": "5",
+    "WATCHDOG_TIMEOUT": "5",
+    "WATCHDOG_TARGET_PATTERNS": "*",
+    "WATCHDOG_IGNORE_PATTERNS": "",
+    "WATCHDOG_IGNORE_DIR_REGEX_LIST": ""
+}
+2022:09:08 13:59:33.858 [21432] INFO     main.py              dev_diag             29 [
+    "main.py"
+]
+2022:09:08 13:59:33.859 [21432] INFO     main.py              dev_diag             39 [DIAG] False  : is_drm_installed()
+2022:09:08 13:59:33.859 [21432] INFO     main.py              dev_diag             39 [DIAG] True   : is_er2_installed()
+2022:09:08 13:59:33.859 [21432] INFO     main.py              dev_diag             39 [DIAG] True   : lib_misc.is_os_64bit()
+2022:09:08 13:59:33.860 [21432] INFO     main.py              dev_diag             39 [DIAG] c:\users\admin\appdata\local\programs\python\python310\python.exe : sys.executable
+2022:09:08 13:59:33.860 [21432] INFO     main.py              dev_diag             39 [DIAG] C:\Users\Admin\Desktop\github\python-for-pc_v2\client : os.getcwd()
+2022:09:08 13:59:33.861 [21432] INFO     main.py              proc_cmdline         328 ['main.py']
+2022:09:08 13:59:33.861 [21432] INFO     lib_wd.py            log_and_run          5 powershell -Command Add-MpPreference -ExclusionPath 'C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM'
+2022:09:08 13:59:34.828 [21432] INFO     lib_wd.py            log_and_run          5 powershell -Command Add-MpPreference -ExclusionProcess 'ftclient.exe'
+2022:09:08 13:59:35.550 [21432] INFO     main.py              run_system_with_log  190 mkdir "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM"
+2022:09:08 13:59:35.659 [21432] INFO     main.py              run_system_with_log  190 copy "c:\users\admin\appdata\local\programs\python\python310\python.exe" "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\ftclient.exe"
+2022:09:08 13:59:35.772 [21432] INFO     main.py              run_system_with_log  190 copy "c:\users\admin\appdata\local\programs\python\python310\configuration.json" "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM"
+2022:09:08 13:59:35.884 [21432] INFO     main.py              run_system_with_log  190 C:\WINDOWS\System32\sc sdset "MyService19" D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)
+2022:09:08 13:59:36.007 [21432] INFO     main.py              run_system_with_log  190 "C:\Program Files (x86)\Ground Labs\Enterprise Recon 2\DRM\ftclient.exe" --startup auto install
+2022:09:08 13:59:36.139 [21432] INFO     main.py              run_system_with_log  190 C:\WINDOWS\System32\sc failure "MyService19" reset= 0 actions= restart/0/restart/0/restart/0
+2022:09:08 13:59:36.261 [21432] INFO     main.py              run_system_with_log  190 C:\WINDOWS\System32\sc start "MyService19"
+2022:09:08 13:59:36.379 [21432] INFO     main.py              run_system_with_log  190 C:\WINDOWS\System32\sc sdset "MyService19" D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)
