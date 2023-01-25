@@ -14,6 +14,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     super().__init__(patterns=patterns, ignore_patterns=ignore_patterns,
                  ignore_directories=ignore_directories, case_sensitive=case_sensitive)
     self.log = log
+    self.log.info(f"[init watchdog] patterns: {patterns}")
     self.ignore_dir_regex_list = ignore_dir_regex_list
     self.minimum_filesize = minimum_filesize
     self.queue_size_limit = queue_size_limit
@@ -35,7 +36,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     pure_file_ext  = pathlib.PurePath(bname).suffix
     file_name = pure_file_stem
     file_ext  = pure_file_ext
-    self.log.debug("file_name : " + file_name + " extension :" + file_ext +":")
+    self.log.info("file_name : " + file_name + " extension :" + file_ext +":")
     if self.ignore_blank_extension:
       if "" == file_ext:
         self.log.debug("IGNORE BLANK EXTENSION")
@@ -48,7 +49,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
       m = p.fullmatch(event.src_path)
       #self.log.debug("REG: " + reg)
       if m != None:
-        self.log.debug("MATCH: " + event.src_path + " with " + reg)
+        self.log.debug("MATCH(bypass): " + event.src_path + " with " + reg)
         return
 
     # target_path = ''

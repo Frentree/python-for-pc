@@ -5,4 +5,4 @@ python -m PyInstaller --version-file file_version.txt -F --hidden-import=win32ti
 copy dist\ftclient.exe  ..\00.RELEASE\package.exe
 
 python build.py
-run.bat
+rem run.bat

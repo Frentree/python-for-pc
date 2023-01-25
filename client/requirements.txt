@@ -1,0 +1,7 @@
+pyinstaller
+pywin32
+psutil
+requests
+pypiwin32
+pysftp
+pywin32

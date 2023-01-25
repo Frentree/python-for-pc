@@ -23,7 +23,9 @@ import lib_apiserver
 import lib_er
 import lib_sqlite3
 import lib_watchdog
+import lib_patterns
 from watchdog.observers import Observer
+from lib_cpupriority import setpriority
 
 # region development
 def dev_diag():
@@ -97,6 +99,7 @@ def init_global_env():
   g['SYS_ROOT']           = lib_misc.get_systemroot()
   g['PATH_ER2']           = g['SYS_DRV'] + \
     "\\Program Files (x86)\\Ground Labs\\Enterprise Recon 2"
+  g['PATH_ER2_SERVICE_EXE'] = f'{g["PATH_ER2"]}{os.sep}er2_service.exe'
   g['PATH_DRM']           = g['PATH_ER2'] + os.sep + 'DRM'
   g['PATH_CONF_JSON']     = g['PATH_DRM'] + os.sep + 'configuration.json'
   g['PATH_CONF_DB']       = g['PATH_DRM'] + os.sep + 'state.db'
@@ -136,6 +139,7 @@ def init_global_env():
   g['DECRYPTED_POSTFIX'] = '_decrypted'
   g['DSCS_MINIMUM_FILESIZE'] = str(5)
   g['DSCS_ALL_FILES_TRAVERSED'] = str(False)
+  g['DSCS_SLEEP_SECOND_IF_NOT_INSTALLED'] = str(60*60*24) # default value: 1 day
 
   # api server
   g['API_SERVER_ADDR'] = '183.107.9.230'
@@ -145,11 +149,17 @@ def init_global_env():
   # DRM
   g['DRM_LOOP_DELAY_SECONDS'] = str(5)
 
+  # CPU PRIORITY
+  # - 1: BELOW_NORMAL
+  # - 2: NORMAL
+  # - 3: ABOVE_NORMAL
+  g['CPU_PRIORITY'] = str(1)
+
   # watchdog
   g['WATCHDOG_TIMEOUT'] = str(5)
-  import lib_patterns
   ignore_ext_list = lib_patterns.get_ignore_ext_list()
   target_ext_list = lib_patterns.get_target_ext_list()
+  ignore_dir_regex_list = lib_patterns.get_ignore_dir_regex_list()
   ignore_pattern_list = []
   for ignore_ext in ignore_ext_list:
     if ignore_ext in target_ext_list:
@@ -160,7 +170,7 @@ def init_global_env():
     target_pattern_list.append('*'+target_ext)
   g['WATCHDOG_TARGET_PATTERNS'] = ','.join(target_pattern_list)     # '*.txt;*.xls'
   g['WATCHDOG_IGNORE_PATTERNS'] = ','.join(ignore_pattern_list)     # '*.exe;*.dll'
-  g['WATCHDOG_IGNORE_DIR_REGEX_LIST'] = ','.join(lib_patterns.get_ignore_dir_regex_list())
+  g['WATCHDOG_IGNORE_DIR_REGEX_LIST'] = ','.join(ignore_dir_regex_list)
 
   # g['WATCHDOG_TARGET_PATTERNS'] = '*.txt;*.xls'
   # g['WATCHDOG_IGNORE_PATTERNS'] = '*.py;*.exe'
@@ -340,6 +350,44 @@ def proc_cmdline():
   elif "_do_job" == sys.argv[1]:
     drm_main()
     sys.exit(0)
+
+  elif "_dscs_is_encrypted" == sys.argv[1]:
+    if len(sys.argv) < 3:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    filepath = sys.argv[2]
+    log.info(f"sys len: {len(sys.argv)}")
+    log.info(f"DSCS_DLL: {_G['DSCS_DLL_FILE_NAME']}")
+    log.info(f"filepath: {filepath}")
+    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'], filepath = filepath)
+    if True == retvalue:
+      log.info(filepath + " " + "is an ENCRYPTED FILE")
+    else:
+      log.info(filepath + " " + "is not an ENCRYPTED FILE")
+    sys.exit(0)
+  elif "_dscs_is_encrypted_with_init" == sys.argv[1]:
+    dscsdll_file_name = _G['DSCS_DLL_FILE_NAME']
+    lpszAcl = _G['DSCS_LPSZACL']
+    log.info(f"sys len: {len(sys.argv)}")
+    if len(sys.argv) < 3:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    elif len(sys.argv) == 4:
+      dscsdll_file_name = sys.argv[3]
+    elif len(sys.argv) == 5:
+      dscsdll_file_name = sys.argv[3]
+      lpszAcl = sys.argv[4]
+
+    dscs_dll = lib_dscsdll.Dscs_dll(log, dscsdll_file_name = dscsdll_file_name)
+    dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=lpszAcl)
+
+    filepath = sys.argv[2]
+    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = dscsdll_file_name, filepath = filepath)
+    if True == retvalue:
+      log.info(filepath + " " + "is an ENCRYPTED FILE")
+    else:
+      log.info(filepath + " " + "is not an ENCRYPTED FILE")
+    sys.exit(0)
   elif "_test_dscs" == sys.argv[1]:
     dscs_dll = lib_dscsdll.Dscs_dll(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'])
     dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=_G['DSCS_LPSZACL'])
@@ -364,6 +412,10 @@ def proc_cmdline():
   # endregion
 
   # region DEBUG - commands for windows service
+  elif "_is_er2_service_exe_exist" == sys.argv[1]:
+    print(is_er2_service_exe_exist())
+    sys.exit(0)
+
   elif "_hide_svc" == sys.argv[1]:
     lib_winsvc.hide_svc(_G['SC_PATH'], _G['SVC_NAME'])
     sys.exit(0)
@@ -372,6 +424,13 @@ def proc_cmdline():
     run_system_with_log(lib_winsvc.get_unhide_svc_cmd(_G['SC_PATH'], _G['SVC_NAME']))
     sys.exit(0)
   # endregion
+
+  elif "_open_configuration" == sys.argv[1]:
+    exe = "C:\\windows\\system32\\notepad.exe"
+
+    import subprocess
+    subprocess.Popen("\"" + exe + "\" \"" + _G['PATH_CONF_JSON'] + "\"")
+    sys.exit(0)
 
   # region DEBUG - commands for sqlite
   elif "_dbg_open_sqlite_db" == sys.argv[1]:
@@ -529,6 +588,7 @@ def proc_cmdline():
     ignore_dir_regex_list = [
         '^.:\\\\audio.log.*$',
     ]
+    ignore_dir_regex_list = lib_patterns.get_ignore_dir_regex_list()
     # _G_internal['ignore_dir_regex_list'] = ignore_dir_regex_list
     #]]
     print("LOAD CONFIG")
@@ -546,6 +606,8 @@ def proc_cmdline():
     log.info(ignore_pattern_list)
     if target_pattern_list == ['']:
         patterns = ['*']
+    else:
+        patterns = ','.join(target_pattern_list)
     if ignore_pattern_list == ['']:
         ignore_patterns = []
     # endregion target/ignore patterns
@@ -574,6 +636,9 @@ def is_drm_installed():
     return True
   else:
     return False
+
+def is_er2_service_exe_exist():
+  return os.path.isfile(_G["PATH_ER2_SERVICE_EXE"])
 
 def is_er2_installed():
   if os.path.isdir(_G["PATH_DRM"]):
@@ -639,6 +704,10 @@ def DO_proc_job(dscs_dll, cmd, sqlite3):
 
   if 'run_cmd' == cmd['type']:
     lib_process.run_subprocess(cmd['path'])
+    job_result['success'] = True
+
+  elif 'run_psh' == cmd['type']:
+    lib_process.run_psh(cmd['path'])
     job_result['success'] = True
 
   elif 'update' == cmd['type']:
@@ -843,6 +912,9 @@ def drm_main():
   curr_time = time.time()
   fail_api_server_count = 0
   fail_dscs_count = 0
+  fail_dscs_not_installed = True
+
+  setpriority(None, _G['CPU_PRIORITY'])
   while True:
     """
       main loop - This process's session id is equals to the winlogon's one.
@@ -882,6 +954,14 @@ def drm_main():
       log.debug("current log level: " + str(log.ods.level))
       lib_logging.setLogLevel(log, int(_G['log_level']))
       log.debug("reloaded log level: " + str(log.ods.level))
+
+      (retvalue, retstr) = lib_dscsdll.Dscs_dll.static_checkDSCSAgent(log,  _G['DSCS_DLL_FILE_NAME'])
+      if retvalue == -1:
+        fail_dscs_not_installed = True
+        raise NameError(f'Failed, DSCS not installed ' + _G['DSCS_DLL_FILE_NAME'] + " not found")
+      else:
+        log.debug(f'DSCS ' + _G['DSCS_DLL_FILE_NAME'] + " found")
+      fail_dscs_not_installed = False
 
       # watchdog region
       #start_watchdog() #--> 실행순서를 DSCS체크 후로 변경 22.10.25
@@ -978,6 +1058,9 @@ def drm_main():
       c2s_job_post = apiServer.c2s_jobPost(post_data = {'job_results' : job_result_list})
       # endregion C2S JOB
 
+      # 23.01.19 - er_service가 설치되지 않았으면 er node에 연결하지 않음
+      if (False == is_er2_service_exe_exist()):
+        raise NameError('er2 service not installed')
 
       # get config to connect to ER2
       v_drm_schedule = apiServer.v_drm_scheduleGet()
@@ -1151,6 +1234,10 @@ def drm_main():
     finally:
       del sqlite3
 
+      if (fail_dscs_not_installed):
+        log.info(f"DSCS not installed, sleep: {_G['DSCS_SLEEP_SECOND_IF_NOT_INSTALLED']} seconds")
+        sleep_with_minimum_seconds(int(_G['DSCS_SLEEP_SECOND_IF_NOT_INSTALLED']), int(_G_internal['SLEEP_SECONDS_MINIMUM']))
+
       if (fail_api_server_count > 3 or fail_dscs_count > 3):
         time.sleep(60)
       else:
@@ -1177,8 +1264,8 @@ class MyService:
       env_load_config_file()
       log.info("############################ Windows Service Main Loop Start (pid: " + str(lib_process.get_self_pid()) + ")")
       self.running = True
+      setpriority(None, _G['CPU_PRIORITY'])
       while self.running:
-
         if False == is_client_with_winlogonsession_running():
           lib_runas.runas_system_with_winlogonSessionId(log, appname="" + sys.executable + "", param="_do_job", show=False)
 

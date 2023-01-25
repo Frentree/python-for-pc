@@ -1834,7 +1834,9 @@ def get_ignore_ext_list():
   ]
 
 def get_ignore_dir_regex_list():
-  return []
+  return [
+    '^.:\\\\Program Files \(x86\)\\\\Ground Labs\\\\Enterprise Recon 2\\\\.*$',
+  ]
   return [
     ###################### development
     #'^.:\\\\Users\\\\.*\\\\Desktop\\\\repos\\\\GitHub\\\\.*$',

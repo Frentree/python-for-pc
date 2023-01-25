@@ -21,17 +21,17 @@ class Dscs_dll():
     dll_abspath = systemroot + os.sep + dscsdll_file_name
 
     isInstalled = os.path.isfile(dll_abspath)
-    dll_handle = ctypes.windll.LoadLibrary(dll_abspath)
-    pfunc = dll_handle.DSCheckDSAgent
-    pfunc.argtypes = []
-    pfunc.restype = ctypes.c_uint16
-    retvalue = dll_handle.DSCheckDSAgent()
-    log.debug("Dscs_dll::DSCheckDSAgent() : " + Dscs_dll.retvalue2str("DSCheckDSAgent", retvalue))	
-
     if False == isInstalled:
       retvalue = -1
       retstr = str(retvalue) + '(DS Client Agent가 설치되지 않은 상태)'
     else:
+      dll_handle = ctypes.windll.LoadLibrary(dll_abspath)
+      pfunc = dll_handle.DSCheckDSAgent
+      pfunc.argtypes = []
+      pfunc.restype = ctypes.c_uint16
+      retvalue = dll_handle.DSCheckDSAgent()
+      log.debug("Dscs_dll::DSCheckDSAgent() : " + Dscs_dll.retvalue2str("DSCheckDSAgent", retvalue))	
+
       if 0 == retvalue:
         retstr = str(retvalue) + '(DS Client Agent가 실행되지 않은 상태)'
       elif 1 == retvalue:

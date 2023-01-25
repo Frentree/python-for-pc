@@ -90,7 +90,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         if (0 == _tcscmp(TEXT("uninstall.exe"), szBuffer))
         {
-            RunSilentEx(TEXT("package.exe"), TEXT(" remove_svc"), TRUE);
+            RunSilentEx(TEXT("package.exe"), TEXT(" _remove"), TRUE);
         }
     }
 

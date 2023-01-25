@@ -142,6 +142,11 @@ copy $(Configuration)\$(ProjectName).exe ..\00.RELEASE\uninstall.exe</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\00.RELEASE
+copy $(OutDir)$(TargetName)$(TargetExt) ..\00.RELEASE\install.exe
+copy $(OutDir)$(TargetName)$(TargetExt) ..\00.RELEASE\uninstall.exe</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
