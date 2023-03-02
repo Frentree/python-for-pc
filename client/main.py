@@ -134,6 +134,7 @@ def init_global_env():
   g['DSCS_LPSZACL']   = "1;1;0;0;1;1;0"
   g['DSCS_DEFAULT_CATEGORY_ID'] = "0000001"
   g['DSCS_DLL_FILE_NAME'] = "DSCSLink64.dll" if lib_misc.is_os_64bit() else "DSCSLink.dll"
+  g['DSCS_FILEPATH_ENCODING'] = "cp949"
   g['s_no'] = "0000001" #g['DSCS_S_NO'] = "0000001"
   g['p_no'] = "0000001" #g['DSCS_P_NO'] = "0000001"
   g['DECRYPTED_POSTFIX'] = '_decrypted'
@@ -293,7 +294,7 @@ def pushFileIfEncrypted(filepath, sqlite3):
   if filesize >= int(_G['ER2_QUEUE_SIZE_LIMIT']):
     return
 
-  retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, _G['DSCS_DLL_FILE_NAME'], filepath)
+  retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, _G['DSCS_DLL_FILE_NAME'], filepath, encoding = _G['DSCS_FILEPATH_ENCODING'])
   if True == retvalue:
     log.info(filepath + " " + "is an ENCRYPTED FILE")
     # insert into DB
@@ -347,19 +348,42 @@ def proc_cmdline():
   if "_remove" == sys.argv[1]:
     uninstall_drm()
     sys.exit(0)
+
   elif "_do_job" == sys.argv[1]:
     drm_main()
     sys.exit(0)
 
-  elif "_dscs_is_encrypted" == sys.argv[1]:
+  elif "_get_filesize" == sys.argv[1]:
     if len(sys.argv) < 3:
       log.info("you must provide the path of the target file")
       sys.exit(0)
     filepath = sys.argv[2]
     log.info(f"sys len: {len(sys.argv)}")
+    log.info(f"DSCS_MINIMUM_FILESIZE: {_G['DSCS_MINIMUM_FILESIZE']}")
+    log.info(f"ER2_QUEUE_SIZE_LIMIT: {_G['ER2_QUEUE_SIZE_LIMIT']}")
+    log.info(f"filepath: {filepath}")
+    try:
+      filesize = os.path.getsize(filepath)
+      log.info(f"filesize: {filesize}")
+    except FileNotFoundError as e:
+      log.error('FileNotFoundError  ' + str(e))
+      return
+    except PermissionError as e:
+      log.error('PermissionError ' + str(e))
+      return
+    sys.exit(0)
+
+  elif "_dscs_is_encrypted" == sys.argv[1]:
+    if len(sys.argv) < 4:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    filepath = sys.argv[2]
+    encoding = sys.argv[3]
+    log.info(f"sys len: {len(sys.argv)}")
     log.info(f"DSCS_DLL: {_G['DSCS_DLL_FILE_NAME']}")
     log.info(f"filepath: {filepath}")
-    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'], filepath = filepath)
+    log.info(f"encoding: {encoding}")
+    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'], filepath = filepath, encoding = encoding)
     if True == retvalue:
       log.info(filepath + " " + "is an ENCRYPTED FILE")
     else:
@@ -382,7 +406,7 @@ def proc_cmdline():
     dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=lpszAcl)
 
     filepath = sys.argv[2]
-    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = dscsdll_file_name, filepath = filepath)
+    retvalue = lib_dscsdll.Dscs_dll.static_DSCSIsEncryptedFile(log, dscsdll_file_name = dscsdll_file_name, filepath = filepath, encoding = _G['DSCS_FILEPATH_ENCODING'])
     if True == retvalue:
       log.info(filepath + " " + "is an ENCRYPTED FILE")
     else:
@@ -533,6 +557,14 @@ def proc_cmdline():
 
     apiServer.pi_schedulesPost(v_drm_schedule['SCHEDULE_ID'], v_drm_schedule['AP_NO'], new_DRM_STATUS)
 
+    sys.exit(0)
+
+  elif "_set_failover" == sys.argv[1]:
+    log.info("SET FAILOVER")
+    log.info(f"{_G['SC_PATH']} {_G['SVC_NAME']}")
+    cmd = lib_winsvc.get_svc_failure_set_cmd(_G['SC_PATH'], _G['SVC_NAME'])
+    log.info(f"{cmd}")
+    run_cmd_list_with_delay([cmd], 0.1)
     sys.exit(0)
 
   elif "_dbg_stop" == sys.argv[1]:
@@ -1039,7 +1071,7 @@ def drm_main():
 
       # region DSCS
       dscs_dll = lib_dscsdll.Dscs_dll(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'])
-      dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=_G['DSCS_LPSZACL'])
+      dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=_G['DSCS_LPSZACL'], encoding = _G['DSCS_FILEPATH_ENCODING'])
       if False == dscs_dll.isAvailable():
         fail_dscs_count = fail_dscs_count + 1
         raise NameError(f'DSCS is not available (fail {fail_dscs_count})')

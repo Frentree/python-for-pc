@@ -11,6 +11,7 @@ class Dscs_dll():
       self.dll_abspath = systemroot + os.sep + dscsdll_file_name
     else:
       self.dll_abspath = dll_abspath
+    self.encoding = "cp949"
 
   @staticmethod
   def static_checkDSCSAgent(log, dscsdll_file_name):
@@ -42,7 +43,7 @@ class Dscs_dll():
     return (retvalue, retstr)
 
   @staticmethod
-  def static_DSCSIsEncryptedFile(log, dscsdll_file_name, filepath):
+  def static_DSCSIsEncryptedFile(log, dscsdll_file_name, filepath, encoding = "cp949"):
     (retvalue, retstr) = Dscs_dll.static_checkDSCSAgent(log, dscsdll_file_name)
     if -1 == retvalue:
       return None       # DSCSIsEncryptedFile is not Callable.
@@ -57,7 +58,7 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p = filepath.encode('euc-kr')
+    p = filepath.encode(encoding)
     # NOTE 직접 문자열을 생성할 때는 다음과 같이 호출
     #p = create_string_buffer(b"C:\\Users\\Admin\\Desktop\\DLLProject\\dllproject\\Debug\\test.txt")
     retvalue = dll_handle.DSCSIsEncryptedFile(p)
@@ -72,7 +73,7 @@ class Dscs_dll():
 
     return False
 
-  def init(self, nGuide, lpszAcl):
+  def init(self, nGuide, lpszAcl, encoding = "cp949"):
     if False == os.path.isfile(self.dll_abspath):
       raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), self.dll_abspath)
     else:
@@ -80,6 +81,7 @@ class Dscs_dll():
     self.log.debug(self.dll_abspath + " exists")
 
     self.dll_handle = ctypes.windll.LoadLibrary(self.dll_abspath)
+    self.encoding = encoding
     if 0 != len(lpszAcl):
       self.call_DSCSAddDac(nGuide, lpszAcl)
     self.call_DSCheckDSAgent()
@@ -98,7 +100,7 @@ class Dscs_dll():
     #lpszAcl = ctypes.create_string_buffer(b"1;1;1;1;1;1;1")
     # lpszAcl_ascii = "1;1;1;1;1;1;1"
     # lpszAcl_ascii = "1;1;0;0;1;1;0"
-    lpszAcl = bytes(lpszAcl_ascii.encode('utf-8'))
+    lpszAcl = bytes(lpszAcl_ascii.encode(self.encoding))
 
     pfunc.argtypes = [ctypes.c_long, ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
@@ -142,7 +144,7 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p = file_abspath.encode('euc-kr')
+    p = file_abspath.encode(self.encoding)
     # NOTE 직접 문자열을 생성할 때는 다음과 같이 호출
     #p = create_string_buffer(b"C:\\Users\\Admin\\Desktop\\DLLProject\\dllproject\\Debug\\test.txt")
     ret = self.dll_handle.DSCSIsEncryptedFile(p)
@@ -170,7 +172,7 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p1 = file_abspath.encode('euc-kr')
+    p1 = file_abspath.encode(self.encoding)
     try:
       ret = self.dll_handle.DSCSDacEncryptFileV2(p1)
     except Exception as e:
@@ -184,8 +186,8 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p1 = file_abspath.encode('euc-kr')
-    p2 = filedec_abspath.encode('euc-kr')
+    p1 = file_abspath.encode(self.encoding)
+    p2 = filedec_abspath.encode(self.encoding)
     ret = self.dll_handle.DSCSForceDecryptFile(p1, p2)
 
     return ret
@@ -196,8 +198,8 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p1 = file_abspath.encode('euc-kr')
-    p2 = filedec_abspath.encode('euc-kr')
+    p1 = file_abspath.encode(self.encoding)
+    p2 = filedec_abspath.encode(self.encoding)
     ret = self.dll_handle.DSCSDecryptFileW(p1, p2)
 
     return ret
@@ -209,8 +211,8 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p1 = file_abspath.encode('euc-kr')
-    p2 = macid.encode('euc-kr')
+    p1 = file_abspath.encode(self.encoding)
+    p2 = macid.encode(self.encoding)
     try:
       ret = self.dll_handle.DSCSMacEncryptFile(p1, p2)
     except Exception as e:
@@ -246,8 +248,8 @@ class Dscs_dll():
     pfunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
     pfunc.restype = ctypes.c_uint16
 
-    p1 = file_abspath.encode('euc-kr')
-    p2 = filedec_abspath.encode('euc-kr')
+    p1 = file_abspath.encode(self.encoding)
+    p2 = filedec_abspath.encode(self.encoding)
     ret = self.dll_handle.DSCSDecryptFile(p1, p2)
 
     return ret

@@ -34,12 +34,14 @@ def upload(filename_src, filename_dst):
   import pysftp
   import datetime
   import zipfile
-  myHostname = "183.107.9.230"
-  myUsername = "gen"
-  myPassword = "rhehfl123"
+
+  with open("env.json", 'r', encoding='utf-8-sig') as json_env_file:
+    env_contents = json_env_file.read()
+    env_dic = json.loads(env_contents)
+
   cnopts = pysftp.CnOpts()
   cnopts.hostkeys = None
-  with pysftp.Connection(host=myHostname, port=2223, username=myUsername, password=myPassword, cnopts=cnopts) as sftp:
+  with pysftp.Connection(host=env_dic['myHostname'], port=2223, username=env_dic['myUsername'], password=env_dic['myPassword'], cnopts=cnopts) as sftp:
     print("Connection succesfully stablished ... ")
 
     # Switch to a remote directory
@@ -52,7 +54,13 @@ def upload(filename_src, filename_dst):
     # filename = datetime.datetime.now().strftime("/var/www/html/2022.04.27_ftclient/installer_%H%M%S.exe")
     # sftp.put('C:\\Users\\Admin\\Desktop\\repos\\GitHub\\python-for-pc\\client\\dist\\installer.exe',
     #   filename)
-    sftp.remove(filename_dst)
+    print(f"REMOVE {filename_dst}")
+    try:
+      sftp.remove(filename_dst)
+    except FileNotFoundError as e:
+      pass
+
+    print(f"UPLOAD {filename_src}")
     sftp.put(filename_src, filename_dst)
 
     # Print data

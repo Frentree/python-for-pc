@@ -36,7 +36,7 @@ class MyLoggerTrick(PatternMatchingEventHandler):
     pure_file_ext  = pathlib.PurePath(bname).suffix
     file_name = pure_file_stem
     file_ext  = pure_file_ext
-    self.log.info("file_name : " + file_name + " extension :" + file_ext +":")
+    self.log.debug("file_name : " + file_name + " extension :" + file_ext +":")
     if self.ignore_blank_extension:
       if "" == file_ext:
         self.log.debug("IGNORE BLANK EXTENSION")
@@ -113,11 +113,11 @@ class MyLoggerTrick(PatternMatchingEventHandler):
         sqlite3.fileinfo_insert_with_size(target_path, filesize)
         self.log.info("file enqueued : " + target_path + ", " + str(ret) + '(암호화된 문서)')
       elif -1 == ret:
-        self.log.debug("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret) + '(C/S 연동 모듈 로드 실패)')
+        self.log.info("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret) + '(C/S 연동 모듈 로드 실패)')
       elif 0 == ret:
-        self.log.debug("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret) + '(일반 문서)')
+        self.log.info("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret) + '(일반 문서)')
       else:
-        self.log.debug("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret))
+        self.log.info("file call_DSCSIsEncryptedFile : " +target_path + ", " + str(ret))
 
     except FileNotFoundError as e:
       self.log.error('FileNotFoundError  ' + str(e))

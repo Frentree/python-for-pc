@@ -3,7 +3,8 @@ import win32service
 import win32api, winerror
 
 def get_svc_failure_set_cmd(sc_path, svc_name):
-  cmd = "" + sc_path + "" + " failure \"" + svc_name + "\" reset= 0 actions= restart/0/restart/0/restart/0"
+  delay = 60000
+  cmd = f"{sc_path} failure \"{svc_name}\" reset= 0 actions= restart/{delay}/restart/{delay}/restart/{delay}"
   return cmd
 
 def get_start_svc_cmd(sc_path, svc_name):

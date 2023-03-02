@@ -32,7 +32,7 @@ StringFileInfo(
     StringStruct(u'LegalCopyright', u''),
     StringStruct(u'OriginalFilename', u''),
     StringStruct(u'ProductName', u'ftclient.exe'),
-    StringStruct(u'ProductVersion', u'20221027_2004')])
+    StringStruct(u'ProductVersion', u'20230302_1557')])
   ]), 
 VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
