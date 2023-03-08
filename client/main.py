@@ -412,6 +412,17 @@ def proc_cmdline():
     else:
       log.info(filepath + " " + "is not an ENCRYPTED FILE")
     sys.exit(0)
+  elif "_file_exist" == sys.argv[1]:
+    if len(sys.argv) < 3:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    filepath = sys.argv[2]
+    if False == os.path.isfile(filepath):
+      log.info("not found")
+    else:
+      log.info(filepath + " exists")
+    pass
+    sys.exit(0)
   elif "_test_dscs" == sys.argv[1]:
     dscs_dll = lib_dscsdll.Dscs_dll(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'])
     dscs_dll.init(nGuide=int(_G['DSCS_NGUIDE']), lpszAcl=_G['DSCS_LPSZACL'])
