@@ -107,7 +107,7 @@ REM   =============== delete folder ===============
 		
 	echo ^<cfg^> > "%DIRECTORY%\agent.cfg"
 	type "%DIRECTORY%\backup.cfg" | find "remote" >> "%DIRECTORY%\agent.cfg"
-	REM echo   ^<domain^>%internet_mac%^</domain^> >> "%DIRECTORY%\agent.cfg"
+	echo   ^<domain^>%internet_mac%^</domain^> >> "%DIRECTORY%\agent.cfg"
 	type "%DIRECTORY%\backup.cfg" | find "localkey" >> "%DIRECTORY%\agent.cfg"
 	echo ^</cfg^> >> "%DIRECTORY%\agent.cfg"
 	
