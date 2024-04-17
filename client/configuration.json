@@ -7,5 +7,6 @@
   "SVC_HIDE": "True",
   "API_SERVER_ADDR": "183.107.9.230",
   "API_SERVER_PORT": "11119",
-  "FILE_NAME_MAINEXE": "ftclient.exe"
+  "FILE_NAME_MAINEXE": "ftclient.exe",
+  "DSCS_DLL_FILE_NAME": "DSCSLink641.dll"
 }

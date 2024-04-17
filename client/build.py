@@ -11,6 +11,8 @@ def build_zip(dir_path, postfix, API_SERVER_ADDR, DSCS_ALL_FILES_TRAVERSED, add_
   path_conf_json = "configuration_"+postfix+".json"
   os.system("copy configuration.json " + path_conf_json)
 
+  print("dir_path : " + dir_path)
+  print("path_conf_json : " + path_conf_json)
   with open(path_conf_json, 'r', encoding='utf-8-sig') as json_conf_file:
     conf_content = json_conf_file.read()
     conf_dic = json.loads(conf_content)
@@ -34,6 +36,9 @@ def upload(filename_src, filename_dst):
   import pysftp
   import datetime
   import zipfile
+
+  if not os.path.exists("env.json"):
+    return
 
   with open("env.json", 'r', encoding='utf-8-sig') as json_env_file:
     env_contents = json_env_file.read()
@@ -135,19 +140,23 @@ if __name__ == '__main__':
 
   os.chdir(dir_path)
   run_filename = 'run.bat'
-  if not os.path.exists(run_filename):
+  
+  if not os.path.exists(dir_path + "\\" + run_filename):
+    print("overhere")
     f = open(run_filename, 'a')  # open file in append mode
     f.write('uninstall.exe\n')
     f.write('timeout 5\n')
     f.write('install.exe\n')
     f.close()
+  
+  print(dir_path)
 
-  build_zip(dir_path, datestr+"_"+"150.19.24.208_traversed",      "150.19.24.208", "True")
+  # build_zip(dir_path, datestr+"_"+"150.19.24.208_traversed",      "150.19.24.208", "True")
   build_zip(dir_path, datestr+"_"+"150.19.24.208_not_traversed",  "150.19.24.208", "False")
-  build_zip(dir_path, datestr+"_"+"183.107.9.230_traversed",      "183.107.9.230", "True")
-  build_zip(dir_path, datestr+"_"+"183.107.9.230_not_traversed",  "183.107.9.230", "False")
+  # build_zip(dir_path, datestr+"_"+"183.107.9.230_traversed",      "183.107.9.230", "True")
+  # build_zip(dir_path, datestr+"_"+"183.107.9.230_not_traversed",  "183.107.9.230", "False")
 
   # 183.107.9.230_not_traversed
-  installer_2b_uploaded = build_zip(dir_path, datestr,  "183.107.9.230", "False", True)
+  # installer_2b_uploaded = build_zip(dir_path, datestr,  "183.107.9.230", "False", True)
 
-  upload(installer_2b_uploaded, "update.zip")
+  # upload(installer_2b_uploaded, "update.zip")

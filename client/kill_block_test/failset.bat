@@ -1,0 +1,1 @@
+sc failure "MyService19"  reset= 0 actions= restart/5000/restart/5000/restart/5000

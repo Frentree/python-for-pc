@@ -27,6 +27,8 @@ import lib_patterns
 from watchdog.observers import Observer
 from lib_cpupriority import setpriority
 
+import uuid   # DRM 영역 로컬PC 호스트명 중복으로 인한 mac address 추가작업
+
 # region development
 def dev_diag():
   log.info(json.dumps(sys.argv, indent=4))
@@ -418,10 +420,29 @@ def proc_cmdline():
       sys.exit(0)
     filepath = sys.argv[2]
     if False == os.path.isfile(filepath):
-      log.info("not found")
+      log.info(filepath + " not found")
     else:
       log.info(filepath + " exists")
-    pass
+    sys.exit(0)
+  elif "_read_dll" == sys.argv[1]:
+    if len(sys.argv) < 3:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    filepath = sys.argv[2]
+    with open(filepath, "rb") as f:
+      data = f.read()
+      log.info(data[0:4])
+      log.info(data[0])
+      log.info(data[1])
+      log.info(data[2])
+      log.info(data[3])
+    sys.exit(0)
+  elif "_test_loadlib" == sys.argv[1]:
+    if len(sys.argv) < 3:
+      log.info("you must provide the path of the target file")
+      sys.exit(0)
+    filepath = sys.argv[2]
+    lib_dscsdll.Dscs_dll.test_loadlib(log, filepath)
     sys.exit(0)
   elif "_test_dscs" == sys.argv[1]:
     dscs_dll = lib_dscsdll.Dscs_dll(log, dscsdll_file_name = _G['DSCS_DLL_FILE_NAME'])
@@ -434,7 +455,7 @@ def proc_cmdline():
     apiServer = lib_apiserver.cApiServer(
       server_addr = _G['API_SERVER_ADDR'],
       server_port = _G['API_SERVER_PORT'],
-      hostname = os.getenv("COMPUTERNAME", ""),
+      hostname = get_agent_mac(),
       log = log)
     print(len(sys.argv))
     filepath = ""
@@ -443,6 +464,10 @@ def proc_cmdline():
     apiServer.c2s_update(filepath)
     log.info("filepath: " + filepath)
 
+    sys.exit(0)
+
+  elif "_dbg_is_client_with_winlogonsession_running" == sys.argv[1]:
+    print(is_client_with_winlogonsession_running())
     sys.exit(0)
   # endregion
 
@@ -539,7 +564,7 @@ def proc_cmdline():
     apiServer = lib_apiserver.cApiServer(
       server_addr = _G['API_SERVER_ADDR'],
       server_port = _G['API_SERVER_PORT'],
-      hostname = os.getenv("COMPUTERNAME", ""),
+      hostname = get_agent_mac(),
       log = log)
 
     # get config to connect to ER2
@@ -558,7 +583,7 @@ def proc_cmdline():
     apiServer = lib_apiserver.cApiServer(
       server_addr = _G['API_SERVER_ADDR'],
       server_port = _G['API_SERVER_PORT'],
-      hostname = os.getenv("COMPUTERNAME", ""),
+      hostname = get_agent_mac(),
       log = log)
 
     # get config to connect to ER2
@@ -757,7 +782,7 @@ def DO_proc_job(dscs_dll, cmd, sqlite3):
     apiServer = lib_apiserver.cApiServer(
       server_addr = _G['API_SERVER_ADDR'],
       server_port = _G['API_SERVER_PORT'],
-      hostname = os.getenv("COMPUTERNAME", ""),
+      hostname = get_agent_mac(),
       log = log)
     job_result_list = []
     job_result['success'] = True
@@ -770,7 +795,7 @@ def DO_proc_job(dscs_dll, cmd, sqlite3):
     apiServer = lib_apiserver.cApiServer(
       server_addr = _G['API_SERVER_ADDR'],
       server_port = _G['API_SERVER_PORT'],
-      hostname = os.getenv("COMPUTERNAME", ""),
+      hostname = get_agent_mac(),
       log = log)
     apiServer.c2s_logfile(cmd['path'])
     job_result['success'] = True
@@ -817,7 +842,7 @@ def DO_proc_job(dscs_dll, cmd, sqlite3):
     if len(job_category_no) == 7 and job_category_no.isnumeric():
       category_id = job_category_no
 
-    sqlite3.except_fileinfo_insert(job_path)
+    # sqlite3.except_fileinfo_insert(job_path)
     log.info("encrypt type: " + _G['DSCS_ENC_TYPE'])
     if 'mac' == _G['DSCS_ENC_TYPE']:
       ret = dscs_dll.call_DSCSMacEncryptFile(job_path, category_id)
@@ -826,9 +851,9 @@ def DO_proc_job(dscs_dll, cmd, sqlite3):
     job_result['message'] = " return " + str(lib_dscsdll.Dscs_dll.retvalue2str(funcname, ret))
     post_data = {job_result['message']}
 
-    max_delay = max(int(_G['DRM_LOOP_DELAY_SECONDS']), int(_G_internal['SLEEP_SECONDS_MINIMUM']), int(_G['SVC_LOOP_DELAY_SECONDS']))
-    time.sleep(max_delay + 1)
-    sqlite3.except_fileinfo_delete(job_path)
+    # max_delay = max(int(_G['DRM_LOOP_DELAY_SECONDS']), int(_G_internal['SLEEP_SECONDS_MINIMUM']), int(_G['SVC_LOOP_DELAY_SECONDS']))
+    # time.sleep(max_delay + 1)
+    # sqlite3.except_fileinfo_delete(job_path)
 
     job_result['success'] = True
   elif 'is_encrypt' == job_type:
@@ -947,7 +972,7 @@ def start_watchdog():
   # endregion WATCHDOG
 
 def drm_main():
-  er = lib_er.er_agent(hostname = os.getenv("COMPUTERNAME", ""), log=log)
+  er = lib_er.er_agent(hostname = get_agent_mac(), log=log)
 
   log.info("############################ DRM Main Loop Start (pid: " + str(lib_process.get_self_pid()) + ")")
   prev_network_usage = None
@@ -969,7 +994,7 @@ def drm_main():
       apiServer = lib_apiserver.cApiServer(
         server_addr = _G['API_SERVER_ADDR'],
         server_port = _G['API_SERVER_PORT'],
-        hostname = os.getenv("COMPUTERNAME", ""),
+        hostname = get_agent_mac(),
         log = log)
 
       try:
@@ -1036,7 +1061,7 @@ def drm_main():
       hdd = psutil.disk_usage('/')
       disk_usage = str(int(hdd.free / 2**20)) + " MB free"
       post_data = {
-        'hostname'        : os.getenv("COMPUTERNAME", ""),
+        'hostname'        : get_agent_mac(),
         'total_cpu'       : str(lib_misc.lib_cpu_usage()) + "/" + str(psutil.cpu_count()),
         'total_disk'      : disk_usage,
 
@@ -1051,7 +1076,7 @@ def drm_main():
       }
       log.debug(json.dumps(post_data, indent=4))
       log.debug("cpu count: " + str(psutil.cpu_count()))
-      c2s_resourcePost = apiServer.drm_resourcePost(post_data)
+      # c2s_resourcePost = apiServer.drm_resourcePost(post_data)
 
       # endregion
 
@@ -1364,6 +1389,41 @@ def svcinit(svc_name, svc_display_name, svc_description):
     servicemanager.StartServiceCtrlDispatcher()
   else:
     MyServiceFramework.svcinit(svc_name, svc_display_name, svc_description)
+
+def get_agent_mac():    # 맥 에이전트 명을 가져오기 위한 함수
+    temp_file = os.path.expandvars(f'%temp%\\output_{uuid.uuid4().hex}.txt')
+    
+    try:
+        os.system(f'ipconfig /all > {temp_file}')
+
+        with open(temp_file, 'r', encoding='CP949') as f:
+            content = f.read()
+
+            interfaces = content.split("\n\n")  # 이더넷 어댑터별로 분리
+            connected_macs = []
+
+            for interface in interfaces:
+                if "물리적 주소" in interface:
+                    for line in interface.split("\n"):
+                        if "물리적 주소" in line:
+                            mac = line.split(":")[1].strip().replace('-', '').upper()
+                            connected_macs.append(mac)
+                            break
+
+        if connected_macs:
+            return os.getenv("COMPUTERNAME", "") # + "." + connected_macs[0]
+            # return os.getenv("COMPUTERNAME", "") + "." + connected_macs[0]
+        else:
+            return None
+
+    finally:
+        # 항상 임시 파일 삭제 (예외가 발생하더라도)
+        try:
+            os.remove(temp_file)
+        except Exception as e:
+            print(f"Error removing temporary file: {e}")
+
+
 # endregion
 
 if __name__ == '__main__':

@@ -14,6 +14,11 @@ class Dscs_dll():
     self.encoding = "cp949"
 
   @staticmethod
+  def test_loadlib(log, target_path):
+    dll_handle = ctypes.windll.LoadLibrary(target_path)
+    log.info("Dscs_dll::test_loadlib() : " + str(dll_handle))
+
+  @staticmethod
   def static_checkDSCSAgent(log, dscsdll_file_name):
     isInstalled = False
     isLogged = False

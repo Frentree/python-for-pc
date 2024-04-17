@@ -134,3 +134,7 @@ client/log.txt
 client/file_version.txt
 00.RELEASE/configuration_*.json
 00.RELEASE/ftclient_installer*.zip
+00.RELEASE/env.json
+client/dist/tester.exe
+client/tester.spec
+client/dist/tester
