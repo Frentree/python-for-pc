@@ -1125,6 +1125,8 @@ def drm_main():
       for cmd in c2s_job['job']:
         job_result = DO_proc_job(dscs_dll, cmd, sqlite3)
         job_result_list.append(job_result)
+        log.info("drm_main_result : " + job_result)
+        log.info("drm_main_hostname : " + c2s_job['hostname'])
       c2s_job_post = apiServer.c2s_jobPost(post_data = {'job_results' : job_result_list})
       # endregion C2S JOB
 
